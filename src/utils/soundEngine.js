@@ -45,7 +45,28 @@ class SoundEngine {
           );
         };
 
-        this.ptVoice = voices.find(isStrictlyPtPt) || null;
+        const ptVoices = voices.filter(isStrictlyPtPt);
+
+        // Priorizar vozes Naturais / Neurais / Online de alta fidelidade
+        const getVoiceScore = (v) => {
+          const name = (v.name || '').toLowerCase();
+          let score = 0;
+          if (name.includes('natural') || name.includes('neural')) score += 100;
+          if (name.includes('raquel') || name.includes('duarte')) score += 50; // Vozes neurais pt-PT do Edge/Windows
+          if (name.includes('online')) score += 30;
+          if (name.includes('google')) score += 20;
+          if (v.localService === false) score += 10;
+          return score;
+        };
+
+        ptVoices.sort((a, b) => getVoiceScore(b) - getVoiceScore(a));
+
+        if (ptVoices.length > 0) {
+          this.ptVoice = ptVoices[0];
+          console.log(`[SoundEngine] Voz pt-PT selecionada: "${this.ptVoice.name}" (${this.ptVoice.lang})`);
+        } else {
+          this.ptVoice = null;
+        }
       };
 
       load();
@@ -79,12 +100,10 @@ class SoundEngine {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'pt-PT';
-      utterance.rate = 0.88; // ritmo pausado para crianças
-      utterance.pitch = 1.15; // tom amigável
+      utterance.rate = 0.95; // ritmo natural e fluído
+      utterance.pitch = 1.0; // pitch 1.0 (evita o processamento DSP que cria o efeito metálico/robótico)
 
-      // Apenas atribuir a voz se for estritamente uma voz de Portugal (pt-PT).
-      // Se não houver voz local pt-PT, deixamos utterance.voice livre para que o navegador
-      // utilize o serviço online pt-PT do Google/Android em vez de forçar a voz brasileira!
+      // Atribuir a melhor voz pt-PT disponível (priorizando Natural/Neural)
       if (this.ptVoice) {
         utterance.voice = this.ptVoice;
       }
