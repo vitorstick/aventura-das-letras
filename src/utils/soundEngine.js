@@ -25,16 +25,38 @@ class SoundEngine {
     if ('speechSynthesis' in window) {
       const load = () => {
         const voices = window.speechSynthesis.getVoices();
-        this.ptVoice = voices.find(v => v.lang === 'pt-PT' || v.lang === 'pt_PT') ||
-                       voices.find(v => v.lang.toLowerCase().includes('pt-pt')) ||
-                       voices.find(v => v.lang.toLowerCase().startsWith('pt')) ||
-                       null;
+        
+        // Procurar estritamente vozes de Português de Portugal (pt-PT)
+        // EXCLUIR rigorosamente qualquer voz do Brasil (pt-BR, brasil, brazil)
+        const isStrictlyPtPt = (v) => {
+          const lang = (v.lang || '').toLowerCase().replace('_', '-');
+          const name = (v.name || '').toLowerCase();
+          
+          const isBrazilian = lang.includes('br') || name.includes('brasil') || name.includes('brazil');
+          if (isBrazilian) return false;
+
+          return (
+            lang === 'pt-pt' ||
+            lang.startsWith('pt-pt') ||
+            lang === 'por-prt' ||
+            name.includes('portugal') ||
+            name.includes('pt-pt') ||
+            name.includes('portuguese (portugal)')
+          );
+        };
+
+        this.ptVoice = voices.find(isStrictlyPtPt) || null;
       };
+
       load();
       if (window.speechSynthesis.onvoiceschanged !== undefined) {
         window.speechSynthesis.onvoiceschanged = load;
       }
     }
+  }
+
+  hasPtPtVoice() {
+    return this.ptVoice !== null;
   }
 
   toggleSound() {
@@ -49,12 +71,20 @@ class SoundEngine {
       return;
     }
 
+    if (!this.ptVoice) {
+      this.initVoices();
+    }
+
     try {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'pt-PT';
       utterance.rate = 0.88; // ritmo pausado para crianças
       utterance.pitch = 1.15; // tom amigável
+
+      // Apenas atribuir a voz se for estritamente uma voz de Portugal (pt-PT).
+      // Se não houver voz local pt-PT, deixamos utterance.voice livre para que o navegador
+      // utilize o serviço online pt-PT do Google/Android em vez de forçar a voz brasileira!
       if (this.ptVoice) {
         utterance.voice = this.ptVoice;
       }
