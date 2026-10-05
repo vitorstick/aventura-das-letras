@@ -349,7 +349,7 @@ export default function TraceGame({ letter, onComplete, onSetSpeech }) {
               : 'text-amber-900 hover:bg-amber-100'
           }`}
         >
-          ✍️ Minúscula ({currentCursiveData.char === 'i' || letter === 'I' ? 'i' : 'u'})
+          ✍️ Minúscula ({letter.toLowerCase()})
         </button>
 
         <button

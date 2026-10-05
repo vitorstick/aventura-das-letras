@@ -1,6 +1,6 @@
 # 🦕 Aventura das Letras - O Jogo do Dino
 
-Jogo educativo e interativo concebido para crianças de 6 anos aprenderem as letras do alfabeto em **Português de Portugal (pt-PT)**, com foco inicial nas vogais **I** e **U**.
+Jogo educativo e interativo concebido para crianças de 6 anos aprenderem as letras do alfabeto em **Português de Portugal (pt-PT)**, incluindo as vogais **I**, **U**, **A** e **E**.
 
 O jogo corre diretamente no navegador web e é 100% otimizado para jogar em telemóveis e tablets com comandos táteis intuitivos.
 
@@ -9,16 +9,22 @@ O jogo corre diretamente no navegador web e é 100% otimizado para jogar em tele
 ## ✨ Funcionalidades Principais
 
 - 🦕 **Mascote Dino Interativa:** Um dinossauro bebé amigável que fala em português, comemora as vitórias e incentiva a criança em todos os passos.
-- 🇵🇹 **Português de Portugal:** Pronúncia autêntica (voz pt-PT) e vocabulário familiar em Portugal (*Ilha*, *Igreja*, *Iogurte*, *Iguana*, *Urso*, *Uvas*, *Unha*, *Unicórnio*).
-- 🐾 **Mapa Sequencial de 8 Etapas:**
+- 🇵🇹 **Português de Portugal:** Pronúncia autêntica (voz pt-PT) e vocabulário familiar em Portugal (*Ilha*, *Igreja*, *Iogurte*, *Iguana*, *Urso*, *Uvas*, *Unha*, *Unicórnio*, *Avião*, *Abelha*, *Árvore*, *Ananás*, *Elefante*, *Estrela*, *Escada*, *Espelho*).
+- 🐾 **Mapa Sequencial de 14 Etapas:**
   1. **Descobrir o I:** Sons, formas e cartões táteis interativos.
-  2. **Bolhas do I:** Minigame de rebentar bolhas de sabão no telemóvel.
-  3. **Desenhar o I:** Traçado com o dedo, estrelas e rasto brilhante.
-  4. **Descobrir o U:** Exploração de sons e objetos com o U.
-  5. **Bolhas do U:** Minigame de agilidade tátil com a letra U.
-  6. **Desenhar o U:** Traçado curvo guiado com checkpoints.
-  7. **Desafio I vs U:** Jogo de associação imagem-letra.
-  8. **Festa dos Campeões:** Troféu dourado, estrelas e chuva de confetes.
+  2. **Bolhas do I:** Minigame de rebentar bolhas com a letra I.
+  3. **Desenhar o I:** Caligrafia cursiva escolar com pauta e pingo no i.
+  4. **Descobrir o U:** Sons e objetos com o U (*Urso*, *Uvas*, etc.).
+  5. **Bolhas do U:** Minigame de rebentar bolhas com a letra U.
+  6. **Desenhar o U:** Caligrafia cursiva com ondas escolares.
+  7. **Descobrir o A:** Sons e objetos com o A (*Avião*, *Abelha*, etc.).
+  8. **Bolhas do A:** Minigame de agilidade tátil com a letra A.
+  9. **Desenhar o A:** Caligrafia cursiva da voltinha redonda e perninha.
+  10. **Descobrir o E:** Sons e objetos com o E (*Elefante*, *Estrela*, etc.).
+  11. **Bolhas do E:** Minigame de bolhas com a letra E.
+  12. **Desenhar o E:** Caligrafia cursiva com laço de montanha russa.
+  13. **O Grande Desafio:** Jogo de associação das 4 letras com botões coloridos (A, E, I, U).
+  14. **Super Festa do Dino:** Troféu dourado, 14 estrelas e chuva de confetes.
 - 📱 **Otimizado para Telemóvel:** Botões grandes táteis, sem zoom involuntário, suporte de instalação no ecrã de início (PWA).
 - 🔊 **Efeitos Sonoros Sintetizados:** Sons agradáveis em tempo real via Web Audio API (sem downloads pesados de áudio).
 - ⭐ **Reforço Positivo:** A criança nunca "perde" nem é penalizada; o Dino incentiva a tentar de novo até acertar.

@@ -1,7 +1,7 @@
 # Instruções de Desenvolvimento e Arquitetura - Aventura das Letras 🦕
 
 ## 1. Visão Geral do Projeto
-A **Aventura das Letras** é uma aplicação web interativa concebida para crianças de 6 anos (entrada no 1.º ciclo do Ensino Básico em Portugal) aprenderem a reconhecer, traçar e associar as letras do alfabeto, focando-se inicialmente nas vogais **I** e **U**.
+A **Aventura das Letras** é uma aplicação web interativa concebida para crianças de 6 anos (entrada no 1.º ciclo do Ensino Básico em Portugal) aprenderem a reconhecer, traçar e associar as letras do alfabeto, incluindo as vogais **I**, **U**, **A** e **E**.
 
 O jogo foi desenhado especificamente para ser jogado em telemóveis e tablets no navegador web (Safari no iOS e Chrome no Android), garantindo uma experiência fluida, sem atrasos táteis e com reforço positivo constante.
 
@@ -12,6 +12,8 @@ O jogo foi desenhado especificamente para ser jogado em telemóveis e tablets no
   - Todas as palavras, fonemas e exemplos refletem o vocabulário usado em Portugal:
     - **Letra I:** *Ilha*, *Igreja*, *Iogurte*, *Iguana*.
     - **Letra U:** *Urso*, *Uvas*, *Unha*, *Unicórnio*.
+    - **Letra A:** *Avião*, *Abelha*, *Árvore*, *Ananás*.
+    - **Letra E:** *Elefante*, *Estrela*, *Escada*, *Espelho*.
   - A voz do sistema prioriza a variante `pt-PT` da Web Speech API.
 - **Psicologia para Crianças de 6 Anos:**
   - **Reforço Positivo:** Não existem ecrãs de "Game Over", penalizações ou sons estridentes de erro.
@@ -34,35 +36,22 @@ O jogo foi desenhado especificamente para ser jogado em telemóveis e tablets no
 ---
 
 ## 4. Estrutura das Etapas Sequenciais (Caminho da Floresta 🐾)
-A progressão é sequencial para manter a atenção e guiar o processo cognitivo:
+A progressão é sequencial para manter a atenção e guiar o processo cognitivo através de 14 etapas:
 
-1. **Etapa 1 — Descobrir a Letra I:**
-   - Apresentação da letra gigante com o som fonético `/i/`.
-   - Exploração de 4 cartões táteis com objetos familiares em Portugal (*Ilha*, *Igreja*, *Iogurte*, *Iguana*).
-   - Ao tocar em pelo menos 2 objetos, desbloqueia o botão de avanço.
-2. **Etapa 2 — Bolhas da Letra I:**
-   - Minigame tátil onde bolhas sobem pelo ecrã.
-   - Objetivo: Rebentar 5 bolhas contendo a letra **I**.
-   - Letras distratoras (A, E, O) abanam suavemente se tocadas.
-3. **Etapa 3 — Desenhar a Letra I (Caligrafia Cursiva Escolar):**
-   - Pauta de caderno de caligrafia escolar portuguesa desenhada no fundo (linha base, linha média e teto).
-   - Traçado cursivo minúsculo autêntico: perninha de entrada inclinada, descida da haste e perninha de saída para dar a mão à próxima letra.
-   - Pôr o pingo no *i*: após o traço, o ponto superior acende com uma estrela animada para a criança tocar.
-   - Seletor de Minúscula (*i*) e Maiúscula (*I*) cursiva.
-4. **Etapa 4 — Descobrir a Letra U:**
-   - Apresentação da letra gigante com o som fonético `/u/`.
-   - Exploração dos objetos: *Urso*, *Uvas*, *Unha*, *Unicórnio*.
-5. **Etapa 5 — Bolhas da Letra U:**
-   - Minigame de apanhar 5 bolhas com a letra **U**.
-6. **Etapa 6 — Desenhar a Letra U (Caligrafia Cursiva Escolar):**
-   - Traçado cursivo com as duas ondas escolares de mão dada (subida, descida, baloiço, subida, descida e perninha de saída).
-   - Pauta escolar e curvas de Bézier fluidas.
-7. **Etapa 7 — O Grande Desafio (I vs U):**
-   - Aparece uma imagem (ex.: *Uvas* 🍇 ou *Ilha* 🏝️).
-   - A criança escolhe entre dois botões gigantes: **[ I ]** ou **[ U ]**.
-   - Perguntas dinâmicas com feedback sonoro imediato.
-8. **Etapa 8 — Grande Festa do Dino 🏆:**
-   - Troféu dourado, exibição de todas as estrelas conquistadas, chuva de confetes e música de vitória.
+1. **Etapa 1 — Descobrir a Letra I:** Apresentação da letra, som `/i/` e objetos (*Ilha*, *Igreja*, *Iogurte*, *Iguana*).
+2. **Etapa 2 — Bolhas da Letra I:** Rebentar 5 bolhas contendo a letra **I**.
+3. **Etapa 3 — Desenhar a Letra I:** Caligrafia cursiva escolar com pauta e pingo no i.
+4. **Etapa 4 — Descobrir a Letra U:** Apresentação da letra, som `/u/` e objetos (*Urso*, *Uvas*, *Unha*, *Unicórnio*).
+5. **Etapa 5 — Bolhas da Letra U:** Rebentar 5 bolhas com a letra **U**.
+6. **Etapa 6 — Desenhar a Letra U:** Traçado cursivo em duas ondas de mão dada.
+7. **Etapa 7 — Descobrir a Letra A:** Apresentação da letra, som `/a/` e objetos (*Avião*, *Abelha*, *Árvore*, *Ananás*).
+8. **Etapa 8 — Bolhas da Letra A:** Rebentar 5 bolhas com a letra **A**.
+9. **Etapa 9 — Desenhar a Letra A:** Caligrafia cursiva escolar da redondinha e perninha do **a**.
+10. **Etapa 10 — Descobrir a Letra E:** Apresentação da letra, som `/e/` e objetos (*Elefante*, *Estrela*, *Escada*, *Espelho*).
+11. **Etapa 11 — Bolhas da Letra E:** Rebentar 5 bolhas com a letra **E**.
+12. **Etapa 12 — Desenhar a Letra E:** Caligrafia cursiva em laço de montanha russa do **e**.
+13. **Etapa 13 — O Grande Desafio (I, U, A, E):** Jogo de associação imagem-letra com grelha 2x2 colorida.
+14. **Etapa 14 — Grande Festa do Dino 🏆:** Troféu dourado, 14 estrelas e chuva de confetes.
 
 ---
 
