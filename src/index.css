@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  overflow: hidden;
+  touch-action: manipulation;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* Botão 3D estilo brinquedo infantil */
+.kid-btn-shadow {
+  box-shadow: 0 6px 0px rgba(0, 0, 0, 0.18), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.kid-btn-shadow:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0px rgba(0, 0, 0, 0.18), 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Animação suave para as bolhas a subir pelo ecrã */
+@keyframes bubbleRise {
+  0% {
+    top: 100%;
+    transform: translateX(0) scale(0.85);
+    opacity: 0.95;
+  }
+  25% {
+    transform: translateX(14px) scale(0.95);
+  }
+  50% {
+    transform: translateX(-14px) scale(1.05);
+  }
+  75% {
+    transform: translateX(10px) scale(1);
+  }
+  100% {
+    top: -100px;
+    transform: translateX(-8px) scale(1);
+    opacity: 0.95;
+  }
+}
+
+.animate-bubble-rise {
+  animation: bubbleRise var(--float-duration, 5.5s) linear forwards;
+}
+
+/* Barra de rolagem visível e bonita para crianças */
+.map-scroll {
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y !important;
+}
+
+.map-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.map-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+}
+
+.map-scroll::-webkit-scrollbar-thumb {
+  background: #81C784;
+  border-radius: 12px;
+  border: 2px solid white;
+}
