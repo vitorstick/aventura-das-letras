@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Volume2 } from 'lucide-react';
 import { GAME_DATA } from '../../data/gameData';
 import { sounds } from '../../utils/soundEngine';
 import { fireStars, fireConfetti } from '../../utils/confetti';
@@ -27,6 +28,7 @@ export default function QuizGame({ onComplete, onSetSpeech }: QuizGameProps): Re
   const [questions, setQuestions] = useState<QuizItem[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [canAnswer, setCanAnswer] = useState<boolean>(true);
+  const [isAnswered, setIsAnswered] = useState<boolean>(false);
   const [wrongWiggle, setWrongWiggle] = useState<LetterKey | null>(null);
 
   useEffect(() => {
@@ -55,6 +57,7 @@ export default function QuizGame({ onComplete, onSetSpeech }: QuizGameProps): Re
 
     if (choice === currentQ.letter) {
       setCanAnswer(false);
+      setIsAnswered(true);
       sounds.playSuccess();
       sounds.playStar();
 
@@ -62,18 +65,28 @@ export default function QuizGame({ onComplete, onSetSpeech }: QuizGameProps): Re
       fireStars(rect.left / window.innerWidth, rect.top / window.innerHeight);
 
       onSetSpeech(`Muito bem! ${currentQ.letter} em ${currentQ.word}!`);
-      sounds.playQuizSuccess(currentQ.word, `Certo! ${currentQ.word}!`);
 
-      setTimeout(() => {
+      let hasAdvanced = false;
+      const advance = () => {
+        if (hasAdvanced) return;
+        hasAdvanced = true;
         if (currentIndex + 1 >= questions.length) {
           sounds.playWinFanfare();
           fireConfetti();
           onComplete();
         } else {
           setCurrentIndex(prev => prev + 1);
+          setIsAnswered(false);
           setCanAnswer(true);
         }
-      }, 1500);
+      };
+
+      sounds.playQuizSuccess(currentQ.word, `Certo! ${currentQ.word}!`, () => {
+        setTimeout(advance, 350);
+      });
+
+      // Temporizador de segurança
+      setTimeout(advance, 3500);
     } else {
       sounds.playTryAgain();
       setWrongWiggle(choice);
@@ -81,7 +94,7 @@ export default function QuizGame({ onComplete, onSetSpeech }: QuizGameProps): Re
 
       const isCombo = currentQ.letter.length > 1;
       const itemDesc = isCombo ? `a combinação ${currentQ.letter}` : `a letra ${currentQ.letter}`;
-      onSetSpeech(`Ouve bem: ${currentQ.word}! Tem ${itemDesc}!`);
+      onSetSpeech(`Ouve bem! Tem ${itemDesc}!`);
       sounds.playQuizTryAgain(currentQ.word, `Quase! ${currentQ.word} tem ${itemDesc}!`);
     }
   };
@@ -95,14 +108,22 @@ export default function QuizGame({ onComplete, onSetSpeech }: QuizGameProps): Re
 
       {/* Cartão Central do Objeto */}
       <div
-        onClick={() => sounds.playWord(currentQ.word)}
+        onClick={() => sounds.playQuizPrompt(currentQ.word, currentQ.prompt)}
         className="kid-btn-shadow bg-white border-4 border-purple-300 rounded-3xl p-4 sm:p-5 flex flex-col items-center justify-center my-2 w-full max-w-[260px] animate-bounce-soft cursor-pointer active:scale-95 transition-transform"
-        title="Toca para ouvir a palavra!"
+        title="Toca para ouvir a pergunta!"
       >
         <span className="text-5xl sm:text-6xl mb-1">{currentQ.emoji}</span>
-        <span className="text-2xl sm:text-3xl font-black text-purple-900 tracking-wide">
-          {currentQ.word}
-        </span>
+        {isAnswered ? (
+          <span className="text-2xl sm:text-3xl font-black text-purple-900 tracking-wide animate-pop-in">
+            <span className="text-rose-500 underline">{currentQ.letter}</span>
+            {currentQ.word.slice(currentQ.letter.length)}
+          </span>
+        ) : (
+          <span className="text-xs sm:text-sm font-bold text-purple-700 bg-purple-50 border border-purple-200 px-3 py-1 rounded-full mt-1 flex items-center gap-1.5 shadow-sm">
+            <Volume2 className="w-4 h-4 text-purple-600 animate-pulse" />
+            <span>Ouve o som!</span>
+          </span>
+        )}
       </div>
 
       {/* Grelha 2x2 com os Botões de Opções */}

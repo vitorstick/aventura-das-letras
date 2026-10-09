@@ -87,25 +87,33 @@ export default function ExplorerGame({
     const letters = item.spelling || item.word.split('').map(c => c.toUpperCase());
     onSetSpeech(`A soletrar: ${item.word}!`);
 
-    letters.forEach((char, idx) => {
-      const t = window.setTimeout(() => {
-        setActiveCharIndex(idx);
-        sounds.playSpellingLetter(char);
-      }, idx * 750);
-      spellingTimeouts.current.push(t);
-    });
+    let currentIndex = 0;
 
-    // Conclusão da soletração: diz a palavra inteira e solta estrelas
-    const finalDelay = letters.length * 750 + 200;
-    const finalT = window.setTimeout(() => {
-      setActiveCharIndex(null);
-      setIsSpelling(false);
-      sounds.playSuccess();
-      sounds.playWord(item.id || item.word, item.word);
-      fireStars(0.5, 0.6);
-      onSetSpeech(`${item.word}! Muito bem!`);
-    }, finalDelay);
-    spellingTimeouts.current.push(finalT);
+    const playNext = () => {
+      if (currentIndex >= letters.length) {
+        // Conclusão da soletração: diz a palavra inteira e solta estrelas
+        setActiveCharIndex(null);
+        setIsSpelling(false);
+        sounds.playSuccess();
+        sounds.playWord(item.id || item.word, item.word);
+        fireStars(0.5, 0.6);
+        onSetSpeech(`${item.word}! Muito bem!`);
+        return;
+      }
+
+      const idx = currentIndex;
+      const char = letters[idx];
+      setActiveCharIndex(idx);
+      currentIndex++;
+
+      sounds.playSpellingLetter(char, () => {
+        // Pequena pausa natural de 150ms entre letras
+        const t = window.setTimeout(playNext, 150);
+        spellingTimeouts.current.push(t);
+      });
+    };
+
+    playNext();
   };
 
   const handleFinish = () => {

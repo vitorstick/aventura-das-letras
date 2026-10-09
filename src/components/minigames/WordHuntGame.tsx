@@ -114,9 +114,11 @@ export default function WordHuntGame({
 
         const successSpeech = `Muito bem! Encontraste ${targetType} ${letter} na palavra ${currentWordData.display}!`;
         onSetSpeech(successSpeech);
-        sounds.playHuntSuccess(currentWordData.audioWordKey || currentWordData.word, successSpeech);
 
-        setTimeout(() => {
+        let advanced = false;
+        const advance = () => {
+          if (advanced) return;
+          advanced = true;
           if (currentWordIndex + 1 >= wordsList.length) {
             // Concluiu todas as palavras
             setIsRoundCompleted(true);
@@ -128,7 +130,15 @@ export default function WordHuntGame({
           } else {
             setCurrentWordIndex((prev) => prev + 1);
           }
-        }, 1500);
+        };
+
+        // Avança após a frase inteira de sucesso terminar de tocar
+        sounds.playHuntSuccess(currentWordData.audioWordKey || currentWordData.word, successSpeech, () => {
+          setTimeout(advance, 500);
+        });
+
+        // Safety fallback para caso o áudio falhe silenciosamente
+        setTimeout(advance, 4500);
       } else {
         const remainingCount = totalTargetsInWord - nextFound.size;
         const partialSpeech = remainingCount === 1

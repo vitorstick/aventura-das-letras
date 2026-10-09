@@ -42,9 +42,9 @@ const SPELL_CHAR_MAP: Record<string, string> = {
   Ê: 'spell_circumflex_e',
   Í: 'spell_acute_i',
   Ó: 'spell_acute_o',
-  Ô: 'spell_acute_o',
+  Ô: 'spell_circumflex_o',
   Ú: 'spell_acute_u',
-  Ç: 'spell_c'
+  Ç: 'spell_cedilla_c'
 };
 
 class SoundEngine {
@@ -54,6 +54,7 @@ class SoundEngine {
   private ptVoice: SpeechSynthesisVoice | null = null;
   private audioCache: Map<string, HTMLAudioElement> = new Map();
   private activeAudio: HTMLAudioElement | null = null;
+  private currentPlayId: number = 0;
 
   constructor() {
     this.initVoices();
@@ -141,6 +142,7 @@ class SoundEngine {
   }
 
   stopAudio(): void {
+    this.currentPlayId++;
     if ('speechSynthesis' in window) {
       try {
         window.speechSynthesis.cancel();
@@ -155,6 +157,20 @@ class SoundEngine {
     }
   }
 
+  preloadAudio(name: string): void {
+    const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+    const audioUrl = `${base}audio/${name}.mp3`;
+    if (!this.audioCache.has(audioUrl)) {
+      const audio = new Audio(audioUrl);
+      audio.preload = 'auto';
+      this.audioCache.set(audioUrl, audio);
+    }
+  }
+
+  preloadAudios(names: string[]): void {
+    names.forEach(name => this.preloadAudio(name));
+  }
+
   playAudioFile(name: string, fallbackText?: string, onEnd?: (() => void) | null): void {
     if (!this.soundEnabled || !this.speechEnabled) {
       if (onEnd) onEnd();
@@ -163,7 +179,10 @@ class SoundEngine {
     this.unlockAudio();
     this.stopAudio();
 
-    const audioUrl = `/audio/${name}.mp3`;
+    const playId = ++this.currentPlayId;
+    const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+    const audioUrl = `${base}audio/${name}.mp3`;
+
     let audio = this.audioCache.get(audioUrl);
     if (!audio) {
       audio = new Audio(audioUrl);
@@ -174,32 +193,40 @@ class SoundEngine {
     this.activeAudio = audio;
 
     let hasEnded = false;
+    let fallbackTriggered = false;
+
     const handleEnd = () => {
       if (hasEnded) return;
       hasEnded = true;
       if (this.activeAudio === audio) {
         this.activeAudio = null;
       }
-      if (onEnd) onEnd();
+      if (this.currentPlayId === playId && onEnd) {
+        onEnd();
+      }
+    };
+
+    const triggerFallback = () => {
+      if (fallbackTriggered) return;
+      fallbackTriggered = true;
+      if (this.currentPlayId !== playId) return;
+
+      if (fallbackText) {
+        this.speak(fallbackText, onEnd);
+      } else {
+        handleEnd();
+      }
     };
 
     audio.onended = handleEnd;
     audio.onerror = () => {
       console.warn(`[SoundEngine] Ficheiro "${audioUrl}" indisponível, a usar síntese de voz.`);
-      if (fallbackText) {
-        this.speak(fallbackText, onEnd);
-      } else {
-        handleEnd();
-      }
+      triggerFallback();
     };
 
     audio.play().catch(err => {
       console.warn("[SoundEngine] Reprodução de áudio bloqueada ou em erro:", err);
-      if (fallbackText) {
-        this.speak(fallbackText, onEnd);
-      } else {
-        handleEnd();
-      }
+      triggerFallback();
     });
   }
 
@@ -219,14 +246,23 @@ class SoundEngine {
     this.playAudioFile(key, fallbackIntro || `Letra ${letter}`, onEnd);
   }
 
+  private cleanWordKey(rawKey: string): string {
+    return rawKey
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/^(word_only_|wordonly_?|word_phrase_|wordphrase_?|hunt_prompt_|huntprompt_?|hunt_success_|huntsuccess_?|quiz_prompt_|quizprompt_?|quiz_success_|quizsuccess_?|quiz_tryagain_|quiztryagain_?)/, '')
+      .replace(/[^a-z]/g, '');
+  }
+
   playWord(wordKey: string, fallbackWord?: string, onEnd?: (() => void) | null): void {
-    const cleanKey = wordKey.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/g, '');
+    const cleanKey = this.cleanWordKey(wordKey);
     const key = `word_only_${cleanKey}`;
     this.playAudioFile(key, fallbackWord, onEnd);
   }
 
   playWordPhrase(wordKey: string, fallbackPhrase?: string, onEnd?: (() => void) | null): void {
-    const cleanKey = wordKey.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/g, '');
+    const cleanKey = this.cleanWordKey(wordKey);
     const key = `word_phrase_${cleanKey}`;
     this.playAudioFile(key, fallbackPhrase, onEnd);
   }
@@ -248,31 +284,31 @@ class SoundEngine {
   }
 
   playQuizPrompt(wordKey: string, fallbackText?: string, onEnd?: (() => void) | null): void {
-    const cleanKey = wordKey.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/g, '');
+    const cleanKey = this.cleanWordKey(wordKey);
     const key = `quiz_prompt_${cleanKey}`;
     this.playAudioFile(key, fallbackText, onEnd);
   }
 
   playQuizSuccess(wordKey: string, fallbackText?: string, onEnd?: (() => void) | null): void {
-    const cleanKey = wordKey.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/g, '');
+    const cleanKey = this.cleanWordKey(wordKey);
     const key = `quiz_success_${cleanKey}`;
     this.playAudioFile(key, fallbackText, onEnd);
   }
 
   playQuizTryAgain(wordKey: string, fallbackText?: string, onEnd?: (() => void) | null): void {
-    const cleanKey = wordKey.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/g, '');
+    const cleanKey = this.cleanWordKey(wordKey);
     const key = `quiz_tryagain_${cleanKey}`;
     this.playAudioFile(key, fallbackText, onEnd);
   }
 
   playHuntPrompt(wordKey: string, fallbackText?: string, onEnd?: (() => void) | null): void {
-    const cleanKey = wordKey.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/g, '');
+    const cleanKey = this.cleanWordKey(wordKey);
     const key = `hunt_prompt_${cleanKey}`;
     this.playAudioFile(key, fallbackText, onEnd);
   }
 
   playHuntSuccess(wordKey: string, fallbackText?: string, onEnd?: (() => void) | null): void {
-    const cleanKey = wordKey.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/g, '');
+    const cleanKey = this.cleanWordKey(wordKey);
     const key = `hunt_success_${cleanKey}`;
     this.playAudioFile(key, fallbackText, onEnd);
   }
@@ -308,6 +344,7 @@ class SoundEngine {
 
     try {
       window.speechSynthesis.cancel();
+      const playId = ++this.currentPlayId;
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'pt-PT';
       utterance.rate = 0.95; // ritmo natural e fluído
@@ -317,10 +354,18 @@ class SoundEngine {
       if (this.ptVoice) {
         utterance.voice = this.ptVoice;
       }
-      if (onEnd) {
-        utterance.onend = () => onEnd();
-        utterance.onerror = () => onEnd();
-      }
+      utterance.onend = () => {
+        if (this.currentPlayId === playId && onEnd) {
+          onEnd();
+        }
+      };
+      utterance.onerror = (e) => {
+        // Ignorar cancelamento deliberado
+        if (e.error === 'interrupted' || e.error === 'canceled') return;
+        if (this.currentPlayId === playId && onEnd) {
+          onEnd();
+        }
+      };
       window.speechSynthesis.speak(utterance);
     } catch (e) {
       console.warn("Fala não suportada ou bloqueada:", e);

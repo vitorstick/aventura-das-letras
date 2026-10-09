@@ -1,12 +1,16 @@
 import os
+import sys
+import json
+import hashlib
 import asyncio
 import edge_tts
 
 VOICE = "pt-PT-RaquelNeural"
 RATE = "-4%" # Cadência suave e límpida para crianças de 6 anos
 OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "public", "audio")
+MANIFEST_PATH = os.path.join(OUTPUT_DIR, "manifest.json")
 
-# Catálogo completo de áudios educativos em pt-PT (frases completas + soletração)
+# Catálogo completo de áudios educativos em pt-PT com calibração fonológica rigorosa
 AUDIO_ITEMS = [
     # --- LETRAS & DITONGOS: NOMES, SONS E FRASES COMPLETAS ---
     ("letter_name_i", "Letra I"),
@@ -19,25 +23,26 @@ AUDIO_ITEMS = [
     ("letter_intro_u", "Que fixe! Esta é a letra U! Ouve como faz: U!"),
     ("letter_card_u", "Esta é a letra U! Faz o som: U!"),
 
-    ("letter_name_ui", "Combinação U I"),
-    ("letter_sound_ui", "Ui"),
-    ("letter_intro_ui", "Fantástico! Vamos juntar as letras U e I para fazer UI! Ouve como faz: Ui!"),
-    ("letter_card_ui", "Esta é a combinação UI! U mais I faz: Ui!"),
+    ("letter_name_ui", "Combinação U I... ui!"),
+    ("letter_sound_ui", "ui"),
+    ("letter_intro_ui", "Fantástico! Vamos juntar as letras U e I para fazer ui! Ouve como faz: ui!"),
+    ("letter_card_ui", "Esta é a combinação U I! U mais I faz: ui!"),
 
-    ("letter_name_iu", "Combinação I U"),
-    ("letter_sound_iu", "Iu"),
-    ("letter_intro_iu", "Que maravilha! Agora juntamos o I e o U para fazer IU! Ouve como faz: Iu!"),
-    ("letter_card_iu", "Esta é a combinação IU! I mais U faz: Iu!"),
+    ("letter_name_iu", "Combinação I U... iu!"),
+    ("letter_sound_iu", "iu"),
+    ("letter_intro_iu", "Que maravilha! Agora juntamos o I e o U para fazer iu! Ouve como faz: iu!"),
+    ("letter_card_iu", "Esta é a combinação I U! I mais U faz: iu!"),
 
-    ("letter_name_a", "Letra A"),
-    ("letter_sound_a", "A"),
-    ("letter_intro_a", "Viva! Vamos aprender a letra A! Ouve como faz: A!"),
-    ("letter_card_a", "Esta é a letra A! Faz o som: A!"),
+    # P1.1: Uso explícito de acento para garantir a vogal aberta [a] e [ɛ], evitando artigos/conjunções
+    ("letter_name_a", "Letra Á"),
+    ("letter_sound_a", "Á"),
+    ("letter_intro_a", "Viva! Vamos aprender a letra Á! Ouve como faz: Á!"),
+    ("letter_card_a", "Esta é a letra Á! Faz o som: Á!"),
 
-    ("letter_name_e", "Letra E"),
+    ("letter_name_e", "Letra É"),
     ("letter_sound_e", "É"),
-    ("letter_intro_e", "Espetacular! Esta é a letra E! Ouve como faz: E!"),
-    ("letter_card_e", "Esta é a letra E! Faz o som: E!"),
+    ("letter_intro_e", "Espetacular! Esta é a letra É! Ouve como faz: É!"),
+    ("letter_card_e", "Esta é a letra É! Faz o som: É!"),
 
     # --- PALAVRAS DO EXPLORADOR (NOME CURTO E FRASE COMPLETA) ---
     # Letra I
@@ -45,8 +50,8 @@ AUDIO_ITEMS = [
     ("word_phrase_ilha", "I de Ilha! Uma ilha no meio do mar!"),
     ("word_only_igreja", "Igreja"),
     ("word_phrase_igreja", "I de Igreja! A torre da igreja!"),
-    ("word_only_iogurte", "Iogurte"),
-    ("word_phrase_iogurte", "I de Iogurte! Um iogurte bem fresquinho!"),
+    ("word_only_iman", "Íman"),
+    ("word_phrase_iman", "I de Íman! Um íman forte que puxa o metal!"),
     ("word_only_iguana", "Iguana"),
     ("word_phrase_iguana", "I de Iguana! A simpática iguana verde!"),
 
@@ -60,45 +65,45 @@ AUDIO_ITEMS = [
     ("word_only_unicornio", "Unicórnio"),
     ("word_phrase_unicornio", "U de Unicórnio! Um unicórnio mágico!"),
 
-    # Combinação UI
+    # Combinação UI (P1.3: grafia "ui" na fala para pronúncia do ditongo fundido)
     ("word_only_ui", "Ui!"),
     ("word_phrase_ui", "Ui! Que susto apanhou o Dino!"),
     ("word_only_uivo", "Uivo"),
-    ("word_phrase_uivo", "UI de Uivo! O lobo a uivar à lua no bosque!"),
+    ("word_phrase_uivo", "ui em Uivo! O lobo a uivar à lua no bosque!"),
     ("word_only_cuidado", "Cuidado"),
-    ("word_phrase_cuidado", "UI em Cuidado! Olha com atenção para não tropeçar!"),
+    ("word_phrase_cuidado", "ui em Cuidado! Olha com atenção para não tropeçar!"),
     ("word_only_fui", "Fui"),
-    ("word_phrase_fui", "UI de Fui! Fui dar um passeio com o Dino pelo parque!"),
+    ("word_phrase_fui", "ui em Fui! Fui dar um passeio com o Dino pelo parque!"),
 
-    # Combinação IU
+    # Combinação IU (P1.3: grafia "iu" na fala para pronúncia do ditongo fundido)
     ("word_only_viu", "Viu"),
-    ("word_phrase_viu", "IU de Viu! O Dino viu um ninho de passarinhos!"),
+    ("word_phrase_viu", "iu em Viu! O Dino viu um ninho de passarinhos!"),
     ("word_only_riu", "Riu"),
-    ("word_phrase_riu", "IU de Riu! O Dino riu muito com uma cócega divertida!"),
+    ("word_phrase_riu", "iu em Riu! O Dino riu muito com uma cócega divertida!"),
     ("word_only_subiu", "Subiu"),
-    ("word_phrase_subiu", "IU em Subiu! O macaco subiu à árvore bem depressa!"),
+    ("word_phrase_subiu", "iu em Subiu! O macaco subiu à árvore bem depressa!"),
     ("word_only_fugiu", "Fugiu"),
-    ("word_phrase_fugiu", "IU em Fugiu! O coelhinho fugiu a saltitar pela relva!"),
+    ("word_phrase_fugiu", "iu em Fugiu! O coelhinho fugiu a saltitar pela relva!"),
 
     # Letra A
-    ("word_only_aviao", "Avião"),
-    ("word_phrase_aviao", "A de Avião! O avião a voar alto nas nuvens!"),
-    ("word_only_abelha", "Abelha"),
-    ("word_phrase_abelha", "A de Abelha! A abelha a fazer mel docinho!"),
     ("word_only_arvore", "Árvore"),
-    ("word_phrase_arvore", "A de Árvore! Uma árvore grande com folhas verdes!"),
-    ("word_only_ananas", "Ananás"),
-    ("word_phrase_ananas", "A de Ananás! Um ananás delicioso e fresquinho!"),
+    ("word_phrase_arvore", "Á de Árvore! Uma árvore grande com folhas verdes!"),
+    ("word_only_agua", "Água"),
+    ("word_phrase_agua", "Á de Água! Uma gota de água fresquinha!"),
+    ("word_only_asa", "Asa"),
+    ("word_phrase_asa", "Á de Asa! A asa rápida do passarinho!"),
+    ("word_only_aviao", "Avião"),
+    ("word_phrase_aviao", "Á de Avião! O avião a voar alto nas nuvens!"),
 
     # Letra E
-    ("word_only_elefante", "Elefante"),
-    ("word_phrase_elefante", "E de Elefante! Um grande elefante com orelhas compridas!"),
+    ("word_only_egua", "Égua"),
+    ("word_phrase_egua", "É de Égua! Uma égua bonita a correr no prado!"),
+    ("word_only_eco", "Eco"),
+    ("word_phrase_eco", "É de Eco! Ouve o som a repetir... é o eco!"),
     ("word_only_estrela", "Estrela"),
-    ("word_phrase_estrela", "E de Estrela! Uma estrela brilhante no céu!"),
-    ("word_only_escada", "Escada"),
-    ("word_phrase_escada", "E de Escada! A escada para subir bem alto!"),
-    ("word_only_espelho", "Espelho"),
-    ("word_phrase_espelho", "E de Espelho! O espelho para ver o nosso sorriso!"),
+    ("word_phrase_estrela", "É de Estrela! Uma estrela brilhante no céu!"),
+    ("word_only_elefante", "Elefante"),
+    ("word_phrase_elefante", "É de Elefante! Um grande elefante com orelhas compridas!"),
 
     # --- PALAVRAS DO WORD HUNT ("DETETIVE") ---
     ("word_only_peixe", "Peixe"),
@@ -117,62 +122,62 @@ AUDIO_ITEMS = [
     ("word_only_coelho", "Coelho"),
     ("word_only_dente", "Dente"),
 
-    # --- FRASES COMPLETAS: QUIZ GAME (ENUNCIADO, ACERTO E INCENTIVO) ---
-    ("quiz_prompt_ui", "Ui, que susto! Que combinação é esta? UI, IU, U ou I?"),
-    ("quiz_success_ui", "Certo! Muito bem, é a combinação UI!"),
-    ("quiz_tryagain_ui", "Quase! Esta é a combinação UI!"),
+    # --- FRASES COMPLETAS: QUIZ GAME (P1.1 e P1.3 ajustados) ---
+    ("quiz_prompt_ui", "Ui, que susto! Que combinação é esta? ui, iu, U ou I?"),
+    ("quiz_success_ui", "Certo! Muito bem, é a combinação ui!"),
+    ("quiz_tryagain_ui", "Quase! Esta é a combinação ui!"),
 
-    ("quiz_prompt_uivo", "Uivo do lobo... começa por que combinação? UI, IU, U ou I?"),
-    ("quiz_success_uivo", "Certo! Uivo começa com a combinação UI!"),
-    ("quiz_tryagain_uivo", "Quase! A palavra Uivo começa com UI!"),
+    ("quiz_prompt_uivo", "Uivo do lobo... começa por que combinação? ui, iu, U ou I?"),
+    ("quiz_success_uivo", "Certo! Uivo começa com a combinação ui!"),
+    ("quiz_tryagain_uivo", "Quase! A palavra Uivo começa com ui!"),
 
-    ("quiz_prompt_viu", "Ele viu! A palavra Viu termina com que combinação? IU, UI, I ou U?"),
-    ("quiz_success_viu", "Certo! A palavra Viu termina com IU!"),
-    ("quiz_tryagain_viu", "Quase! A palavra Viu termina com IU!"),
+    ("quiz_prompt_viu", "Ele viu! A palavra Viu termina com que combinação? iu, ui, I ou U?"),
+    ("quiz_success_viu", "Certo! A palavra Viu termina com iu!"),
+    ("quiz_tryagain_viu", "Quase! A palavra Viu termina com iu!"),
 
-    ("quiz_prompt_riu", "Ele riu! A palavra Riu termina com que combinação? IU, UI, I ou U?"),
-    ("quiz_success_riu", "Certo! A palavra Riu termina com IU!"),
-    ("quiz_tryagain_riu", "Quase! A palavra Riu termina com IU!"),
+    ("quiz_prompt_riu", "Ele riu! A palavra Riu termina com que combinação? iu, ui, I ou U?"),
+    ("quiz_success_riu", "Certo! A palavra Riu termina com iu!"),
+    ("quiz_tryagain_riu", "Quase! A palavra Riu termina com iu!"),
 
-    ("quiz_prompt_aviao", "Avião... começa com que letra? A, E, I ou U?"),
-    ("quiz_success_aviao", "Certo! Avião começa com a letra A!"),
-    ("quiz_tryagain_aviao", "Quase! Avião começa com a letra A!"),
+    ("quiz_prompt_arvore", "Árvore... começa com que letra? Á, É, I ou U?"),
+    ("quiz_success_arvore", "Certo! Árvore começa com a letra Á!"),
+    ("quiz_tryagain_arvore", "Quase! Árvore começa com a letra Á!"),
 
-    ("quiz_prompt_elefante", "Elefante... começa com que letra? A, E, I ou U?"),
-    ("quiz_success_elefante", "Certo! Elefante começa com a letra E!"),
-    ("quiz_tryagain_elefante", "Quase! Elefante começa com a letra E!"),
+    ("quiz_prompt_egua", "Égua... começa com que letra? Á, É, I ou U?"),
+    ("quiz_success_egua", "Certo! Égua começa com a letra É!"),
+    ("quiz_tryagain_egua", "Quase! Égua começa com a letra É!"),
 
-    ("quiz_prompt_ilha", "Ilha... começa com que letra? A, E, I ou U?"),
+    ("quiz_prompt_ilha", "Ilha... começa com que letra? Á, É, I ou U?"),
     ("quiz_success_ilha", "Certo! Ilha começa com a letra I!"),
     ("quiz_tryagain_ilha", "Quase! Ilha começa com a letra I!"),
 
-    ("quiz_prompt_uvas", "Uvas... começa com que letra? A, E, I ou U?"),
+    ("quiz_prompt_uvas", "Uvas... começa com que letra? Á, É, I ou U?"),
     ("quiz_success_uvas", "Certo! Uvas começa com a letra U!"),
     ("quiz_tryagain_uvas", "Quase! Uvas começa com a letra U!"),
 
-    ("quiz_prompt_abelha", "Abelha... começa com que letra? A, E, I ou U?"),
-    ("quiz_success_abelha", "Certo! Abelha começa com a letra A!"),
-    ("quiz_tryagain_abelha", "Quase! Abelha começa com a letra A!"),
+    ("quiz_prompt_agua", "Água... começa com que letra? Á, É, I ou U?"),
+    ("quiz_success_agua", "Certo! Água começa com a letra Á!"),
+    ("quiz_tryagain_agua", "Quase! Água começa com a letra Á!"),
 
-    ("quiz_prompt_estrela", "Estrela... começa com que letra? A, E, I ou U?"),
-    ("quiz_success_estrela", "Certo! Estrela começa com a letra E!"),
-    ("quiz_tryagain_estrela", "Quase! Estrela começa com a letra E!"),
+    ("quiz_prompt_eco", "Eco... começa com que letra? Á, É, I ou U?"),
+    ("quiz_success_eco", "Certo! Eco começa com a letra É!"),
+    ("quiz_tryagain_eco", "Quase! Eco começa com a letra É!"),
 
-    ("quiz_prompt_urso", "Urso... começa com que letra? A, E, I ou U?"),
+    ("quiz_prompt_urso", "Urso... começa com que letra? Á, É, I ou U?"),
     ("quiz_success_urso", "Certo! Urso começa com a letra U!"),
     ("quiz_tryagain_urso", "Quase! Urso começa com a letra U!"),
 
-    ("quiz_prompt_iogurte", "Iogurte... começa com que letra? A, E, I ou U?"),
-    ("quiz_success_iogurte", "Certo! Iogurte começa com a letra I!"),
-    ("quiz_tryagain_iogurte", "Quase! Iogurte começa com a letra I!"),
+    ("quiz_prompt_iman", "Íman... começa com que letra? Á, É, I ou U?"),
+    ("quiz_success_iman", "Certo! Íman começa com a letra I!"),
+    ("quiz_tryagain_iman", "Quase! Íman começa com a letra I!"),
 
-    ("quiz_prompt_arvore", "Árvore... começa com que letra? A, E, I ou U?"),
-    ("quiz_success_arvore", "Certo! Árvore começa com a letra A!"),
-    ("quiz_tryagain_arvore", "Quase! Árvore começa com a letra A!"),
+    ("quiz_prompt_asa", "Asa... começa com que letra? Á, É, I ou U?"),
+    ("quiz_success_asa", "Certo! Asa começa com a letra Á!"),
+    ("quiz_tryagain_asa", "Quase! Asa começa com a letra Á!"),
 
-    ("quiz_prompt_escada", "Escada... começa com que letra? A, E, I ou U?"),
-    ("quiz_success_escada", "Certo! Escada começa com a letra E!"),
-    ("quiz_tryagain_escada", "Quase! Escada começa com a letra E!"),
+    ("quiz_prompt_estrela", "Estrela... começa com que letra? Á, É, I ou U?"),
+    ("quiz_success_estrela", "Certo! Estrela começa com a letra É!"),
+    ("quiz_tryagain_estrela", "Quase! Estrela começa com a letra É!"),
 
     # --- FRASES COMPLETAS: WORD HUNT ("DETETIVE DAS LETRAS") ---
     ("hunt_prompt_peixe", "Onde está a letra I na palavra Peixe?"),
@@ -199,74 +204,74 @@ AUDIO_ITEMS = [
     ("hunt_prompt_tartaruga", "Onde está a letra U na palavra Tartaruga?"),
     ("hunt_success_tartaruga", "Muito bem! Encontraste a letra U na Tartaruga!"),
 
-    ("hunt_prompt_ui", "Onde está a combinação UI na palavra Ui?"),
-    ("hunt_success_ui", "Muito bem! Encontraste a combinação UI!"),
+    ("hunt_prompt_ui", "Onde está a combinação ui na palavra Ui?"),
+    ("hunt_success_ui", "Muito bem! Encontraste a combinação ui!"),
 
-    ("hunt_prompt_uivo", "Onde está o UI na palavra Uivo?"),
-    ("hunt_success_uivo", "Muito bem! Encontraste a combinação UI no Uivo!"),
+    ("hunt_prompt_uivo", "Onde está o ui na palavra Uivo?"),
+    ("hunt_success_uivo", "Muito bem! Encontraste a combinação ui no Uivo!"),
 
-    ("hunt_prompt_cuidado", "Onde está o UI na palavra Cuidado?"),
-    ("hunt_success_cuidado", "Muito bem! Encontraste o UI na palavra Cuidado!"),
+    ("hunt_prompt_cuidado", "Onde está o ui na palavra Cuidado?"),
+    ("hunt_success_cuidado", "Muito bem! Encontraste o ui no Cuidado!"),
 
-    ("hunt_prompt_fui", "Consegues encontrar o UI na palavra Fui?"),
-    ("hunt_success_fui", "Muito bem! Encontraste a combinação UI no Fui!"),
+    ("hunt_prompt_fui", "Consegues encontrar o ui na palavra Fui?"),
+    ("hunt_success_fui", "Muito bem! Encontraste a combinação ui no Fui!"),
 
-    ("hunt_prompt_viu", "Onde está o IU na palavra Viu?"),
-    ("hunt_success_viu", "Muito bem! Encontraste a combinação IU na palavra Viu!"),
+    ("hunt_prompt_viu", "Onde está o iu na palavra Viu?"),
+    ("hunt_success_viu", "Muito bem! Encontraste a combinação iu na palavra Viu!"),
 
-    ("hunt_prompt_riu", "Onde está o IU na palavra Riu?"),
-    ("hunt_success_riu", "Muito bem! Encontraste a combinação IU na palavra Riu!"),
+    ("hunt_prompt_riu", "Onde está o iu na palavra Riu?"),
+    ("hunt_success_riu", "Muito bem! Encontraste a combinação iu na palavra Riu!"),
 
-    ("hunt_prompt_subiu", "Consegues encontrar o IU na palavra Subiu?"),
-    ("hunt_success_subiu", "Muito bem! Encontraste o IU na palavra Subiu!"),
+    ("hunt_prompt_subiu", "Consegues encontrar o iu na palavra Subiu?"),
+    ("hunt_success_subiu", "Muito bem! Encontraste o iu no Subiu!"),
 
-    ("hunt_prompt_fugiu", "Onde está o IU na palavra Fugiu?"),
-    ("hunt_success_fugiu", "Muito bem! Encontraste o IU na palavra Fugiu!"),
+    ("hunt_prompt_fugiu", "Onde está o iu na palavra Fugiu?"),
+    ("hunt_success_fugiu", "Muito bem! Encontraste o iu no Fugiu!"),
 
-    ("hunt_prompt_gato", "Onde está a letra A na palavra Gato?"),
-    ("hunt_success_gato", "Muito bem! Encontraste a letra A no Gato!"),
+    ("hunt_prompt_gato", "Onde está a letra Á na palavra Gato?"),
+    ("hunt_success_gato", "Muito bem! Encontraste a letra Á no Gato!"),
 
-    ("hunt_prompt_barco", "Onde está a letra A na palavra Barco?"),
-    ("hunt_success_barco", "Muito bem! Encontraste a letra A no Barco!"),
+    ("hunt_prompt_barco", "Onde está a letra Á na palavra Barco?"),
+    ("hunt_success_barco", "Muito bem! Encontraste a letra Á no Barco!"),
 
-    ("hunt_prompt_casa", "A palavra Casa tem duas letras A! Encontra as duas letras A!"),
-    ("hunt_success_casa", "Fantástico! Encontraste as duas letras A na Casa!"),
+    ("hunt_prompt_casa", "A palavra Casa tem duas letras Á! Encontra as duas letras Á!"),
+    ("hunt_success_casa", "Fantástico! Encontraste as duas letras Á na Casa!"),
 
-    ("hunt_prompt_banana", "A palavra Banana tem três letras A! Toca em todas as letras A!"),
-    ("hunt_success_banana", "Espetacular! Encontraste as três letras A na Banana!"),
+    ("hunt_prompt_banana", "A palavra Banana tem três letras Á! Toca em todas as letras Á!"),
+    ("hunt_success_banana", "Espetacular! Encontraste as três letras Á na Banana!"),
 
-    ("hunt_prompt_vela", "Onde está a letra E na palavra Vela?"),
-    ("hunt_success_vela", "Muito bem! Encontraste a letra E na Vela!"),
+    ("hunt_prompt_vela", "Onde está a letra É na palavra Vela?"),
+    ("hunt_success_vela", "Muito bem! Encontraste a letra É na Vela!"),
 
-    ("hunt_prompt_coelho", "Onde está a letra E na palavra Coelho?"),
-    ("hunt_success_coelho", "Muito bem! Encontraste a letra E no Coelho!"),
+    ("hunt_prompt_coelho", "Onde está a letra É na palavra Coelho?"),
+    ("hunt_success_coelho", "Muito bem! Encontraste a letra É no Coelho!"),
 
-    ("hunt_prompt_dente", "A palavra Dente tem duas letras E! Consegues tocar nas duas letras E?"),
-    ("hunt_success_dente", "Fantástico! Encontraste as duas letras E no Dente!"),
+    ("hunt_prompt_dente", "A palavra Dente tem duas letras É! Consegues tocar nas duas letras É?"),
+    ("hunt_success_dente", "Fantástico! Encontraste as duas letras É no Dente!"),
 
-    ("hunt_prompt_estrela", "Toca em todas as letras E na palavra Estrela!"),
-    ("hunt_success_estrela", "Muito bem! Encontraste as letras E na Estrela!"),
+    ("hunt_prompt_estrela", "Toca em todas as letras É na palavra Estrela!"),
+    ("hunt_success_estrela", "Muito bem! Encontraste as letras É na Estrela!"),
 
-    # --- FRASES COMPLETAS: BUBBLE GAME (MISSÃO E CONCLUSÃO) ---
+    # --- FRASES COMPLETAS: BUBBLE GAME ---
     ("bubble_mission_i", "Ajuda o Dino a rebentar todas as bolhas com a letra I!"),
     ("bubble_complete_i", "Muito bem! Apanhaste todas as bolhas da letra I!"),
 
     ("bubble_mission_u", "Ajuda o Dino a rebentar todas as bolhas com a letra U!"),
     ("bubble_complete_u", "Muito bem! Apanhaste todas as bolhas da letra U!"),
 
-    ("bubble_mission_ui", "Ajuda o Dino a rebentar todas as bolhas com a combinação UI!"),
-    ("bubble_complete_ui", "Muito bem! Apanhaste todas as bolhas com a combinação UI!"),
+    ("bubble_mission_ui", "Ajuda o Dino a rebentar todas as bolhas com a combinação ui!"),
+    ("bubble_complete_ui", "Muito bem! Apanhaste todas as bolhas da combinação ui!"),
 
-    ("bubble_mission_iu", "Ajuda o Dino a rebentar todas as bolhas com a combinação IU!"),
-    ("bubble_complete_iu", "Muito bem! Apanhaste todas as bolhas com a combinação IU!"),
+    ("bubble_mission_iu", "Ajuda o Dino a rebentar todas as bolhas com a combinação iu!"),
+    ("bubble_complete_iu", "Muito bem! Apanhaste todas as bolhas da combinação iu!"),
 
-    ("bubble_mission_a", "Ajuda o Dino a rebentar todas as bolhas com a letra A!"),
-    ("bubble_complete_a", "Muito bem! Apanhaste todas as bolhas da letra A!"),
+    ("bubble_mission_a", "Ajuda o Dino a rebentar todas as bolhas com a letra Á!"),
+    ("bubble_complete_a", "Muito bem! Apanhaste todas as bolhas da letra Á!"),
 
-    ("bubble_mission_e", "Ajuda o Dino a rebentar todas as bolhas com a letra E!"),
-    ("bubble_complete_e", "Muito bem! Apanhaste todas as bolhas da letra E!"),
+    ("bubble_mission_e", "Ajuda o Dino a rebentar todas as bolhas com a letra É!"),
+    ("bubble_complete_e", "Muito bem! Apanhaste todas as bolhas da letra É!"),
 
-    # --- FRASES COMPLETAS: TRACE GAME (DICAS CURSIVAS) ---
+    # --- FRASES COMPLETAS: TRACE GAME ---
     ("trace_hint_i_lower", "Sobe com a perninha, desce e faz a curva... e não te esqueças do pingo no i!"),
     ("trace_hint_i_upper", "Faz a voltinha no cimo, desce a haste e curva na base!"),
     ("trace_hint_i_dot", "Muito bem! Agora toca no ponto para pôr o pingo no i!"),
@@ -281,12 +286,13 @@ AUDIO_ITEMS = [
     ("trace_hint_e_upper", "Faz uma voltinha no cimo, um lacinho ao meio e uma voltinha maior em baixo!"),
     ("trace_success", "Parabéns! Traçaste a letra cursiva perfeitamente!"),
 
-    # --- SOLETRAÇÃO FONOLÓGICA DAS LETRAS DO ALFABETO ---
-    ("spell_a", "A"),
+    # --- SOLETRAÇÃO FONOLÓGICA DAS LETRAS DO ALFABETO (P1.1 e P1.5) ---
+    ("spell_a", "Á"),
     ("spell_b", "Bê"),
     ("spell_c", "Cê"),
+    ("spell_cedilla_c", "Cê cedilhado"),
     ("spell_d", "Dê"),
-    ("spell_e", "E"),
+    ("spell_e", "É"),
     ("spell_f", "Éfe"),
     ("spell_g", "Gê"),
     ("spell_h", "Agá"),
@@ -296,7 +302,7 @@ AUDIO_ITEMS = [
     ("spell_l", "Éle"),
     ("spell_m", "Ême"),
     ("spell_n", "Êne"),
-    ("spell_o", "O"),
+    ("spell_o", "Ó"),
     ("spell_p", "Pê"),
     ("spell_q", "Quê"),
     ("spell_r", "Érre"),
@@ -314,6 +320,7 @@ AUDIO_ITEMS = [
     ("spell_circumflex_e", "Ê"),
     ("spell_acute_i", "Í"),
     ("spell_acute_o", "Ó"),
+    ("spell_circumflex_o", "Ô"),
     ("spell_acute_u", "Ú"),
 
     # --- REFORÇOS POSITIVOS E INCENTIVOS ---
@@ -323,23 +330,48 @@ AUDIO_ITEMS = [
     ("feedback_soletrar", "Vamos soletrar a palavra!")
 ]
 
-async def generate_single(name: str, text: str):
+def get_hash(text: str) -> str:
+    payload = f"{text}|{VOICE}|{RATE}"
+    return hashlib.sha1(payload.encode("utf-8")).hexdigest()
+
+def load_manifest() -> dict:
+    if os.path.exists(MANIFEST_PATH):
+        try:
+            with open(MANIFEST_PATH, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            return {}
+    return {}
+
+def save_manifest(manifest: dict):
+    with open(MANIFEST_PATH, "w", encoding="utf-8") as f:
+        json.dump(manifest, f, indent=2, ensure_ascii=False)
+
+async def generate_single(name: str, text: str, manifest: dict, force: bool = False):
     file_path = os.path.join(OUTPUT_DIR, f"{name}.mp3")
-    if os.path.exists(file_path) and os.path.getsize(file_path) > 1000:
+    h = get_hash(text)
+
+    # Se já existe o ficheiro e o hash não mudou, pula (salvo se --force)
+    if not force and os.path.exists(file_path) and os.path.getsize(file_path) > 500 and manifest.get(name) == h:
         return
+
     print(f"A gerar: {name}.mp3 -> '{text}'")
     communicator = edge_tts.Communicate(text, VOICE, rate=RATE)
     await communicator.save(file_path)
+    manifest[name] = h
 
 async def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    semaphore = asyncio.Semaphore(4) # 4 pedidos concorrentes
+    force = "--force" in sys.argv
+    manifest = load_manifest()
+
+    semaphore = asyncio.Semaphore(4)
 
     async def sem_task(name, text):
         async with semaphore:
             for attempt in range(3):
                 try:
-                    await generate_single(name, text)
+                    await generate_single(name, text, manifest, force)
                     break
                 except Exception as e:
                     print(f"Erro em {name} (tentativa {attempt + 1}): {e}")
@@ -347,7 +379,9 @@ async def main():
 
     tasks = [sem_task(name, text) for name, text in AUDIO_ITEMS]
     await asyncio.gather(*tasks)
-    print(f"\nConcluído! Todos os {len(AUDIO_ITEMS)} ficheiros de áudio gerados em '{OUTPUT_DIR}'.")
+
+    save_manifest(manifest)
+    print(f"\nConcluído! Todos os {len(AUDIO_ITEMS)} ficheiros de áudio gerados/atualizados em '{OUTPUT_DIR}'.")
 
 if __name__ == "__main__":
     asyncio.run(main())

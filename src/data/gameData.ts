@@ -14,7 +14,7 @@ export const GAME_DATA: GameDataSet = {
       words: [
         { id: 'ilha', word: 'Ilha', emoji: '🏝️', audioText: 'I de Ilha! Uma ilha no meio do mar!', audioWordKey: 'word_only_ilha', audioPhraseKey: 'word_phrase_ilha', spelling: ['I', 'L', 'H', 'A'], syllables: ['I', 'lha'] },
         { id: 'igreja', word: 'Igreja', emoji: '⛪', audioText: 'I de Igreja! A torre da igreja!', audioWordKey: 'word_only_igreja', audioPhraseKey: 'word_phrase_igreja', spelling: ['I', 'G', 'R', 'E', 'J', 'A'], syllables: ['I', 'gre', 'ja'] },
-        { id: 'iogurte', word: 'Iogurte', emoji: '🥛', audioText: 'I de Iogurte! Um iogurte bem fresquinho!', audioWordKey: 'word_only_iogurte', audioPhraseKey: 'word_phrase_iogurte', spelling: ['I', 'O', 'G', 'U', 'R', 'T', 'E'], syllables: ['Io', 'gur', 'te'] },
+        { id: 'iman', word: 'Íman', emoji: '🧲', audioText: 'I de Íman! Um íman forte que puxa o metal!', audioWordKey: 'word_only_iman', audioPhraseKey: 'word_phrase_iman', spelling: ['Í', 'M', 'A', 'N'], syllables: ['Í', 'man'] },
         { id: 'iguana', word: 'Iguana', emoji: '🦎', audioText: 'I de Iguana! A simpática iguana verde!', audioWordKey: 'word_only_iguana', audioPhraseKey: 'word_phrase_iguana', spelling: ['I', 'G', 'U', 'A', 'N', 'A'], syllables: ['I', 'gua', 'na'] }
       ],
       // Palavras para encontrar a letra I no meio da palavra
@@ -169,10 +169,10 @@ export const GAME_DATA: GameDataSet = {
       introAudioKey: 'letter_intro_a',
       color: '#FF6D00',
       words: [
-        { id: 'aviao', word: 'Avião', emoji: '✈️', audioText: 'A de Avião! O avião a voar alto nas nuvens!', audioWordKey: 'word_only_aviao', audioPhraseKey: 'word_phrase_aviao', spelling: ['A', 'V', 'I', 'Ã', 'O'], syllables: ['A', 'vi', 'ão'] },
-        { id: 'abelha', word: 'Abelha', emoji: '🐝', audioText: 'A de Abelha! A abelha a fazer mel docinho!', audioWordKey: 'word_only_abelha', audioPhraseKey: 'word_phrase_abelha', spelling: ['A', 'B', 'E', 'L', 'H', 'A'], syllables: ['A', 'be', 'lha'] },
-        { id: 'arvore', word: 'Árvore', emoji: '🌳', audioText: 'A de Árvore! Uma árvore grande com folhas verdes!', audioWordKey: 'word_only_arvore', audioPhraseKey: 'word_phrase_arvore', spelling: ['Á', 'R', 'V', 'O', 'R', 'E'], syllables: ['Ár', 'vo', 're'] },
-        { id: 'ananas', word: 'Ananás', emoji: '🍍', audioText: 'A de Ananás! Um ananás delicioso e fresquinho!', audioWordKey: 'word_only_ananas', audioPhraseKey: 'word_phrase_ananas', spelling: ['A', 'N', 'A', 'N', 'Á', 'S'], syllables: ['A', 'na', 'nás'] }
+        { id: 'arvore', word: 'Árvore', emoji: '🌳', audioText: 'Á de Árvore! Uma árvore grande com folhas verdes!', audioWordKey: 'word_only_arvore', audioPhraseKey: 'word_phrase_arvore', spelling: ['Á', 'R', 'V', 'O', 'R', 'E'], syllables: ['Ár', 'vo', 're'] },
+        { id: 'agua', word: 'Água', emoji: '💧', audioText: 'Á de Água! Uma gota de água fresquinha!', audioWordKey: 'word_only_agua', audioPhraseKey: 'word_phrase_agua', spelling: ['Á', 'G', 'U', 'A'], syllables: ['Á', 'gua'] },
+        { id: 'asa', word: 'Asa', emoji: '🪽', audioText: 'Á de Asa! A asa rápida do passarinho!', audioWordKey: 'word_only_asa', audioPhraseKey: 'word_phrase_asa', spelling: ['A', 'S', 'A'], syllables: ['A', 'sa'] },
+        { id: 'aviao', word: 'Avião', emoji: '✈️', audioText: 'Á de Avião! O avião a voar alto nas nuvens!', audioWordKey: 'word_only_aviao', audioPhraseKey: 'word_phrase_aviao', spelling: ['A', 'V', 'I', 'Ã', 'O'], syllables: ['A', 'vi', 'ão'] }
       ],
       // Palavras para encontrar a letra A no meio da palavra
       middleWords: [
@@ -227,10 +227,10 @@ export const GAME_DATA: GameDataSet = {
       introAudioKey: 'letter_intro_e',
       color: '#7C4DFF',
       words: [
-        { id: 'elefante', word: 'Elefante', emoji: '🐘', audioText: 'E de Elefante! Um grande elefante com orelhas compridas!', audioWordKey: 'word_only_elefante', audioPhraseKey: 'word_phrase_elefante', spelling: ['E', 'L', 'E', 'F', 'A', 'N', 'T', 'E'], syllables: ['E', 'le', 'fan', 'te'] },
-        { id: 'estrela', word: 'Estrela', emoji: '⭐', audioText: 'E de Estrela! Uma estrela brilhante no céu!', audioWordKey: 'word_only_estrela', audioPhraseKey: 'word_phrase_estrela', spelling: ['E', 'S', 'T', 'R', 'E', 'L', 'A'], syllables: ['Es', 'tre', 'la'] },
-        { id: 'escada', word: 'Escada', emoji: '🪜', audioText: 'E de Escada! A escada para subir bem alto!', audioWordKey: 'word_only_escada', audioPhraseKey: 'word_phrase_escada', spelling: ['E', 'S', 'C', 'A', 'D', 'A'], syllables: ['Es', 'ca', 'da'] },
-        { id: 'espelho', word: 'Espelho', emoji: '🪞', audioText: 'E de Espelho! O espelho para ver o nosso sorriso!', audioWordKey: 'word_only_espelho', audioPhraseKey: 'word_phrase_espelho', spelling: ['E', 'S', 'P', 'E', 'L', 'H', 'O'], syllables: ['Es', 'pe', 'lho'] }
+        { id: 'egua', word: 'Égua', emoji: '🐴', audioText: 'É de Égua! Uma égua bonita a correr no prado!', audioWordKey: 'word_only_egua', audioPhraseKey: 'word_phrase_egua', spelling: ['É', 'G', 'U', 'A'], syllables: ['É', 'gua'] },
+        { id: 'eco', word: 'Eco', emoji: '📣', audioText: 'É de Eco! Ouve o som a repetir... é o eco!', audioWordKey: 'word_only_eco', audioPhraseKey: 'word_phrase_eco', spelling: ['E', 'C', 'O'], syllables: ['E', 'co'] },
+        { id: 'estrela', word: 'Estrela', emoji: '⭐', audioText: 'É de Estrela! Uma estrela brilhante no céu!', audioWordKey: 'word_only_estrela', audioPhraseKey: 'word_phrase_estrela', spelling: ['E', 'S', 'T', 'R', 'E', 'L', 'A'], syllables: ['Es', 'tre', 'la'] },
+        { id: 'elefante', word: 'Elefante', emoji: '🐘', audioText: 'É de Elefante! Um grande elefante com orelhas compridas!', audioWordKey: 'word_only_elefante', audioPhraseKey: 'word_phrase_elefante', spelling: ['E', 'L', 'E', 'F', 'A', 'N', 'T', 'E'], syllables: ['E', 'le', 'fan', 'te'] }
       ],
       // Palavras para encontrar a letra E no meio da palavra
       middleWords: [
@@ -278,20 +278,20 @@ export const GAME_DATA: GameDataSet = {
 
   // Desafio com perguntas variadas cobrindo letras e combinações (I, U, UI, IU, A, E)
   quizItems: [
-    { word: 'Ui!', emoji: '😱', letter: 'UI', prompt: 'Ui, que susto! Que combinação é esta? UI, IU, U ou I?', options: ['UI', 'IU', 'U', 'I'] },
-    { word: 'Uivo', emoji: '🐺', letter: 'UI', prompt: 'Uivo do lobo... começa por que combinação? UI, IU, U ou I?', options: ['UI', 'IU', 'U', 'I'] },
-    { word: 'Viu', emoji: '👀', letter: 'IU', prompt: 'Ele viu! A palavra Viu termina com que combinação? IU, UI, I ou U?', options: ['IU', 'UI', 'I', 'U'] },
-    { word: 'Riu', emoji: '😄', letter: 'IU', prompt: 'Ele riu! A palavra Riu termina com que combinação? IU, UI, I ou U?', options: ['IU', 'UI', 'I', 'U'] },
-    { word: 'Avião', emoji: '✈️', letter: 'A', prompt: 'Avião... começa com que letra? A, E, I ou U?', options: ['A', 'E', 'I', 'U'] },
-    { word: 'Elefante', emoji: '🐘', letter: 'E', prompt: 'Elefante... começa com que letra? A, E, I ou U?', options: ['E', 'A', 'I', 'U'] },
-    { word: 'Ilha', emoji: '🏝️', letter: 'I', prompt: 'Ilha... começa com que letra? A, E, I ou U?', options: ['I', 'U', 'A', 'E'] },
-    { word: 'Uvas', emoji: '🍇', letter: 'U', prompt: 'Uvas... começa com que letra? A, E, I ou U?', options: ['U', 'I', 'A', 'E'] },
-    { word: 'Abelha', emoji: '🐝', letter: 'A', prompt: 'Abelha... começa com que letra? A, E, I ou U?', options: ['A', 'E', 'I', 'U'] },
-    { word: 'Estrela', emoji: '⭐', letter: 'E', prompt: 'Estrela... começa com que letra? A, E, I ou U?', options: ['E', 'A', 'I', 'U'] },
-    { word: 'Urso', emoji: '🐻', letter: 'U', prompt: 'Urso... começa com que letra? A, E, I ou U?', options: ['U', 'I', 'A', 'E'] },
-    { word: 'Iogurte', emoji: '🥛', letter: 'I', prompt: 'Iogurte... começa com que letra? A, E, I ou U?', options: ['I', 'U', 'A', 'E'] },
-    { word: 'Árvore', emoji: '🌳', letter: 'A', prompt: 'Árvore... começa com que letra? A, E, I ou U?', options: ['A', 'E', 'I', 'U'] },
-    { word: 'Escada', emoji: '🪜', letter: 'E', prompt: 'Escada... começa com que letra? A, E, I ou U?', options: ['E', 'A', 'I', 'U'] }
+    { word: 'Ui!', emoji: '😱', letter: 'UI', prompt: 'Ui, que susto! Que combinação é esta? ui, iu, U ou I?', options: ['UI', 'IU', 'U', 'I'] },
+    { word: 'Uivo', emoji: '🐺', letter: 'UI', prompt: 'Uivo do lobo... começa por que combinação? ui, iu, U ou I?', options: ['UI', 'IU', 'U', 'I'] },
+    { word: 'Viu', emoji: '👀', letter: 'IU', prompt: 'Ele viu! A palavra Viu termina com que combinação? iu, ui, I ou U?', options: ['IU', 'UI', 'I', 'U'] },
+    { word: 'Riu', emoji: '😄', letter: 'IU', prompt: 'Ele riu! A palavra Riu termina com que combinação? iu, ui, I ou U?', options: ['IU', 'UI', 'I', 'U'] },
+    { word: 'Árvore', emoji: '🌳', letter: 'A', prompt: 'Árvore... começa com que letra? Á, É, I ou U?', options: ['A', 'E', 'I', 'U'] },
+    { word: 'Égua', emoji: '🐴', letter: 'E', prompt: 'Égua... começa com que letra? Á, É, I ou U?', options: ['E', 'A', 'I', 'U'] },
+    { word: 'Ilha', emoji: '🏝️', letter: 'I', prompt: 'Ilha... começa com que letra? Á, É, I ou U?', options: ['I', 'U', 'A', 'E'] },
+    { word: 'Uvas', emoji: '🍇', letter: 'U', prompt: 'Uvas... começa com que letra? Á, É, I ou U?', options: ['U', 'I', 'A', 'E'] },
+    { word: 'Água', emoji: '💧', letter: 'A', prompt: 'Água... começa com que letra? Á, É, I ou U?', options: ['A', 'E', 'I', 'U'] },
+    { word: 'Eco', emoji: '📣', letter: 'E', prompt: 'Eco... começa com que letra? Á, É, I ou U?', options: ['E', 'A', 'I', 'U'] },
+    { word: 'Urso', emoji: '🐻', letter: 'U', prompt: 'Urso... começa com que letra? Á, É, I ou U?', options: ['U', 'I', 'A', 'E'] },
+    { word: 'Íman', emoji: '🧲', letter: 'I', prompt: 'Íman... começa com que letra? Á, É, I ou U?', options: ['I', 'U', 'A', 'E'] },
+    { word: 'Asa', emoji: '🪽', letter: 'A', prompt: 'Asa... começa com que letra? Á, É, I ou U?', options: ['A', 'E', 'I', 'U'] },
+    { word: 'Estrela', emoji: '⭐', letter: 'E', prompt: 'Estrela... começa com que letra? Á, É, I ou U?', options: ['E', 'A', 'I', 'U'] }
   ],
 
   // 20 Etapas Sequenciais da Aventura do Dino
