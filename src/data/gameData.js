@@ -12,6 +12,13 @@ export const GAME_DATA = {
         { word: 'Iogurte', emoji: '🥛', audioText: 'I de Iogurte! Um iogurte bem fresquinho!' },
         { word: 'Iguana', emoji: '🦎', audioText: 'I de Iguana! A simpática iguana verde!' }
       ],
+      // Palavras para encontrar a letra I no meio da palavra
+      middleWords: [
+        { word: 'PEIXE', display: 'Peixe', emoji: '🐟', prompt: 'Onde está a letra I na palavra Peixe?' },
+        { word: 'LIVRO', display: 'Livro', emoji: '📖', prompt: 'Onde está a letra I na palavra Livro?' },
+        { word: 'RAINHA', display: 'Rainha', emoji: '👑', prompt: 'Onde está a letra I na palavra Rainha?' },
+        { word: 'BISCOITO', display: 'Biscoito', emoji: '🍪', prompt: 'A palavra Biscoito tem duas letras I! Consegues encontrar as duas?' }
+      ],
       tracing: {
         lowercase: {
           char: 'i',
@@ -55,6 +62,13 @@ export const GAME_DATA = {
         { word: 'Uvas', emoji: '🍇', audioText: 'U de Uvas! Uvas docinhas e roxas!' },
         { word: 'Unha', emoji: '💅', audioText: 'U de Unha! A unha do nosso dedo!' },
         { word: 'Unicórnio', emoji: '🦄', audioText: 'U de Unicórnio! Um unicórnio mágico!' }
+      ],
+      // Palavras para encontrar a letra U no meio da palavra
+      middleWords: [
+        { word: 'LUA', display: 'Lua', emoji: '🌙', prompt: 'Onde está a letra U na palavra Lua?' },
+        { word: 'NUVEM', display: 'Nuvem', emoji: '☁️', prompt: 'Onde está a letra U na palavra Nuvem?' },
+        { word: 'CORUJA', display: 'Coruja', emoji: '🦉', prompt: 'Onde está a letra U na palavra Coruja?' },
+        { word: 'TARTARUGA', display: 'Tartaruga', emoji: '🐢', prompt: 'Onde está a letra U na palavra Tartaruga?' }
       ],
       tracing: {
         lowercase: {
@@ -105,6 +119,13 @@ export const GAME_DATA = {
         { word: 'Árvore', emoji: '🌳', audioText: 'A de Árvore! Uma árvore grande com folhas verdes!' },
         { word: 'Ananás', emoji: '🍍', audioText: 'A de Ananás! Um ananás delicioso e fresquinho!' }
       ],
+      // Palavras para encontrar a letra A no meio da palavra
+      middleWords: [
+        { word: 'GATO', display: 'Gato', emoji: '🐱', prompt: 'Onde está a letra A na palavra Gato?' },
+        { word: 'BARCO', display: 'Barco', emoji: '⛵', prompt: 'Onde está a letra A na palavra Barco?' },
+        { word: 'CASA', display: 'Casa', emoji: '🏠', prompt: 'A palavra Casa tem duas letras A! Encontra as duas letras A!' },
+        { word: 'BANANA', display: 'Banana', emoji: '🍌', prompt: 'A palavra Banana tem três letras A! Toca em todas as letras A!' }
+      ],
       tracing: {
         lowercase: {
           char: 'a',
@@ -152,6 +173,13 @@ export const GAME_DATA = {
         { word: 'Estrela', emoji: '⭐', audioText: 'E de Estrela! Uma estrela brilhante no céu!' },
         { word: 'Escada', emoji: '🪜', audioText: 'E de Escada! A escada para subir bem alto!' },
         { word: 'Espelho', emoji: '🪞', audioText: 'E de Espelho! O espelho para ver o nosso sorriso!' }
+      ],
+      // Palavras para encontrar a letra E no meio da palavra
+      middleWords: [
+        { word: 'VELA', display: 'Vela', emoji: '🕯️', prompt: 'Onde está a letra E na palavra Vela?' },
+        { word: 'COELHO', display: 'Coelho', emoji: '🐇', prompt: 'Onde está a letra E na palavra Coelho?' },
+        { word: 'DENTE', display: 'Dente', emoji: '🦷', prompt: 'A palavra Dente tem duas letras E! Consegues tocar nas duas letras E?' },
+        { word: 'ESTRELA', display: 'Estrela', emoji: '⭐', prompt: 'Toca em todas as letras E na palavra Estrela!' }
       ],
       tracing: {
         lowercase: {
@@ -204,7 +232,7 @@ export const GAME_DATA = {
     { word: 'Escada', emoji: '🪜', letter: 'E', prompt: 'Escada... começa com que letra? A, E, I ou U?' }
   ],
 
-  // 14 Etapas Sequenciais da Aventura do Dino
+  // 18 Etapas Sequenciais da Aventura do Dino
   steps: [
     // --- CICLO DA LETRA I ---
     {
@@ -228,6 +256,15 @@ export const GAME_DATA = {
     },
     {
       id: 3,
+      type: 'wordHunt',
+      letter: 'I',
+      title: 'Detetive do I',
+      subtitle: 'Encontra a letra I no meio das palavras!',
+      icon: '🔍',
+      dinoSpeech: 'És um detetive! Procura a letra I escondida no meio das palavras!'
+    },
+    {
+      id: 4,
       type: 'trace',
       letter: 'I',
       title: 'Desenhar o I',
@@ -238,7 +275,7 @@ export const GAME_DATA = {
 
     // --- CICLO DA LETRA U ---
     {
-      id: 4,
+      id: 5,
       type: 'explorer',
       letter: 'U',
       title: 'A Letra U',
@@ -247,7 +284,7 @@ export const GAME_DATA = {
       dinoSpeech: 'Boa! Agora vamos descobrir a letra U! Que palavras começam por U?'
     },
     {
-      id: 5,
+      id: 6,
       type: 'bubble',
       letter: 'U',
       title: 'Bolhas do U',
@@ -257,7 +294,16 @@ export const GAME_DATA = {
       dinoSpeech: 'Cuidado com as outras letras! Só queremos rebentar a letra U!'
     },
     {
-      id: 6,
+      id: 7,
+      type: 'wordHunt',
+      letter: 'U',
+      title: 'Detetive do U',
+      subtitle: 'Encontra a letra U no meio das palavras!',
+      icon: '🔍',
+      dinoSpeech: 'Olhos bem abertos! Encontra a letra U no meio das palavras!'
+    },
+    {
+      id: 8,
       type: 'trace',
       letter: 'U',
       title: 'Desenhar o U',
@@ -268,7 +314,7 @@ export const GAME_DATA = {
 
     // --- CICLO DA LETRA A ---
     {
-      id: 7,
+      id: 9,
       type: 'explorer',
       letter: 'A',
       title: 'A Letra A',
@@ -277,7 +323,7 @@ export const GAME_DATA = {
       dinoSpeech: 'Viva! Chegámos à letra A! Ouve como faz: Aaaaa! Toca nos desenhos!'
     },
     {
-      id: 8,
+      id: 10,
       type: 'bubble',
       letter: 'A',
       title: 'Bolhas do A',
@@ -287,7 +333,16 @@ export const GAME_DATA = {
       dinoSpeech: 'Procura todas as bolhas com a letra A e rebenta-as com o dedinho!'
     },
     {
-      id: 9,
+      id: 11,
+      type: 'wordHunt',
+      letter: 'A',
+      title: 'Detetive do A',
+      subtitle: 'Encontra a letra A no meio das palavras!',
+      icon: '🔍',
+      dinoSpeech: 'Atenção, detetive! Toca em todas as letras A no meio das palavras!'
+    },
+    {
+      id: 12,
       type: 'trace',
       letter: 'A',
       title: 'Desenhar o A',
@@ -298,7 +353,7 @@ export const GAME_DATA = {
 
     // --- CICLO DA LETRA E ---
     {
-      id: 10,
+      id: 13,
       type: 'explorer',
       letter: 'E',
       title: 'A Letra E',
@@ -307,7 +362,7 @@ export const GAME_DATA = {
       dinoSpeech: 'Espetacular! Agora a letra E! O elefante e a estrela começam por E!'
     },
     {
-      id: 11,
+      id: 14,
       type: 'bubble',
       letter: 'E',
       title: 'Bolhas do E',
@@ -317,7 +372,16 @@ export const GAME_DATA = {
       dinoSpeech: 'Rebenta as bolhas com a letra E! Cuidado com as outras!'
     },
     {
-      id: 12,
+      id: 15,
+      type: 'wordHunt',
+      letter: 'E',
+      title: 'Detetive do E',
+      subtitle: 'Encontra a letra E no meio das palavras!',
+      icon: '🔍',
+      dinoSpeech: 'Consegues descobrir onde está a letra E no meio das palavras?'
+    },
+    {
+      id: 16,
       type: 'trace',
       letter: 'E',
       title: 'Desenhar o E',
@@ -328,7 +392,7 @@ export const GAME_DATA = {
 
     // --- GRANDE DESAFIO & CELEBRAÇÃO ---
     {
-      id: 13,
+      id: 17,
       type: 'quiz',
       letter: 'ALL',
       title: 'O Grande Desafio',
@@ -337,7 +401,7 @@ export const GAME_DATA = {
       dinoSpeech: 'O grande teste das 4 letras! Olha para o desenho e toca na letra certa!'
     },
     {
-      id: 14,
+      id: 18,
       type: 'celebration',
       title: 'Super Festa do Dino!',
       subtitle: 'Aprendeste as letras I, U, A e E!',

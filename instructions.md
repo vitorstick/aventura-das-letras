@@ -36,22 +36,26 @@ O jogo foi desenhado especificamente para ser jogado em telemóveis e tablets no
 ---
 
 ## 4. Estrutura das Etapas Sequenciais (Caminho da Floresta 🐾)
-A progressão é sequencial para manter a atenção e guiar o processo cognitivo através de 14 etapas:
+A progressão é sequencial para manter a atenção e guiar o processo cognitivo através de 18 etapas:
 
 1. **Etapa 1 — Descobrir a Letra I:** Apresentação da letra, som `/i/` e objetos (*Ilha*, *Igreja*, *Iogurte*, *Iguana*).
 2. **Etapa 2 — Bolhas da Letra I:** Rebentar 5 bolhas contendo a letra **I**.
-3. **Etapa 3 — Desenhar a Letra I:** Caligrafia cursiva escolar com pauta e pingo no i.
-4. **Etapa 4 — Descobrir a Letra U:** Apresentação da letra, som `/u/` e objetos (*Urso*, *Uvas*, *Unha*, *Unicórnio*).
-5. **Etapa 5 — Bolhas da Letra U:** Rebentar 5 bolhas com a letra **U**.
-6. **Etapa 6 — Desenhar a Letra U:** Traçado cursivo em duas ondas de mão dada.
-7. **Etapa 7 — Descobrir a Letra A:** Apresentação da letra, som `/a/` e objetos (*Avião*, *Abelha*, *Árvore*, *Ananás*).
-8. **Etapa 8 — Bolhas da Letra A:** Rebentar 5 bolhas com a letra **A**.
-9. **Etapa 9 — Desenhar a Letra A:** Caligrafia cursiva escolar da redondinha e perninha do **a**.
-10. **Etapa 10 — Descobrir a Letra E:** Apresentação da letra, som `/e/` e objetos (*Elefante*, *Estrela*, *Escada*, *Espelho*).
-11. **Etapa 11 — Bolhas da Letra E:** Rebentar 5 bolhas com a letra **E**.
-12. **Etapa 12 — Desenhar a Letra E:** Caligrafia cursiva em laço de montanha russa do **e**.
-13. **Etapa 13 — O Grande Desafio (I, U, A, E):** Jogo de associação imagem-letra com grelha 2x2 colorida.
-14. **Etapa 14 — Grande Festa do Dino 🏆:** Troféu dourado, 14 estrelas e chuva de confetes.
+3. **Etapa 3 — Detetive do I:** Apontar/tocar na(s) letra(s) **I** no meio das palavras (*Peixe*, *Livro*, *Rainha*, *Biscoito*).
+4. **Etapa 4 — Desenhar a Letra I:** Caligrafia cursiva escolar com pauta e pingo no i.
+5. **Etapa 5 — Descobrir a Letra U:** Apresentação da letra, som `/u/` e objetos (*Urso*, *Uvas*, *Unha*, *Unicórnio*).
+6. **Etapa 6 — Bolhas da Letra U:** Rebentar 5 bolhas com a letra **U**.
+7. **Etapa 7 — Detetive do U:** Apontar/tocar na(s) letra(s) **U** no meio das palavras (*Lua*, *Nuvem*, *Coruja*, *Tartaruga*).
+8. **Etapa 8 — Desenhar a Letra U:** Traçado cursivo em duas ondas de mão dada.
+9. **Etapa 9 — Descobrir a Letra A:** Apresentação da letra, som `/a/` e objetos (*Avião*, *Abelha*, *Árvore*, *Ananás*).
+10. **Etapa 10 — Bolhas da Letra A:** Rebentar 5 bolhas com a letra **A**.
+11. **Etapa 11 — Detetive do A:** Apontar/tocar na(s) letra(s) **A** no meio das palavras (*Gato*, *Barco*, *Casa*, *Banana*).
+12. **Etapa 12 — Desenhar a Letra A:** Caligrafia cursiva escolar da redondinha e perninha do **a**.
+13. **Etapa 13 — Descobrir a Letra E:** Apresentação da letra, som `/e/` e objetos (*Elefante*, *Estrela*, *Escada*, *Espelho*).
+14. **Etapa 14 — Bolhas da Letra E:** Rebentar 5 bolhas com a letra **E**.
+15. **Etapa 15 — Detetive do E:** Apontar/tocar na(s) letra(s) **E** no meio das palavras (*Vela*, *Coelho*, *Dente*, *Estrela*).
+16. **Etapa 16 — Desenhar a Letra E:** Caligrafia cursiva em laço de montanha russa do **e**.
+17. **Etapa 17 — O Grande Desafio (I, U, A, E):** Jogo de associação imagem-letra com grelha 2x2 colorida.
+18. **Etapa 18 — Grande Festa do Dino 🏆:** Troféu dourado, 18 estrelas e chuva de confetes.
 
 ---
 

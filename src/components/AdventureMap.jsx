@@ -87,7 +87,7 @@ export default function AdventureMap({ unlockedStep, onSelectStep, onResetProgre
       {/* Indicador de continuação do percurso */}
       <div className="mt-4 flex items-center gap-1.5 text-emerald-800/80 font-bold text-xs bg-white/70 px-4 py-1.5 rounded-full border border-emerald-300">
         <ChevronDown className="w-4 h-4 animate-bounce" />
-        <span>Todas as 8 etapas estão aqui! Desliza para explorar</span>
+        <span>Todas as {GAME_DATA.steps.length} etapas estão aqui! Desliza para explorar</span>
       </div>
 
       <button

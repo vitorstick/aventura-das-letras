@@ -7,6 +7,7 @@ import CelebrationScreen from './components/CelebrationScreen';
 import ExplorerGame from './components/minigames/ExplorerGame';
 import BubbleGame from './components/minigames/BubbleGame';
 import TraceGame from './components/minigames/TraceGame';
+import WordHuntGame from './components/minigames/WordHuntGame';
 import QuizGame from './components/minigames/QuizGame';
 
 import { GAME_DATA } from './data/gameData';
@@ -149,6 +150,14 @@ export default function App() {
           <BubbleGame
             letter={currentStepData.letter}
             targetCount={currentStepData.targetCount || 5}
+            onComplete={handleStepComplete}
+            onSetSpeech={setDinoSpeech}
+          />
+        )}
+
+        {currentScreen === 'wordHunt' && currentStepData && (
+          <WordHuntGame
+            letter={currentStepData.letter}
             onComplete={handleStepComplete}
             onSetSpeech={setDinoSpeech}
           />
