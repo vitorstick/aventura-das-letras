@@ -43,7 +43,7 @@ export default function TraceGame({
   const CANVAS_WIDTH = 300;
   const CANVAS_HEIGHT = 340;
 
-  const currentCursiveData = letterData.tracing[cursiveType];
+  const currentCursiveData = letterData.tracing?.[cursiveType];
 
   // Linhas de Pauta de Caligrafia Escolar
   const drawSchoolNotebookRuling = useCallback((ctx: CanvasRenderingContext2D) => {
@@ -112,7 +112,7 @@ export default function TraceGame({
 
   // Pingo no i
   const drawDotGuide = useCallback((ctx: CanvasRenderingContext2D) => {
-    if (!currentCursiveData.dot) return;
+    if (!currentCursiveData?.dot) return;
 
     const dotPos = {
       x: currentCursiveData.dot.x * CANVAS_WIDTH,
@@ -146,7 +146,7 @@ export default function TraceGame({
       ctx.stroke();
     }
     ctx.restore();
-  }, [currentCursiveData.dot, dotCompleted, needsDot]);
+  }, [currentCursiveData?.dot, dotCompleted, needsDot]);
 
   // Checkpoints visuais
   const drawCheckpoints = useCallback((ctx: CanvasRenderingContext2D) => {
@@ -229,7 +229,7 @@ export default function TraceGame({
     drawCursiveGuide(ctx);
 
     // 3. Desenhar o Pingo no i se aplicável
-    if (cursiveType === 'lowercase' && currentCursiveData.dot) {
+    if (cursiveType === 'lowercase' && currentCursiveData?.dot) {
       drawDotGuide(ctx);
     }
 
@@ -242,15 +242,19 @@ export default function TraceGame({
     drawSchoolNotebookRuling,
     drawCursiveGuide,
     cursiveType,
-    currentCursiveData.dot,
+    currentCursiveData?.dot,
     drawDotGuide,
     drawCheckpoints,
     drawUserStroke
   ]);
 
+  const isCombo = letter.length > 1;
+  const itemLabel = isCombo ? 'a combinação' : 'a letra';
+
   const resetLevel = useCallback(() => {
+    if (!letterData.tracing) return;
     const data = letterData.tracing[cursiveType];
-    onSetSpeech(`Vamos treinar a letra ${data.char} cursiva!`);
+    onSetSpeech(`Vamos treinar ${itemLabel} ${data.char} cursiva!`);
     sounds.speak(data.hint);
 
     // Mapear pontos para o tamanho real do canvas
@@ -268,7 +272,7 @@ export default function TraceGame({
     setDotCompleted(false);
 
     drawCanvas();
-  }, [letterData.tracing, cursiveType, onSetSpeech, drawCanvas]);
+  }, [letterData.tracing, cursiveType, onSetSpeech, drawCanvas, itemLabel]);
 
   useEffect(() => {
     resetLevel();
@@ -278,12 +282,13 @@ export default function TraceGame({
     setIsCompleted(true);
     sounds.playSuccess();
     fireConfetti();
-    onSetSpeech(`Fantástico! Escreveste a letra ${currentCursiveData.char} cursiva! 🎉`);
-    sounds.speak(`Parabéns! Traçaste a letra cursiva perfeitamente!`);
+    const charName = currentCursiveData?.char || letter;
+    onSetSpeech(`Fantástico! Escreveste ${itemLabel} ${charName} cursiva! 🎉`);
+    sounds.speak(`Parabéns! Traçaste com caligrafia cursiva perfeitamente!`);
     setTimeout(() => {
       onComplete();
     }, 1600);
-  }, [currentCursiveData.char, onComplete, onSetSpeech]);
+  }, [currentCursiveData?.char, letter, onComplete, onSetSpeech, itemLabel]);
 
   const getPos = (e: React.PointerEvent<HTMLCanvasElement>): Point2D => {
     const canvas = canvasRef.current;
@@ -300,7 +305,7 @@ export default function TraceGame({
 
   const checkCollision = (pos: Point2D) => {
     // Se está na fase do pingo no i
-    if (needsDot && !dotCompleted && currentCursiveData.dot) {
+    if (needsDot && !dotCompleted && currentCursiveData?.dot) {
       const dotPos = {
         x: currentCursiveData.dot.x * CANVAS_WIDTH,
         y: currentCursiveData.dot.y * CANVAS_HEIGHT
@@ -330,7 +335,7 @@ export default function TraceGame({
       setProgress(pct);
 
       if (currentCheckIdx.current >= pointsRef.current.length) {
-        if (cursiveType === 'lowercase' && currentCursiveData.dot) {
+        if (cursiveType === 'lowercase' && currentCursiveData?.dot) {
           // Ativa o pingo no i
           setNeedsDot(true);
           onSetSpeech("Boa! Agora põe o pingo no i! ✨");

@@ -10,13 +10,13 @@ interface ButtonConfigItem {
 }
 
 const BUTTON_CONFIG: Record<LetterKey, ButtonConfigItem> = {
-  A: { bg: 'bg-amber-500 hover:bg-amber-600 active:bg-amber-700', label: 'A' },
-  E: { bg: 'bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700', label: 'E' },
   I: { bg: 'bg-sky-500 hover:bg-sky-600 active:bg-sky-700', label: 'I' },
   U: { bg: 'bg-rose-500 hover:bg-rose-600 active:bg-rose-700', label: 'U' },
+  UI: { bg: 'bg-teal-500 hover:bg-teal-600 active:bg-teal-700', label: 'UI' },
+  IU: { bg: 'bg-fuchsia-500 hover:bg-fuchsia-600 active:bg-fuchsia-700', label: 'IU' },
+  A: { bg: 'bg-amber-500 hover:bg-amber-600 active:bg-amber-700', label: 'A' },
+  E: { bg: 'bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700', label: 'E' },
 };
-
-const QUIZ_OPTIONS: LetterKey[] = ['A', 'E', 'I', 'U'];
 
 interface QuizGameProps {
   onComplete: () => void;
@@ -30,8 +30,8 @@ export default function QuizGame({ onComplete, onSetSpeech }: QuizGameProps): Re
   const [wrongWiggle, setWrongWiggle] = useState<LetterKey | null>(null);
 
   useEffect(() => {
-    // Baralhar perguntas
-    const shuffled = [...GAME_DATA.quizItems].sort(() => Math.random() - 0.5).slice(0, 6);
+    // Baralhar perguntas garantindo diversidade
+    const shuffled = [...GAME_DATA.quizItems].sort(() => Math.random() - 0.5).slice(0, 7);
     setQuestions(shuffled);
     setCurrentIndex(0);
   }, []);
@@ -39,7 +39,8 @@ export default function QuizGame({ onComplete, onSetSpeech }: QuizGameProps): Re
   useEffect(() => {
     if (questions.length > 0 && currentIndex < questions.length) {
       const q = questions[currentIndex];
-      onSetSpeech(`${q.word}... Começa com que letra?`);
+      const isCombo = q.letter.length > 1;
+      onSetSpeech(`${q.word}... Qual é a ${isCombo ? 'combinação' : 'letra'}?`);
       sounds.speak(q.prompt);
     }
   }, [currentIndex, questions, onSetSpeech]);
@@ -47,6 +48,7 @@ export default function QuizGame({ onComplete, onSetSpeech }: QuizGameProps): Re
   if (questions.length === 0) return null;
 
   const currentQ = questions[currentIndex];
+  const options = currentQ.options || (['UI', 'IU'].includes(currentQ.letter) ? ['UI', 'IU', 'U', 'I'] : ['A', 'E', 'I', 'U']);
 
   const handleChoice = (choice: LetterKey, e: React.MouseEvent<HTMLButtonElement>) => {
     if (!canAnswer) return;
@@ -59,8 +61,10 @@ export default function QuizGame({ onComplete, onSetSpeech }: QuizGameProps): Re
       const rect = e.currentTarget.getBoundingClientRect();
       fireStars(rect.left / window.innerWidth, rect.top / window.innerHeight);
 
-      onSetSpeech(`Muito bem! ${currentQ.letter} de ${currentQ.word}!`);
-      sounds.speak(`Certo! ${currentQ.letter} de ${currentQ.word}!`);
+      const isCombo = currentQ.letter.length > 1;
+      const itemDesc = isCombo ? `A combinação ${currentQ.letter}` : `A letra ${currentQ.letter}`;
+      onSetSpeech(`Muito bem! ${currentQ.letter} em ${currentQ.word}!`);
+      sounds.speak(`Certo! ${itemDesc} em ${currentQ.word}!`);
 
       setTimeout(() => {
         if (currentIndex + 1 >= questions.length) {
@@ -77,8 +81,10 @@ export default function QuizGame({ onComplete, onSetSpeech }: QuizGameProps): Re
       setWrongWiggle(choice);
       setTimeout(() => setWrongWiggle(null), 500);
 
-      onSetSpeech(`Ouve bem: ${currentQ.word}! Começa por ${currentQ.letter}!`);
-      sounds.speak(`Quase! ${currentQ.word} começa com a letra ${currentQ.letter}!`);
+      const isCombo = currentQ.letter.length > 1;
+      const itemDesc = isCombo ? `a combinação ${currentQ.letter}` : `a letra ${currentQ.letter}`;
+      onSetSpeech(`Ouve bem: ${currentQ.word}! Tem ${itemDesc}!`);
+      sounds.speak(`Quase! ${currentQ.word} tem ${itemDesc}!`);
     }
   };
 
@@ -97,9 +103,9 @@ export default function QuizGame({ onComplete, onSetSpeech }: QuizGameProps): Re
         </span>
       </div>
 
-      {/* Grelha 2x2 com os Botões das Letras (A, E, I, U) */}
+      {/* Grelha 2x2 com os Botões de Opções */}
       <div className="grid grid-cols-2 gap-3 w-full max-w-[280px]">
-        {QUIZ_OPTIONS.map((letra) => {
+        {options.map((letra) => {
           const config = BUTTON_CONFIG[letra];
           const isWiggling = wrongWiggle === letra;
 
@@ -107,7 +113,7 @@ export default function QuizGame({ onComplete, onSetSpeech }: QuizGameProps): Re
             <button
               key={letra}
               onClick={(e) => handleChoice(letra, e)}
-              className={`kid-btn-shadow h-20 sm:h-22 rounded-2xl ${config.bg} text-white font-black text-4xl flex items-center justify-center active:scale-95 transition-transform ${
+              className={`kid-btn-shadow h-20 sm:h-22 rounded-2xl ${config.bg} text-white font-black text-3xl sm:text-4xl flex items-center justify-center active:scale-95 transition-transform ${
                 isWiggling ? 'animate-wiggle' : ''
               }`}
             >

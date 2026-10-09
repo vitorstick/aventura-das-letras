@@ -19,16 +19,20 @@ export default function ExplorerGame({
   const letterData = GAME_DATA.letters[letter];
   const [explored, setExplored] = useState<Set<number>>(new Set());
 
+  const isCombo = letter.length > 1;
+  const labelType = isCombo ? 'a combinação' : 'a letra';
+
   useEffect(() => {
-    onSetSpeech(`Esta é a letra ${letter}! Toca nos cartões para ouvir!`);
+    onSetSpeech(`Esta é ${labelType} ${letter}! Toca nos cartões para ouvir!`);
     sounds.speak(letterData.spokenIntro);
-  }, [letter, letterData.spokenIntro, onSetSpeech]);
+  }, [letter, letterData.spokenIntro, onSetSpeech, labelType]);
 
   const handleLetterTap = () => {
     sounds.playStar();
     fireStars(0.5, 0.35);
-    onSetSpeech(`Letra ${letter}! Faz o som: ${letterData.soundText}!`);
-    sounds.speak(`Letra ${letter}! Ouve como faz: ${letterData.soundText}!`);
+    const textLabel = isCombo ? `Combinação ${letter}` : `Letra ${letter}`;
+    onSetSpeech(`${textLabel}! Faz o som: ${letterData.soundText}!`);
+    sounds.speak(`${textLabel}! Ouve como faz: ${letterData.soundText}!`);
   };
 
   const handleCardTap = (index: number, item: WordItem) => {
@@ -49,15 +53,37 @@ export default function ExplorerGame({
     onComplete();
   };
 
+  const renderWord = (word: string) => {
+    const upperWord = word.toUpperCase();
+    const upperTarget = letter.toUpperCase();
+    const matchIdx = upperWord.indexOf(upperTarget);
+
+    if (matchIdx === -1) {
+      return <span>{word}</span>;
+    }
+
+    const before = word.slice(0, matchIdx);
+    const match = word.slice(matchIdx, matchIdx + letter.length);
+    const after = word.slice(matchIdx + letter.length);
+
+    return (
+      <span>
+        {before}
+        <span className="text-rose-500 underline text-xl">{match}</span>
+        {after}
+      </span>
+    );
+  };
+
   return (
     <div className="flex-1 w-full max-w-sm flex flex-col items-center justify-between py-2 px-2">
-      {/* Letra Gigante Central */}
+      {/* Letra ou Combinação Gigante Central */}
       <div
         onClick={handleLetterTap}
         className="kid-btn-shadow w-28 h-28 bg-white border-4 border-emerald-400 rounded-3xl flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-transform"
-        title="Toca na letra!"
+        title="Toca para ouvir!"
       >
-        <span className="text-5xl font-black" style={{ color: letterData.color }}>
+        <span className="text-4xl sm:text-5xl font-black" style={{ color: letterData.color }}>
           {letterData.char}
         </span>
         <span className="text-xs font-bold text-gray-500 flex items-center gap-1">
@@ -69,8 +95,6 @@ export default function ExplorerGame({
       <div className="grid grid-cols-2 gap-3 w-full my-3">
         {letterData.words.map((item, idx) => {
           const isTapped = explored.has(idx);
-          const firstLetter = item.word.charAt(0);
-          const rest = item.word.slice(1);
 
           return (
             <div
@@ -84,8 +108,7 @@ export default function ExplorerGame({
             >
               <span className="text-4xl mb-1">{item.emoji}</span>
               <span className="text-lg font-black text-gray-800">
-                <span className="text-rose-500 underline text-xl">{firstLetter}</span>
-                {rest}
+                {renderWord(item.word)}
               </span>
             </div>
           );

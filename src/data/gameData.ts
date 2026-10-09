@@ -110,6 +110,44 @@ export const GAME_DATA: GameDataSet = {
         }
       }
     },
+    UI: {
+      char: 'UI',
+      soundText: 'Uiii',
+      spokenIntro: 'Fantástico! Vamos juntar as letras U e I para fazer UI! Ouve como faz: Uiiiii!',
+      color: '#00897B',
+      words: [
+        { word: 'Ui!', emoji: '😱', audioText: 'Ui! Que susto apanhou o Dino!' },
+        { word: 'Uivo', emoji: '🐺', audioText: 'UI de Uivo! O lobo a uivar à lua no bosque!' },
+        { word: 'Cuidado', emoji: '⚠️', audioText: 'UI em Cuidado! Olha com atenção para não tropeçar!' },
+        { word: 'Fui', emoji: '🚶', audioText: 'UI de Fui! Fui dar um passeio com o Dino pelo parque!' }
+      ],
+      // Palavras para encontrar a combinação UI
+      middleWords: [
+        { word: 'UI', display: 'Ui!', emoji: '😱', prompt: 'Onde está a combinação UI na palavra Ui?' },
+        { word: 'UIVO', display: 'Uivo', emoji: '🐺', prompt: 'Onde está o UI na palavra Uivo?' },
+        { word: 'CUIDADO', display: 'Cuidado', emoji: '⚠️', prompt: 'Onde está o UI na palavra Cuidado?' },
+        { word: 'FUI', display: 'Fui', emoji: '🚶', prompt: 'Consegues encontrar o UI na palavra Fui?' }
+      ]
+    },
+    IU: {
+      char: 'IU',
+      soundText: 'Iuuu',
+      spokenIntro: 'Que maravilha! Agora juntamos o I e o U para fazer IU! Ouve como faz: Iuuuuu!',
+      color: '#D81B60',
+      words: [
+        { word: 'Viu', emoji: '👀', audioText: 'IU de Viu! O Dino viu um ninho de passarinhos!' },
+        { word: 'Riu', emoji: '😄', audioText: 'IU de Riu! O Dino riu muito com uma cócega divertida!' },
+        { word: 'Subiu', emoji: '🐒', audioText: 'IU em Subiu! O macaco subiu à árvore bem depressa!' },
+        { word: 'Fugiu', emoji: '🐇', audioText: 'IU em Fugiu! O coelhinho fugiu a saltitar pela relva!' }
+      ],
+      // Palavras para encontrar a combinação IU
+      middleWords: [
+        { word: 'VIU', display: 'Viu', emoji: '👀', prompt: 'Onde está o IU na palavra Viu?' },
+        { word: 'RIU', display: 'Riu', emoji: '😄', prompt: 'Onde está o IU na palavra Riu?' },
+        { word: 'SUBIU', display: 'Subiu', emoji: '🐒', prompt: 'Consegues encontrar o IU na palavra Subiu?' },
+        { word: 'FUGIU', display: 'Fugiu', emoji: '🐇', prompt: 'Onde está o IU na palavra Fugiu?' }
+      ]
+    },
     A: {
       char: 'A',
       soundText: 'Aaa',
@@ -220,21 +258,25 @@ export const GAME_DATA: GameDataSet = {
     }
   },
 
-  // Desafio com perguntas variadas cobrindo as 4 letras (I, U, A, E)
+  // Desafio com perguntas variadas cobrindo letras e combinações (I, U, UI, IU, A, E)
   quizItems: [
-    { word: 'Avião', emoji: '✈️', letter: 'A', prompt: 'Avião... começa com que letra? A, E, I ou U?' },
-    { word: 'Elefante', emoji: '🐘', letter: 'E', prompt: 'Elefante... começa com que letra? A, E, I ou U?' },
-    { word: 'Ilha', emoji: '🏝️', letter: 'I', prompt: 'Ilha... começa com que letra? A, E, I ou U?' },
-    { word: 'Uvas', emoji: '🍇', letter: 'U', prompt: 'Uvas... começa com que letra? A, E, I ou U?' },
-    { word: 'Abelha', emoji: '🐝', letter: 'A', prompt: 'Abelha... começa com que letra? A, E, I ou U?' },
-    { word: 'Estrela', emoji: '⭐', letter: 'E', prompt: 'Estrela... começa com que letra? A, E, I ou U?' },
-    { word: 'Urso', emoji: '🐻', letter: 'U', prompt: 'Urso... começa com que letra? A, E, I ou U?' },
-    { word: 'Iogurte', emoji: '🥛', letter: 'I', prompt: 'Iogurte... começa com que letra? A, E, I ou U?' },
-    { word: 'Árvore', emoji: '🌳', letter: 'A', prompt: 'Árvore... começa com que letra? A, E, I ou U?' },
-    { word: 'Escada', emoji: '🪜', letter: 'E', prompt: 'Escada... começa com que letra? A, E, I ou U?' }
+    { word: 'Ui!', emoji: '😱', letter: 'UI', prompt: 'Ui, que susto! Que combinação é esta? UI, IU, U ou I?', options: ['UI', 'IU', 'U', 'I'] },
+    { word: 'Uivo', emoji: '🐺', letter: 'UI', prompt: 'Uivo do lobo... começa por que combinação? UI, IU, U ou I?', options: ['UI', 'IU', 'U', 'I'] },
+    { word: 'Viu', emoji: '👀', letter: 'IU', prompt: 'Ele viu! A palavra Viu termina com que combinação? IU, UI, I ou U?', options: ['IU', 'UI', 'I', 'U'] },
+    { word: 'Riu', emoji: '😄', letter: 'IU', prompt: 'Ele riu! A palavra Riu termina com que combinação? IU, UI, I ou U?', options: ['IU', 'UI', 'I', 'U'] },
+    { word: 'Avião', emoji: '✈️', letter: 'A', prompt: 'Avião... começa com que letra? A, E, I ou U?', options: ['A', 'E', 'I', 'U'] },
+    { word: 'Elefante', emoji: '🐘', letter: 'E', prompt: 'Elefante... começa com que letra? A, E, I ou U?', options: ['E', 'A', 'I', 'U'] },
+    { word: 'Ilha', emoji: '🏝️', letter: 'I', prompt: 'Ilha... começa com que letra? A, E, I ou U?', options: ['I', 'U', 'A', 'E'] },
+    { word: 'Uvas', emoji: '🍇', letter: 'U', prompt: 'Uvas... começa com que letra? A, E, I ou U?', options: ['U', 'I', 'A', 'E'] },
+    { word: 'Abelha', emoji: '🐝', letter: 'A', prompt: 'Abelha... começa com que letra? A, E, I ou U?', options: ['A', 'E', 'I', 'U'] },
+    { word: 'Estrela', emoji: '⭐', letter: 'E', prompt: 'Estrela... começa com que letra? A, E, I ou U?', options: ['E', 'A', 'I', 'U'] },
+    { word: 'Urso', emoji: '🐻', letter: 'U', prompt: 'Urso... começa com que letra? A, E, I ou U?', options: ['U', 'I', 'A', 'E'] },
+    { word: 'Iogurte', emoji: '🥛', letter: 'I', prompt: 'Iogurte... começa com que letra? A, E, I ou U?', options: ['I', 'U', 'A', 'E'] },
+    { word: 'Árvore', emoji: '🌳', letter: 'A', prompt: 'Árvore... começa com que letra? A, E, I ou U?', options: ['A', 'E', 'I', 'U'] },
+    { word: 'Escada', emoji: '🪜', letter: 'E', prompt: 'Escada... começa com que letra? A, E, I ou U?', options: ['E', 'A', 'I', 'U'] }
   ],
 
-  // 18 Etapas Sequenciais da Aventura do Dino
+  // 24 Etapas Sequenciais da Aventura do Dino
   steps: [
     // --- CICLO DA LETRA I ---
     {
@@ -314,9 +356,69 @@ export const GAME_DATA: GameDataSet = {
       dinoSpeech: 'Desenha a letra U cursiva! Duas ondas de mão dada!'
     },
 
-    // --- CICLO DA LETRA A ---
+    // --- CICLO DA COMBINAÇÃO UI ---
     {
       id: 9,
+      type: 'explorer',
+      letter: 'UI',
+      title: 'A Combinação UI',
+      subtitle: 'Junta o U e o I para fazer UI! Ouve o som!',
+      icon: '😱',
+      dinoSpeech: 'Vamos juntar as letras U e I! U mais I faz... UI!'
+    },
+    {
+      id: 10,
+      type: 'bubble',
+      letter: 'UI',
+      title: 'Bolhas do UI',
+      subtitle: 'Rebenta 5 bolhas com a combinação UI!',
+      icon: '🫧',
+      targetCount: 5,
+      dinoSpeech: 'Apanha todas as bolhas que tenham a combinação UI!'
+    },
+    {
+      id: 11,
+      type: 'wordHunt',
+      letter: 'UI',
+      title: 'Detetive do UI',
+      subtitle: 'Encontra a combinação UI nas palavras!',
+      icon: '🔍',
+      dinoSpeech: 'Olhos de lince! Descobre onde está o UI nas palavras!'
+    },
+
+    // --- CICLO DA COMBINAÇÃO IU ---
+    {
+      id: 12,
+      type: 'explorer',
+      letter: 'IU',
+      title: 'A Combinação IU',
+      subtitle: 'Junta o I e o U para fazer IU! Ouve o som!',
+      icon: '👀',
+      dinoSpeech: 'Agora juntamos o I e o U! I mais U faz... IU!'
+    },
+    {
+      id: 13,
+      type: 'bubble',
+      letter: 'IU',
+      title: 'Bolhas do IU',
+      subtitle: 'Rebenta 5 bolhas com a combinação IU!',
+      icon: '🫧',
+      targetCount: 5,
+      dinoSpeech: 'Rebenta as bolhas com a combinação IU!'
+    },
+    {
+      id: 14,
+      type: 'wordHunt',
+      letter: 'IU',
+      title: 'Detetive do IU',
+      subtitle: 'Encontra a combinação IU nas palavras!',
+      icon: '🔍',
+      dinoSpeech: 'Encontra a combinação IU escondida nas palavras!'
+    },
+
+    // --- CICLO DA LETRA A ---
+    {
+      id: 15,
       type: 'explorer',
       letter: 'A',
       title: 'A Letra A',
@@ -325,7 +427,7 @@ export const GAME_DATA: GameDataSet = {
       dinoSpeech: 'Viva! Chegámos à letra A! Ouve como faz: Aaaaa! Toca nos desenhos!'
     },
     {
-      id: 10,
+      id: 16,
       type: 'bubble',
       letter: 'A',
       title: 'Bolhas do A',
@@ -335,7 +437,7 @@ export const GAME_DATA: GameDataSet = {
       dinoSpeech: 'Procura todas as bolhas com a letra A e rebenta-as com o dedinho!'
     },
     {
-      id: 11,
+      id: 17,
       type: 'wordHunt',
       letter: 'A',
       title: 'Detetive do A',
@@ -344,7 +446,7 @@ export const GAME_DATA: GameDataSet = {
       dinoSpeech: 'Atenção, detetive! Toca em todas as letras A no meio das palavras!'
     },
     {
-      id: 12,
+      id: 18,
       type: 'trace',
       letter: 'A',
       title: 'Desenhar o A',
@@ -355,7 +457,7 @@ export const GAME_DATA: GameDataSet = {
 
     // --- CICLO DA LETRA E ---
     {
-      id: 13,
+      id: 19,
       type: 'explorer',
       letter: 'E',
       title: 'A Letra E',
@@ -364,7 +466,7 @@ export const GAME_DATA: GameDataSet = {
       dinoSpeech: 'Espetacular! Agora a letra E! O elefante e a estrela começam por E!'
     },
     {
-      id: 14,
+      id: 20,
       type: 'bubble',
       letter: 'E',
       title: 'Bolhas do E',
@@ -374,7 +476,7 @@ export const GAME_DATA: GameDataSet = {
       dinoSpeech: 'Rebenta as bolhas com a letra E! Cuidado com as outras!'
     },
     {
-      id: 15,
+      id: 21,
       type: 'wordHunt',
       letter: 'E',
       title: 'Detetive do E',
@@ -383,7 +485,7 @@ export const GAME_DATA: GameDataSet = {
       dinoSpeech: 'Consegues descobrir onde está a letra E no meio das palavras?'
     },
     {
-      id: 16,
+      id: 22,
       type: 'trace',
       letter: 'E',
       title: 'Desenhar o E',
@@ -394,21 +496,21 @@ export const GAME_DATA: GameDataSet = {
 
     // --- GRANDE DESAFIO & CELEBRAÇÃO ---
     {
-      id: 17,
+      id: 23,
       type: 'quiz',
       letter: 'ALL',
       title: 'O Grande Desafio',
-      subtitle: 'Qual é a letra? I, U, A ou E?',
+      subtitle: 'Qual é a letra ou combinação?',
       icon: '🎯',
-      dinoSpeech: 'O grande teste das 4 letras! Olha para o desenho e toca na letra certa!'
+      dinoSpeech: 'O grande teste das letras e combinações! Olha para o desenho e toca na opção certa!'
     },
     {
-      id: 18,
+      id: 24,
       type: 'celebration',
       title: 'Super Festa do Dino!',
-      subtitle: 'Aprendeste as letras I, U, A e E!',
+      subtitle: 'Aprendeste as letras I, U, A, E e as combinações UI e IU!',
       icon: '🏆',
-      dinoSpeech: 'Parabéns, és um génio! Conquistaste as letras I, U, A e E!'
+      dinoSpeech: 'Parabéns, és um génio! Conquistaste as letras e as combinações UI e IU!'
     }
   ]
 };

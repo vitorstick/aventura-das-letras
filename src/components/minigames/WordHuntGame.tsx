@@ -11,6 +11,26 @@ interface WordHuntGameProps {
   onSetSpeech: (text: string) => void;
 }
 
+function tokenizeWord(word: string, target: string): string[] {
+  if (target.length <= 1) {
+    return word.split('');
+  }
+  const tokens: string[] = [];
+  const upperWord = word.toUpperCase();
+  const upperTarget = target.toUpperCase();
+  let i = 0;
+  while (i < word.length) {
+    if (upperWord.startsWith(upperTarget, i)) {
+      tokens.push(word.slice(i, i + target.length));
+      i += target.length;
+    } else {
+      tokens.push(word[i]);
+      i++;
+    }
+  }
+  return tokens;
+}
+
 export default function WordHuntGame({
   letter,
   onComplete,
@@ -18,6 +38,9 @@ export default function WordHuntGame({
 }: WordHuntGameProps): React.JSX.Element {
   const letterData = GAME_DATA.letters[letter];
   const wordsList: MiddleWordItem[] = letterData?.middleWords || [];
+
+  const isCombo = letter.length > 1;
+  const targetType = isCombo ? 'a combinação' : 'a letra';
 
   const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
   const [foundIndices, setFoundIndices] = useState<Set<number>>(new Set());
@@ -29,12 +52,12 @@ export default function WordHuntGame({
     word: letter,
     display: letter,
     emoji: '⭐',
-    prompt: `Onde está a letra ${letter}?`
+    prompt: `Onde está ${targetType} ${letter}?`
   };
 
-  const wordLetters = currentWordData.word.split('');
-  const targetIndices = wordLetters
-    .map((char, idx) => (char.toUpperCase() === letter.toUpperCase() ? idx : null))
+  const wordTokens = tokenizeWord(currentWordData.word, letter);
+  const targetIndices = wordTokens
+    .map((token, idx) => (token.toUpperCase() === letter.toUpperCase() ? idx : null))
     .filter((idx): idx is number => idx !== null);
 
   const totalTargetsInWord = targetIndices.length;
@@ -59,7 +82,7 @@ export default function WordHuntGame({
     sounds.speak(currentWordData.prompt);
   };
 
-  const handleTileClick = (char: string, index: number, e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleTileClick = (token: string, index: number, e: React.MouseEvent<HTMLButtonElement>) => {
     if (isWordCompleted || isRoundCompleted) return;
 
     // Se já foi encontrada nesta palavra, ignora
@@ -68,7 +91,7 @@ export default function WordHuntGame({
       return;
     }
 
-    const isMatch = char.toUpperCase() === letter.toUpperCase();
+    const isMatch = token.toUpperCase() === letter.toUpperCase();
 
     if (isMatch) {
       const nextFound = new Set(foundIndices);
@@ -89,17 +112,17 @@ export default function WordHuntGame({
         setIsWordCompleted(true);
         sounds.playSuccess();
 
-        const successSpeech = `Muito bem! Encontraste a letra ${letter} na palavra ${currentWordData.display}!`;
+        const successSpeech = `Muito bem! Encontraste ${targetType} ${letter} na palavra ${currentWordData.display}!`;
         onSetSpeech(successSpeech);
         sounds.speak(successSpeech);
 
         setTimeout(() => {
           if (currentWordIndex + 1 >= wordsList.length) {
-            // Concluiu todas as palavras da letra
+            // Concluiu todas as palavras
             setIsRoundCompleted(true);
             sounds.playWinFanfare();
             fireConfetti();
-            const finishSpeech = `Fantástico, pequeno detetive! Encontraste todas as letras ${letter} no meio das palavras!`;
+            const finishSpeech = `Fantástico, pequeno detetive! Encontraste ${targetType} ${letter} nas palavras!`;
             onSetSpeech(finishSpeech);
             sounds.speak(finishSpeech);
           } else {
@@ -109,8 +132,8 @@ export default function WordHuntGame({
       } else {
         const remainingCount = totalTargetsInWord - nextFound.size;
         const partialSpeech = remainingCount === 1
-          ? `Boa! Encontraste uma letra ${letter}! Falta mais uma!`
-          : `Boa! Encontraste uma letra ${letter}! Faltam mais ${remainingCount}!`;
+          ? `Boa! Encontraste uma! Falta mais uma!`
+          : `Boa! Encontraste uma! Faltam mais ${remainingCount}!`;
         onSetSpeech(partialSpeech);
         sounds.speak(partialSpeech);
       }
@@ -119,7 +142,8 @@ export default function WordHuntGame({
       setWigglingIndex(index);
       setTimeout(() => setWigglingIndex(null), 500);
 
-      const errorSpeech = `Essa é a letra ${char}! Onde está a letra ${letter}?`;
+      const wrongLabel = token.length > 1 ? `a combinação ${token}` : `a letra ${token}`;
+      const errorSpeech = `Essa é ${wrongLabel}! Onde está ${targetType} ${letter}?`;
       onSetSpeech(errorSpeech);
       sounds.speak(errorSpeech);
     }
@@ -138,7 +162,7 @@ export default function WordHuntGame({
         <div className="flex items-center gap-1.5">
           <span className="text-xl">🔍</span>
           <span className="font-bold text-amber-950 text-xs sm:text-sm">
-            Detetive da Letra <strong className="text-xl font-black text-rose-500 ml-0.5">{letter}</strong>
+            Detetive d{isCombo ? 'a Combinação' : 'a Letra'} <strong className="text-xl font-black text-rose-500 ml-0.5">{letter}</strong>
           </span>
         </div>
         <div className="flex items-center gap-1 bg-amber-100 px-2.5 py-1 rounded-full text-xs font-black text-amber-900">
@@ -187,20 +211,20 @@ export default function WordHuntGame({
           <div className="text-xs sm:text-sm font-bold text-gray-500 mb-3 text-center">
             {totalTargetsInWord > 1 ? (
               <span>
-                Esta palavra tem <strong className="text-purple-700 font-black">{totalTargetsInWord}</strong> letras{' '}
+                Esta palavra tem <strong className="text-purple-700 font-black">{totalTargetsInWord}</strong> vezes{' '}
                 <strong className="text-rose-500 font-black">{letter}</strong>!{' '}
                 {remainingTargetsInWord > 0 ? `(Faltam ${remainingTargetsInWord})` : '🎉 Concluído!'}
               </span>
             ) : (
               <span>
-                Toca na letra <strong className="text-rose-500 font-black">{letter}</strong> no meio da palavra!
+                Toca n{isCombo ? 'a combinação' : 'a letra'} <strong className="text-rose-500 font-black">{letter}</strong> no meio da palavra!
               </span>
             )}
           </div>
 
-          {/* Letras Interativas (Blocos de Construção da Palavra) */}
+          {/* Letras / Combinações Interativas (Blocos de Construção da Palavra) */}
           <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-2.5 max-w-full">
-            {wordLetters.map((char, idx) => {
+            {wordTokens.map((token, idx) => {
               const isFound = foundIndices.has(idx);
               const isWiggling = wigglingIndex === idx;
 
@@ -214,12 +238,14 @@ export default function WordHuntGame({
 
               return (
                 <button
-                  key={`${char}-${idx}`}
-                  onClick={(e) => handleTileClick(char, idx, e)}
+                  key={`${token}-${idx}`}
+                  onClick={(e) => handleTileClick(token, idx, e)}
                   disabled={isFound || isWordCompleted}
-                  className={`kid-btn-shadow relative w-12 h-14 sm:w-14 sm:h-16 rounded-2xl border-4 font-black text-2xl sm:text-3xl flex items-center justify-center transition-all select-none ${tileStyle}`}
+                  className={`kid-btn-shadow relative h-14 sm:h-16 rounded-2xl border-4 font-black flex items-center justify-center transition-all select-none ${
+                    token.length > 1 ? 'w-16 sm:w-20 text-xl sm:text-2xl px-1' : 'w-12 sm:w-14 text-2xl sm:text-3xl'
+                  } ${tileStyle}`}
                 >
-                  <span>{char}</span>
+                  <span>{token}</span>
                   {isFound && (
                     <span className="absolute -top-1.5 -right-1.5 bg-amber-400 text-white rounded-full p-0.5 shadow-sm">
                       <Star className="w-3.5 h-3.5 fill-white" />
@@ -244,7 +270,7 @@ export default function WordHuntGame({
           </button>
         ) : (
           <p className="text-emerald-800/80 font-bold text-xs text-center">
-            💡 Toca nas letras com o teu dedinho para encontrar a letra certa!
+            💡 Toca nos blocos com o teu dedinho para encontrar a resposta!
           </p>
         )}
       </div>

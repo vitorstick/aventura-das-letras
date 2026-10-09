@@ -30,15 +30,19 @@ export default function BubbleGame({
   const [bubbles, setBubbles] = useState<BubbleItem[]>([]);
   const nextId = useRef<number>(1);
 
+  const isCombo = letter.length > 1;
+  const itemLabel = isCombo ? `a combinação ${letter}` : `a letra ${letter}`;
+
   useEffect(() => {
-    onSetSpeech(`Rebenta ${targetCount} bolhas com a letra ${letter}!`);
-    sounds.speak(`Rebenta todas as bolhas que tenham a letra ${letter}!`);
-  }, [letter, targetCount, onSetSpeech]);
+    onSetSpeech(`Rebenta ${targetCount} bolhas com ${itemLabel}!`);
+    sounds.speak(`Rebenta todas as bolhas que tenham ${itemLabel}!`);
+  }, [letter, targetCount, onSetSpeech, itemLabel]);
 
   // Intervalo de geração de bolhas
   useEffect(() => {
     const spawnBubble = () => {
-      const distractors = (['A', 'E', 'I', 'U', 'O'] as const).filter(l => l !== letter);
+      const candidates = (['I', 'U', 'UI', 'IU', 'A', 'E'] as const);
+      const distractors = candidates.filter(l => l !== letter);
       const isTarget = Math.random() < 0.65;
       const char = isTarget ? letter : distractors[Math.floor(Math.random() * distractors.length)];
       const id = nextId.current++;
@@ -91,8 +95,8 @@ export default function BubbleGame({
       if (newScore >= targetCount) {
         sounds.playSuccess();
         fireConfetti();
-        onSetSpeech(`Conseguiste rebentar todas as bolhas do ${letter}! 🎉`);
-        sounds.speak(`Muito bem! Apanhaste todas as bolhas da letra ${letter}!`);
+        onSetSpeech(`Conseguiste rebentar todas as bolhas com ${letter}! 🎉`);
+        sounds.speak(`Muito bem! Apanhaste todas as bolhas com ${itemLabel}!`);
         setTimeout(() => {
           onComplete();
         }, 1500);
@@ -101,8 +105,9 @@ export default function BubbleGame({
       }
     } else {
       sounds.playTryAgain();
-      onSetSpeech(`Essa é a letra ${b.char}! Procura a letra ${letter}!`);
-      sounds.speak(`Essa é a letra ${b.char}! Toca na letra ${letter}!`);
+      const hitLabel = b.char.length > 1 ? `a combinação ${b.char}` : `a letra ${b.char}`;
+      onSetSpeech(`Essa é ${hitLabel}! Procura ${itemLabel}!`);
+      sounds.speak(`Essa é ${hitLabel}! Toca em ${itemLabel}!`);
     }
   };
 
@@ -111,7 +116,7 @@ export default function BubbleGame({
       {/* Cabeçalho do Desafio */}
       <div className="w-full bg-white/95 border-3 border-sky-400 rounded-2xl px-4 py-2.5 flex items-center justify-between shadow-md shrink-0">
         <span className="font-bold text-sky-900 text-sm sm:text-base">
-          Procura a letra: <strong className="text-2xl text-rose-500 font-black ml-1">{letter}</strong>
+          {isCombo ? 'Procura a combinação:' : 'Procura a letra:'} <strong className="text-2xl text-rose-500 font-black ml-1">{letter}</strong>
         </span>
         <div className="flex items-center gap-1.5 bg-sky-100 px-3 py-1 rounded-full font-black text-sky-800 text-sm sm:text-base">
           <Star className="w-5 h-5 text-amber-500 fill-amber-400" />
@@ -140,8 +145,10 @@ export default function BubbleGame({
               <div className="absolute top-2 left-3 w-5 h-3 bg-white/90 rounded-full -rotate-45" />
             </div>
 
-            {/* Letra no Interior */}
-            <span className="relative z-10 font-black text-3xl sm:text-4xl text-sky-950 drop-shadow-[0_1px_1px_rgba(255,255,255,0.8)]">
+            {/* Letra ou Combinação no Interior */}
+            <span className={`relative z-10 font-black text-sky-950 drop-shadow-[0_1px_1px_rgba(255,255,255,0.8)] ${
+              b.char.length > 1 ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl'
+            }`}>
               {b.char}
             </span>
           </div>

@@ -1,4 +1,4 @@
-export type LetterKey = 'I' | 'U' | 'A' | 'E';
+export type LetterKey = 'I' | 'U' | 'UI' | 'IU' | 'A' | 'E';
 
 export type StepType =
   | 'welcome'
@@ -50,7 +50,7 @@ export interface LetterData {
   color: string;
   words: WordItem[];
   middleWords: MiddleWordItem[];
-  tracing: TracingVariants;
+  tracing?: TracingVariants;
 }
 
 export interface QuizItem {
@@ -58,6 +58,7 @@ export interface QuizItem {
   emoji: string;
   letter: LetterKey;
   prompt: string;
+  options?: LetterKey[];
 }
 
 export interface GameStep {
