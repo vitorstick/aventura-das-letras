@@ -236,5 +236,8 @@
   "quiz_tryagain_iman": "f47986bc56c2714b92e977daeb242599eba89466",
   "quiz_prompt_asa": "afe84f9e35ee5fc206f2b5b66e132a1b8214ba85",
   "quiz_tryagain_asa": "fabd8e91bfad00a14d32fc406643f4593357d9e3",
-  "quiz_success_asa": "99f93cd3c6ddd0cfdf1ea203a462a047244d94e2"
+  "quiz_success_asa": "99f93cd3c6ddd0cfdf1ea203a462a047244d94e2",
+  "word_only_luva": "9101c3bec1d501b99ae223775e22cb238c2a25d3",
+  "hunt_prompt_luva": "09834c73a6965bf118cadc439a16088fa773ef5f",
+  "hunt_success_luva": "f034af1622e9d91f0388a02e635351f54f43eb9b"
 }

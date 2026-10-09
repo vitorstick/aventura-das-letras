@@ -76,7 +76,7 @@ export const GAME_DATA: GameDataSet = {
         { word: 'LUA', display: 'Lua', emoji: '🌙', prompt: 'Onde está a letra U na palavra Lua?', audioWordKey: 'word_only_lua' },
         { word: 'NUVEM', display: 'Nuvem', emoji: '☁️', prompt: 'Onde está a letra U na palavra Nuvem?', audioWordKey: 'word_only_nuvem' },
         { word: 'CORUJA', display: 'Coruja', emoji: '🦉', prompt: 'Onde está a letra U na palavra Coruja?', audioWordKey: 'word_only_coruja' },
-        { word: 'TARTARUGA', display: 'Tartaruga', emoji: '🐢', prompt: 'Onde está a letra U na palavra Tartaruga?', audioWordKey: 'word_only_tartaruga' }
+        { word: 'LUVA', display: 'Luva', emoji: '🧤', prompt: 'Onde está a letra U na palavra Luva?', audioWordKey: 'word_only_luva' }
       ],
       tracing: {
         lowercase: {

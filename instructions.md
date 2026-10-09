@@ -47,7 +47,7 @@ A progressão é sequencial para manter a atenção e guiar o processo cognitivo
 3. **Etapa 3 — Detetive do I:** Encontrar a letra **I** no meio das palavras (*Peixe*, *Livro*, *Rainha*, *Biscoito*).
 4. **Etapa 4 — A Letra U (Explorador):** Apresentação da letra, som `/u/` e cartões (*Urso*, *Uvas*, *Unha*, *Unicórnio*).
 5. **Etapa 5 — Bolhas do U:** Rebentar 5 bolhas com a letra **U**.
-6. **Etapa 6 — Detetive do U:** Encontrar a letra **U** no meio das palavras (*Lua*, *Nuvem*, *Coruja*, *Tartaruga*).
+6. **Etapa 6 — Detetive do U:** Encontrar a letra **U** no meio das palavras (*Lua*, *Nuvem*, *Coruja*, *Luva*).
 7. **Etapa 7 — A Combinação UI (Explorador):** Junção de U + I = UI (*Ui!*, *Uivo*, *Cuidado*, *Ruivo*).
 8. **Etapa 8 — Bolhas do UI:** Rebentar 5 bolhas com a combinação **UI**. Distratores incluem **IU** e letras simples.
 9. **Etapa 9 — Detetive do UI:** Encontrar a combinação **UI** no meio das palavras.

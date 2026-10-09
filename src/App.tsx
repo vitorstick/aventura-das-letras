@@ -116,7 +116,7 @@ export default function App(): React.JSX.Element {
       {/* Mascote Dino no Centro Superior */}
       {currentScreen !== 'welcome' && (
         <MascotDino
-          compact={currentScreen === 'map'}
+          compact={currentScreen === 'map' || currentScreen === 'wordHunt'}
           expression={activeDinoExpression}
           speechText={dinoSpeech}
           onDinoTap={() => {

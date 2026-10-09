@@ -113,6 +113,7 @@ AUDIO_ITEMS = [
     ("word_only_lua", "Lua"),
     ("word_only_nuvem", "Nuvem"),
     ("word_only_coruja", "Coruja"),
+    ("word_only_luva", "Luva"),
     ("word_only_tartaruga", "Tartaruga"),
     ("word_only_gato", "Gato"),
     ("word_only_barco", "Barco"),
@@ -200,6 +201,9 @@ AUDIO_ITEMS = [
 
     ("hunt_prompt_coruja", "Onde está a letra U na palavra Coruja?"),
     ("hunt_success_coruja", "Muito bem! Encontraste a letra U na palavra Coruja!"),
+
+    ("hunt_prompt_luva", "Onde está a letra U na palavra Luva?"),
+    ("hunt_success_luva", "Muito bem! Encontraste a letra U na Luva!"),
 
     ("hunt_prompt_tartaruga", "Onde está a letra U na palavra Tartaruga?"),
     ("hunt_success_tartaruga", "Muito bem! Encontraste a letra U na Tartaruga!"),
