@@ -1,20 +1,24 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Star, Lock, Play, RotateCcw, ChevronDown } from 'lucide-react';
 import { GAME_DATA } from '../data/gameData';
 import { sounds } from '../utils/soundEngine';
+import ParentGateModal from './ParentGateModal';
 
 interface AdventureMapProps {
   unlockedStep: number;
   onSelectStep: (index: number) => void;
   onResetProgress: () => void;
+  onSetSpeech?: (text: string) => void;
 }
 
 export default function AdventureMap({
   unlockedStep,
   onSelectStep,
-  onResetProgress
+  onResetProgress,
+  onSetSpeech
 }: AdventureMapProps): React.JSX.Element {
-  const currentStepRef = useRef<HTMLDivElement | null>(null);
+  const currentStepRef = useRef<HTMLButtonElement | null>(null);
+  const [isParentGateOpen, setIsParentGateOpen] = useState<boolean>(false);
 
   useEffect(() => {
     // Rola suavemente até à etapa atual se estiver mais abaixo
@@ -51,18 +55,31 @@ export default function AdventureMap({
           const handleStepClick = () => {
             if (isLocked) {
               sounds.playTryAgain();
+              const currentStepData = GAME_DATA.steps[unlockedStep];
+              const lockSpeech = currentStepData
+                ? `Primeiro acaba a Etapa ${unlockedStep + 1} (${currentStepData.title})!`
+                : `Primeiro acaba a etapa anterior!`;
+              if (onSetSpeech) {
+                onSetSpeech(lockSpeech);
+              }
+              sounds.speak(lockSpeech);
+              currentStepRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             } else {
               sounds.playPop();
               onSelectStep(idx);
             }
           };
 
+          const statusDesc = isCompleted ? 'Concluída' : isCurrent ? 'Etapa Atual' : 'Bloqueada';
+
           return (
             <React.Fragment key={step.id}>
-              <div
+              <button
+                type="button"
                 ref={isCurrent ? currentStepRef : null}
                 onClick={handleStepClick}
-                className={`w-full flex items-center justify-between p-3.5 sm:p-4 rounded-2xl border-4 transition-all cursor-pointer ${cardStyle} active:scale-95`}
+                aria-label={`Etapa ${idx + 1}: ${step.title}. ${statusDesc}. ${step.subtitle}`}
+                className={`w-full flex items-center justify-between p-3.5 sm:p-4 rounded-2xl border-4 transition-all cursor-pointer text-left ${cardStyle} active:scale-95`}
               >
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-white rounded-xl shadow-inner flex items-center justify-center text-2xl border border-gray-100 shrink-0">
@@ -83,7 +100,7 @@ export default function AdventureMap({
                   {isCurrent && <Play className="w-6 h-6 text-amber-600 fill-amber-500 animate-bounce" />}
                   {isLocked && <Lock className="w-5 h-5 text-gray-400" />}
                 </div>
-              </div>
+              </button>
 
               {idx < GAME_DATA.steps.length - 1 && (
                 <div className="flex gap-2 text-emerald-600/70 text-sm font-black rotate-90 my-0.5">
@@ -102,12 +119,24 @@ export default function AdventureMap({
       </div>
 
       <button
-        onClick={onResetProgress}
+        type="button"
+        onClick={() => setIsParentGateOpen(true)}
         className="mt-6 flex items-center gap-1.5 text-gray-500 hover:text-gray-700 text-xs font-bold underline pb-4"
       >
         <RotateCcw className="w-3.5 h-3.5" />
         Recomeçar Aventura do Início
       </button>
+
+      {/* Janela de proteção parental para reiniciar */}
+      <ParentGateModal
+        isOpen={isParentGateOpen}
+        onClose={() => setIsParentGateOpen(false)}
+        onConfirmReset={() => {
+          setIsParentGateOpen(false);
+          onResetProgress();
+        }}
+      />
     </div>
   );
 }
+

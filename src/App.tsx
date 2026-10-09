@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import MascotDino from './components/MascotDino';
 import WelcomeScreen from './components/WelcomeScreen';
@@ -6,28 +6,41 @@ import AdventureMap from './components/AdventureMap';
 import CelebrationScreen from './components/CelebrationScreen';
 import ExplorerGame from './components/minigames/ExplorerGame';
 import BubbleGame from './components/minigames/BubbleGame';
-import TraceGame from './components/minigames/TraceGame';
 import WordHuntGame from './components/minigames/WordHuntGame';
 import QuizGame from './components/minigames/QuizGame';
 
 import { GAME_DATA } from './data/gameData';
 import { sounds } from './utils/soundEngine';
 import { fireConfetti } from './utils/confetti';
-import { StepType, DinoExpression, LetterKey } from './types/game';
+import { ScreenType, DinoExpression, LetterKey } from './types/game';
+import { useProgress } from './hooks/useProgress';
 
 export default function App(): React.JSX.Element {
-  const [currentScreen, setCurrentScreen] = useState<StepType>('welcome');
+  const [currentScreen, setCurrentScreen] = useState<ScreenType>('welcome');
   const [activeStepIndex, setActiveStepIndex] = useState<number>(0);
-  const [unlockedStep, setUnlockedStep] = useState<number>(() => {
-    const saved = parseInt(localStorage.getItem('dino_unlocked_step') || '0', 10);
-    return Math.min(Math.max(0, saved), Math.max(0, GAME_DATA.steps.length - 1));
-  });
-  const [stars, setStars] = useState<number>(() => {
-    return parseInt(localStorage.getItem('dino_stars') || '0', 10);
-  });
   const [dinoSpeech, setDinoSpeech] = useState<string>("Olá! Vamos aprender as letras? Carrega em Começar! 🦕");
   const [dinoExpression, setDinoExpression] = useState<DinoExpression>('idle');
-  const [isSoundOn, setIsSoundOn] = useState<boolean>(true);
+  const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
+
+  const {
+    unlockedStep,
+    stars,
+    isSoundOn,
+    completeStep,
+    toggleSound,
+    resetProgress
+  } = useProgress(GAME_DATA.steps.length);
+
+  // Sincroniza a expressão da boca do Dino quando o áudio/fala estiver a tocar
+  useEffect(() => {
+    return sounds.onSpeakingChange((speaking) => {
+      setIsSpeaking(speaking);
+    });
+  }, []);
+
+  const activeDinoExpression: DinoExpression = dinoExpression === 'cheer'
+    ? 'cheer'
+    : (isSpeaking ? 'talk' : 'idle');
 
   // Desbloquear áudio no início
   const handleStart = () => {
@@ -35,13 +48,20 @@ export default function App(): React.JSX.Element {
     sounds.playSuccess();
     fireConfetti();
     setCurrentScreen('map');
-    setDinoSpeech("Segue as pegadas do Dino no mapa para começar! 🐾");
-    sounds.speak("Segue as pegadas do Dino no mapa para começar a aventura!");
+    const startSpeech = "Segue as pegadas do Dino no mapa para começar a aventura! 🐾";
+    setDinoSpeech(startSpeech);
+    sounds.speak(startSpeech);
   };
 
   const handleSelectStep = (index: number) => {
     setActiveStepIndex(index);
     const step = GAME_DATA.steps[index];
+    if (!step) return;
+
+    if (step.dinoSpeech) {
+      setDinoSpeech(step.dinoSpeech);
+      sounds.speak(step.dinoSpeech);
+    }
 
     if (step.type === 'celebration') {
       setCurrentScreen('celebration');
@@ -51,15 +71,7 @@ export default function App(): React.JSX.Element {
   };
 
   const handleStepComplete = () => {
-    const newStars = stars + 1;
-    setStars(newStars);
-    localStorage.setItem('dino_stars', newStars.toString());
-
-    if (activeStepIndex === unlockedStep) {
-      const nextUnlocked = Math.min(activeStepIndex + 1, GAME_DATA.steps.length - 1);
-      setUnlockedStep(nextUnlocked);
-      localStorage.setItem('dino_unlocked_step', nextUnlocked.toString());
-    }
+    completeStep(activeStepIndex);
 
     setDinoExpression('cheer');
     setTimeout(() => {
@@ -83,25 +95,12 @@ export default function App(): React.JSX.Element {
     }
   };
 
-  const handleResetProgress = () => {
-    if (window.confirm("Queres recomeçar a aventura desde o início?")) {
-      setUnlockedStep(0);
-      setStars(0);
-      localStorage.removeItem('dino_unlocked_step');
-      localStorage.removeItem('dino_stars');
-      sounds.playSuccess();
-    }
-  };
-
-  const handleToggleSound = () => {
-    const nextState = sounds.toggleSound();
-    setIsSoundOn(nextState);
-  };
-
   const currentStepData = GAME_DATA.steps[activeStepIndex];
   const currentLetter = (currentStepData?.letter && currentStepData.letter !== 'ALL')
     ? (currentStepData.letter as LetterKey)
     : 'I';
+
+  const totalPlayableSteps = GAME_DATA.steps.filter(s => s.type !== 'celebration').length;
 
   return (
     <div className="w-full h-full h-[100dvh] max-w-lg mx-auto flex flex-col overflow-hidden relative">
@@ -111,17 +110,18 @@ export default function App(): React.JSX.Element {
         stars={stars}
         onGoToMap={handleGoToMap}
         isSoundOn={isSoundOn}
-        onToggleSound={handleToggleSound}
+        onToggleSound={toggleSound}
       />
 
       {/* Mascote Dino no Centro Superior */}
       {currentScreen !== 'welcome' && (
         <MascotDino
           compact={currentScreen === 'map'}
-          expression={dinoExpression}
+          expression={activeDinoExpression}
           speechText={dinoSpeech}
           onDinoTap={() => {
-            setDinoSpeech("Estou muito contente por brincar contigo! 🦕✨");
+            const tapSpeech = "Estou muito contente por brincar contigo! 🦕✨";
+            setDinoSpeech(tapSpeech);
             sounds.speak("Estou muito contente por brincar contigo!");
           }}
         />
@@ -139,7 +139,8 @@ export default function App(): React.JSX.Element {
           <AdventureMap
             unlockedStep={unlockedStep}
             onSelectStep={handleSelectStep}
-            onResetProgress={handleResetProgress}
+            onResetProgress={resetProgress}
+            onSetSpeech={setDinoSpeech}
           />
         )}
 
@@ -168,14 +169,6 @@ export default function App(): React.JSX.Element {
           />
         )}
 
-        {currentScreen === 'trace' && currentStepData && (
-          <TraceGame
-            letter={currentLetter}
-            onComplete={handleStepComplete}
-            onSetSpeech={setDinoSpeech}
-          />
-        )}
-
         {currentScreen === 'quiz' && (
           <QuizGame
             onComplete={handleStepComplete}
@@ -186,6 +179,7 @@ export default function App(): React.JSX.Element {
         {currentScreen === 'celebration' && (
           <CelebrationScreen
             stars={stars}
+            maxStars={totalPlayableSteps}
             onPlayAgain={() => {
               setCurrentScreen('map');
             }}
@@ -195,3 +189,4 @@ export default function App(): React.JSX.Element {
     </div>
   );
 }
+

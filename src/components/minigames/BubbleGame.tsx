@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Star } from 'lucide-react';
 import { sounds } from '../../utils/soundEngine';
 import { fireStars, fireConfetti } from '../../utils/confetti';
 import { LetterKey } from '../../types/game';
+import { labelFor } from '../../utils/gameHelpers';
 
 interface BubbleItem {
   id: number;
@@ -28,21 +29,60 @@ export default function BubbleGame({
 }: BubbleGameProps): React.JSX.Element {
   const [score, setScore] = useState<number>(0);
   const [bubbles, setBubbles] = useState<BubbleItem[]>([]);
+  const isDoneRef = useRef<boolean>(false);
   const nextId = useRef<number>(1);
+  const timersRef = useRef<number[]>([]);
+  const intervalRef = useRef<number | null>(null);
+
+  const addTimer = (id: number) => {
+    timersRef.current.push(id);
+    return id;
+  };
 
   const isCombo = letter.length > 1;
-  const itemLabel = isCombo ? `a combinação ${letter}` : `a letra ${letter}`;
+  const itemLabel = labelFor(letter);
+
+  const removeBubble = useCallback((id: number) => {
+    setBubbles(prev => prev.filter(b => b.id !== id));
+  }, []);
+
+  // Limpeza de todos os temporizadores, intervalos e áudio ao desmontar
+  useEffect(() => {
+    return () => {
+      timersRef.current.forEach(id => clearTimeout(id));
+      timersRef.current = [];
+      if (intervalRef.current !== null) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      sounds.stopAudio();
+    };
+  }, []);
 
   useEffect(() => {
     onSetSpeech(`Rebenta ${targetCount} bolhas com ${itemLabel}!`);
     sounds.playBubbleMission(letter, `Rebenta todas as bolhas que tenham ${itemLabel}!`);
   }, [letter, targetCount, onSetSpeech, itemLabel]);
 
-  // Intervalo de geração de bolhas
+  // Intervalo de geração de bolhas com distratores pedagogicamente adequados
   useEffect(() => {
+    isDoneRef.current = false;
+
+    // Distratores: letras simples nunca devem incluir combinações que contêm a letra alvo
+    let distractors: LetterKey[];
+    if (letter === 'UI') {
+      distractors = ['IU', 'U', 'I', 'A', 'E'];
+    } else if (letter === 'IU') {
+      distractors = ['UI', 'I', 'U', 'A', 'E'];
+    } else {
+      // Para 'I', 'U', 'A', 'E' usar apenas letras simples
+      const singleVowels: LetterKey[] = ['I', 'U', 'A', 'E'];
+      distractors = singleVowels.filter(l => l !== letter);
+    }
+
     const spawnBubble = () => {
-      const candidates = (['I', 'U', 'UI', 'IU', 'A', 'E'] as const);
-      const distractors = candidates.filter(l => l !== letter);
+      if (isDoneRef.current) return;
+
       const isTarget = Math.random() < 0.65;
       const char = isTarget ? letter : distractors[Math.floor(Math.random() * distractors.length)];
       const id = nextId.current++;
@@ -52,27 +92,26 @@ export default function BubbleGame({
       setBubbles(prev => [...prev, { id, char, isTarget, leftPercent, duration, popped: false }]);
     };
 
-    // Gera 2 bolhas iniciais com pequeno desfasamento
     spawnBubble();
-    const timeout = setTimeout(spawnBubble, 600);
+    const timeout1 = window.setTimeout(spawnBubble, 600);
+    timersRef.current.push(timeout1);
 
-    // E continua a gerar regularmente
-    const interval = setInterval(spawnBubble, 1200);
+    const interval = window.setInterval(spawnBubble, 1200);
+    intervalRef.current = interval;
 
     return () => {
-      clearTimeout(timeout);
+      clearTimeout(timeout1);
       clearInterval(interval);
+      if (intervalRef.current === interval) {
+        intervalRef.current = null;
+      }
     };
   }, [letter]);
-
-  const removeBubble = (id: number) => {
-    setBubbles(prev => prev.filter(b => b.id !== id));
-  };
 
   const handleBubbleHit = (b: BubbleItem, e: React.PointerEvent<HTMLDivElement>) => {
     e.stopPropagation();
     e.preventDefault();
-    if (b.popped) return;
+    if (b.popped || isDoneRef.current) return;
 
     if (b.isTarget) {
       sounds.playPop();
@@ -83,29 +122,38 @@ export default function BubbleGame({
       const y = (rect.top + rect.height / 2) / window.innerHeight;
       fireStars(x, y);
 
-      // Marca como rebentada para efeito visual antes de remover
+      // Marca como rebentada para animação de pop
       setBubbles(prev =>
         prev.map(item => item.id === b.id ? { ...item, popped: true } : item)
       );
-      setTimeout(() => removeBubble(b.id), 200);
+      addTimer(window.setTimeout(() => removeBubble(b.id), 200));
 
-      const newScore = score + 1;
-      setScore(newScore);
+      setScore(prevScore => {
+        const newScore = prevScore + 1;
 
-      if (newScore >= targetCount) {
-        sounds.playSuccess();
-        fireConfetti();
-        onSetSpeech(`Conseguiste rebentar todas as bolhas com ${letter}! 🎉`);
-        sounds.playBubbleComplete(letter, `Muito bem! Apanhaste todas as bolhas da letra ${letter}!`);
-        setTimeout(() => {
-          onComplete();
-        }, 1500);
-      } else if (newScore === Math.ceil(targetCount / 2)) {
-        onSetSpeech("Estás quase lá! Continua!");
-      }
+        if (newScore >= targetCount && !isDoneRef.current) {
+          isDoneRef.current = true;
+          if (intervalRef.current !== null) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+          }
+
+          sounds.playSuccess();
+          fireConfetti();
+          onSetSpeech(`Conseguiste rebentar todas as bolhas com ${letter}! 🎉`);
+          sounds.playBubbleComplete(letter, `Muito bem! Apanhaste todas as bolhas d${itemLabel}!`);
+          addTimer(window.setTimeout(() => {
+            onComplete();
+          }, 1500));
+        } else if (newScore === Math.ceil(targetCount / 2)) {
+          onSetSpeech("Estás quase lá! Continua!");
+        }
+
+        return newScore;
+      });
     } else {
       sounds.playTryAgain();
-      const hitLabel = b.char.length > 1 ? `a combinação ${b.char}` : `a letra ${b.char}`;
+      const hitLabel = labelFor(b.char);
       onSetSpeech(`Essa é ${hitLabel}! Procura ${itemLabel}!`);
       sounds.playLetterName(b.char as LetterKey);
     }
@@ -129,6 +177,9 @@ export default function BubbleGame({
         {bubbles.map(b => (
           <div
             key={b.id}
+            role="button"
+            tabIndex={0}
+            aria-label={`Bolha com ${labelFor(b.char)}`}
             onPointerDown={(e) => handleBubbleHit(b, e)}
             onAnimationEnd={() => removeBubble(b.id)}
             style={{
@@ -157,3 +208,4 @@ export default function BubbleGame({
     </div>
   );
 }
+

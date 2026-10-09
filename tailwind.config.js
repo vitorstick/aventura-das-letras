@@ -20,6 +20,16 @@ export default {
           star: '#FFD54F',
         }
       },
+      borderWidth: {
+        '3': '3px',
+      },
+      spacing: {
+        '22': '5.5rem',
+        '26': '6.5rem',
+      },
+      scale: {
+        '102': '1.02',
+      },
       fontFamily: {
         kids: ['Fredoka', 'Quicksand', 'Nunito', 'system-ui', 'sans-serif'],
       },

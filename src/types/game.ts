@@ -1,14 +1,17 @@
 export type LetterKey = 'I' | 'U' | 'UI' | 'IU' | 'A' | 'E';
 
 export type StepType =
-  | 'welcome'
-  | 'map'
   | 'explorer'
   | 'bubble'
   | 'wordHunt'
   | 'trace'
   | 'quiz'
   | 'celebration';
+
+export type ScreenType =
+  | 'welcome'
+  | 'map'
+  | StepType;
 
 export type DinoExpression = 'idle' | 'cheer' | 'talk';
 

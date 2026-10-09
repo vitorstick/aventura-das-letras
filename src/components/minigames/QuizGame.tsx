@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Volume2 } from 'lucide-react';
 import { GAME_DATA } from '../../data/gameData';
 import { sounds } from '../../utils/soundEngine';
 import { fireStars, fireConfetti } from '../../utils/confetti';
 import { LetterKey, QuizItem } from '../../types/game';
+import { labelFor, shuffleArray, selectBalancedQuizQuestions } from '../../utils/gameHelpers';
 
 interface ButtonConfigItem {
   bg: string;
@@ -31,26 +32,47 @@ export default function QuizGame({ onComplete, onSetSpeech }: QuizGameProps): Re
   const [isAnswered, setIsAnswered] = useState<boolean>(false);
   const [wrongWiggle, setWrongWiggle] = useState<LetterKey | null>(null);
 
+  const timersRef = useRef<number[]>([]);
+  const addTimer = (id: number) => {
+    timersRef.current.push(id);
+    return id;
+  };
+
+  // Limpeza de temporizadores e áudio ao desmontar
   useEffect(() => {
-    // Baralhar perguntas garantindo diversidade
-    const shuffled = [...GAME_DATA.quizItems].sort(() => Math.random() - 0.5).slice(0, 7);
-    setQuestions(shuffled);
+    return () => {
+      timersRef.current.forEach(id => clearTimeout(id));
+      timersRef.current = [];
+      sounds.stopAudio();
+    };
+  }, []);
+
+  useEffect(() => {
+    // Selecionar perguntas com representação equilibrada de todas as letras/combos
+    const selected = selectBalancedQuizQuestions(GAME_DATA.quizItems);
+    setQuestions(selected);
     setCurrentIndex(0);
   }, []);
 
   useEffect(() => {
     if (questions.length > 0 && currentIndex < questions.length) {
       const q = questions[currentIndex];
-      const isCombo = q.letter.length > 1;
-      onSetSpeech(`${q.word}... Qual é a ${isCombo ? 'combinação' : 'letra'}?`);
+      const itemDesc = labelFor(q.letter);
+      onSetSpeech(`${q.word}... Qual é ${itemDesc}?`);
       sounds.playQuizPrompt(q.word, q.prompt);
     }
   }, [currentIndex, questions, onSetSpeech]);
 
-  if (questions.length === 0) return null;
-
   const currentQ = questions[currentIndex];
-  const options = currentQ.options || (['UI', 'IU'].includes(currentQ.letter) ? ['UI', 'IU', 'U', 'I'] : ['A', 'E', 'I', 'U']);
+
+  // Baralha as opções de cada pergunta para que a resposta certa não fique sempre no topo esquerdo
+  const shuffledOptions = useMemo<LetterKey[]>(() => {
+    if (!currentQ) return [];
+    const baseOptions = currentQ.options || (['UI', 'IU'].includes(currentQ.letter) ? ['UI', 'IU', 'U', 'I'] : ['A', 'E', 'I', 'U']);
+    return shuffleArray(baseOptions);
+  }, [currentIndex, currentQ]);
+
+  if (!currentQ || questions.length === 0) return null;
 
   const handleChoice = (choice: LetterKey, e: React.MouseEvent<HTMLButtonElement>) => {
     if (!canAnswer) return;
@@ -82,18 +104,17 @@ export default function QuizGame({ onComplete, onSetSpeech }: QuizGameProps): Re
       };
 
       sounds.playQuizSuccess(currentQ.word, `Certo! ${currentQ.word}!`, () => {
-        setTimeout(advance, 350);
+        addTimer(window.setTimeout(advance, 350));
       });
 
       // Temporizador de segurança
-      setTimeout(advance, 3500);
+      addTimer(window.setTimeout(advance, 3500));
     } else {
       sounds.playTryAgain();
       setWrongWiggle(choice);
-      setTimeout(() => setWrongWiggle(null), 500);
+      addTimer(window.setTimeout(() => setWrongWiggle(null), 500));
 
-      const isCombo = currentQ.letter.length > 1;
-      const itemDesc = isCombo ? `a combinação ${currentQ.letter}` : `a letra ${currentQ.letter}`;
+      const itemDesc = labelFor(currentQ.letter);
       onSetSpeech(`Ouve bem! Tem ${itemDesc}!`);
       sounds.playQuizTryAgain(currentQ.word, `Quase! ${currentQ.word} tem ${itemDesc}!`);
     }
@@ -107,10 +128,11 @@ export default function QuizGame({ onComplete, onSetSpeech }: QuizGameProps): Re
       </div>
 
       {/* Cartão Central do Objeto */}
-      <div
+      <button
+        type="button"
         onClick={() => sounds.playQuizPrompt(currentQ.word, currentQ.prompt)}
+        aria-label={`Ouvir pergunta sobre ${currentQ.word}`}
         className="kid-btn-shadow bg-white border-4 border-purple-300 rounded-3xl p-4 sm:p-5 flex flex-col items-center justify-center my-2 w-full max-w-[260px] animate-bounce-soft cursor-pointer active:scale-95 transition-transform"
-        title="Toca para ouvir a pergunta!"
       >
         <span className="text-5xl sm:text-6xl mb-1">{currentQ.emoji}</span>
         {isAnswered ? (
@@ -124,17 +146,19 @@ export default function QuizGame({ onComplete, onSetSpeech }: QuizGameProps): Re
             <span>Ouve o som!</span>
           </span>
         )}
-      </div>
+      </button>
 
       {/* Grelha 2x2 com os Botões de Opções */}
       <div className="grid grid-cols-2 gap-3 w-full max-w-[280px]">
-        {options.map((letra) => {
+        {shuffledOptions.map((letra) => {
           const config = BUTTON_CONFIG[letra];
           const isWiggling = wrongWiggle === letra;
 
           return (
             <button
               key={letra}
+              type="button"
+              aria-label={`Opção ${letra}`}
               onClick={(e) => handleChoice(letra, e)}
               className={`kid-btn-shadow h-20 sm:h-22 rounded-2xl ${config.bg} text-white font-black text-3xl sm:text-4xl flex items-center justify-center active:scale-95 transition-transform ${
                 isWiggling ? 'animate-wiggle' : ''
@@ -148,3 +172,4 @@ export default function QuizGame({ onComplete, onSetSpeech }: QuizGameProps): Re
     </div>
   );
 }
+

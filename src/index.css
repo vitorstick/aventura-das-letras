@@ -86,3 +86,19 @@ html, body {
   border-radius: 12px;
   border: 2px solid white;
 }
+
+/* Permitir seleção em campos de texto e áreas parentais */
+input, textarea, [data-selectable] {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+}
+
+/* Suporte para utilizadores com preferência por movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

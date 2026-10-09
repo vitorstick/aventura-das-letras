@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Volume2, Star, Check, ArrowRight } from 'lucide-react';
 import { GAME_DATA } from '../../data/gameData';
 import { sounds } from '../../utils/soundEngine';
 import { fireStars, fireConfetti } from '../../utils/confetti';
 import { LetterKey, MiddleWordItem } from '../../types/game';
+import { labelFor, titleLabelFor } from '../../utils/gameHelpers';
 
 interface WordHuntGameProps {
   letter: LetterKey;
@@ -11,7 +12,7 @@ interface WordHuntGameProps {
   onSetSpeech: (text: string) => void;
 }
 
-function tokenizeWord(word: string, target: string): string[] {
+export function tokenizeWord(word: string, target: string): string[] {
   if (target.length <= 1) {
     return word.split('');
   }
@@ -40,7 +41,7 @@ export default function WordHuntGame({
   const wordsList: MiddleWordItem[] = letterData?.middleWords || [];
 
   const isCombo = letter.length > 1;
-  const targetType = isCombo ? 'a combinação' : 'a letra';
+  const targetType = labelFor(letter);
 
   const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
   const [foundIndices, setFoundIndices] = useState<Set<number>>(new Set());
@@ -48,11 +49,30 @@ export default function WordHuntGame({
   const [isWordCompleted, setIsWordCompleted] = useState<boolean>(false);
   const [isRoundCompleted, setIsRoundCompleted] = useState<boolean>(false);
 
+  const timersRef = useRef<number[]>([]);
+  const isMountedRef = useRef<boolean>(true);
+
+  const addTimer = (id: number) => {
+    timersRef.current.push(id);
+    return id;
+  };
+
+  // Limpeza de temporizadores e áudio ao desmontar
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+      timersRef.current.forEach(id => clearTimeout(id));
+      timersRef.current = [];
+      sounds.stopAudio();
+    };
+  }, []);
+
   const currentWordData: MiddleWordItem = wordsList[currentWordIndex] || {
     word: letter,
     display: letter,
     emoji: '⭐',
-    prompt: `Onde está ${targetType} ${letter}?`
+    prompt: `Onde está ${targetType}?`
   };
 
   const wordTokens = tokenizeWord(currentWordData.word, letter);
@@ -112,19 +132,19 @@ export default function WordHuntGame({
         setIsWordCompleted(true);
         sounds.playSuccess();
 
-        const successSpeech = `Muito bem! Encontraste ${targetType} ${letter} na palavra ${currentWordData.display}!`;
+        const successSpeech = `Muito bem! Encontraste ${targetType} na palavra ${currentWordData.display}!`;
         onSetSpeech(successSpeech);
 
         let advanced = false;
         const advance = () => {
-          if (advanced) return;
+          if (advanced || !isMountedRef.current) return;
           advanced = true;
           if (currentWordIndex + 1 >= wordsList.length) {
             // Concluiu todas as palavras
             setIsRoundCompleted(true);
             sounds.playWinFanfare();
             fireConfetti();
-            const finishSpeech = `Fantástico, pequeno detetive! Encontraste ${targetType} ${letter} nas palavras!`;
+            const finishSpeech = `Fantástico, pequeno detetive! Encontraste ${targetType} nas palavras!`;
             onSetSpeech(finishSpeech);
             sounds.speak(finishSpeech);
           } else {
@@ -134,11 +154,11 @@ export default function WordHuntGame({
 
         // Avança após a frase inteira de sucesso terminar de tocar
         sounds.playHuntSuccess(currentWordData.audioWordKey || currentWordData.word, successSpeech, () => {
-          setTimeout(advance, 500);
+          addTimer(window.setTimeout(advance, 500));
         });
 
         // Safety fallback para caso o áudio falhe silenciosamente
-        setTimeout(advance, 4500);
+        addTimer(window.setTimeout(advance, 4500));
       } else {
         const remainingCount = totalTargetsInWord - nextFound.size;
         const partialSpeech = remainingCount === 1
@@ -150,10 +170,10 @@ export default function WordHuntGame({
     } else {
       sounds.playTryAgain();
       setWigglingIndex(index);
-      setTimeout(() => setWigglingIndex(null), 500);
+      addTimer(window.setTimeout(() => setWigglingIndex(null), 500));
 
-      const wrongLabel = token.length > 1 ? `a combinação ${token}` : `a letra ${token}`;
-      const errorSpeech = `Essa é ${wrongLabel}! Onde está ${targetType} ${letter}?`;
+      const wrongLabel = labelFor(token);
+      const errorSpeech = `Essa é ${wrongLabel}! Onde está ${targetType}?`;
       onSetSpeech(errorSpeech);
       sounds.speak(errorSpeech);
     }
@@ -172,7 +192,7 @@ export default function WordHuntGame({
         <div className="flex items-center gap-1.5">
           <span className="text-xl">🔍</span>
           <span className="font-bold text-amber-950 text-xs sm:text-sm">
-            Detetive d{isCombo ? 'a Combinação' : 'a Letra'} <strong className="text-xl font-black text-rose-500 ml-0.5">{letter}</strong>
+            Detetive {titleLabelFor(letter)} <strong className="text-xl font-black text-rose-500 ml-0.5">{letter}</strong>
           </span>
         </div>
         <div className="flex items-center gap-1 bg-amber-100 px-2.5 py-1 rounded-full text-xs font-black text-amber-900">

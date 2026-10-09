@@ -55,14 +55,38 @@ class SoundEngine {
   private audioCache: Map<string, HTMLAudioElement> = new Map();
   private activeAudio: HTMLAudioElement | null = null;
   private currentPlayId: number = 0;
+  private speakingListeners: Set<(isSpeaking: boolean) => void> = new Set();
+  private isSpeaking: boolean = false;
 
   constructor() {
     this.initVoices();
   }
 
+  onSpeakingChange(callback: (isSpeaking: boolean) => void): () => void {
+    this.speakingListeners.add(callback);
+    callback(this.isSpeaking);
+    return () => {
+      this.speakingListeners.delete(callback);
+    };
+  }
+
+  private setSpeaking(val: boolean): void {
+    if (this.isSpeaking !== val) {
+      this.isSpeaking = val;
+      this.speakingListeners.forEach(cb => {
+        try {
+          cb(val);
+        } catch (err) {
+          console.error(err);
+        }
+      });
+    }
+  }
+
   unlockAudio(): void {
+    if (typeof window === 'undefined') return;
     if (!this.ctx) {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       if (AudioCtx) {
         this.ctx = new AudioCtx();
       }
@@ -74,7 +98,7 @@ class SoundEngine {
   }
 
   initVoices(): void {
-    if ('speechSynthesis' in window) {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       const load = () => {
         const voices = window.speechSynthesis.getVoices();
 
@@ -143,7 +167,8 @@ class SoundEngine {
 
   stopAudio(): void {
     this.currentPlayId++;
-    if ('speechSynthesis' in window) {
+    this.setSpeaking(false);
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       try {
         window.speechSynthesis.cancel();
       } catch (e) {
@@ -158,6 +183,7 @@ class SoundEngine {
   }
 
   preloadAudio(name: string): void {
+    if (typeof window === 'undefined' || typeof Audio === 'undefined') return;
     const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
     const audioUrl = `${base}audio/${name}.mp3`;
     if (!this.audioCache.has(audioUrl)) {
@@ -172,7 +198,7 @@ class SoundEngine {
   }
 
   playAudioFile(name: string, fallbackText?: string, onEnd?: (() => void) | null): void {
-    if (!this.soundEnabled || !this.speechEnabled) {
+    if (!this.soundEnabled || !this.speechEnabled || typeof window === 'undefined' || typeof Audio === 'undefined') {
       if (onEnd) onEnd();
       return;
     }
@@ -201,6 +227,7 @@ class SoundEngine {
       if (this.activeAudio === audio) {
         this.activeAudio = null;
       }
+      this.setSpeaking(false);
       if (this.currentPlayId === playId && onEnd) {
         onEnd();
       }
@@ -224,6 +251,7 @@ class SoundEngine {
       triggerFallback();
     };
 
+    this.setSpeaking(true);
     audio.play().catch(err => {
       console.warn("[SoundEngine] Reprodução de áudio bloqueada ou em erro:", err);
       triggerFallback();
@@ -333,7 +361,7 @@ class SoundEngine {
   }
 
   speak(text: string, onEnd: (() => void) | null = null): void {
-    if (!this.speechEnabled || !('speechSynthesis' in window)) {
+    if (!this.speechEnabled || typeof window === 'undefined' || !('speechSynthesis' in window)) {
       if (onEnd) setTimeout(onEnd, 800);
       return;
     }
@@ -354,21 +382,27 @@ class SoundEngine {
       if (this.ptVoice) {
         utterance.voice = this.ptVoice;
       }
+
+      this.setSpeaking(true);
+
       utterance.onend = () => {
-        if (this.currentPlayId === playId && onEnd) {
-          onEnd();
+        if (this.currentPlayId === playId) {
+          this.setSpeaking(false);
+          if (onEnd) onEnd();
         }
       };
       utterance.onerror = (e) => {
         // Ignorar cancelamento deliberado
         if (e.error === 'interrupted' || e.error === 'canceled') return;
-        if (this.currentPlayId === playId && onEnd) {
-          onEnd();
+        if (this.currentPlayId === playId) {
+          this.setSpeaking(false);
+          if (onEnd) onEnd();
         }
       };
       window.speechSynthesis.speak(utterance);
     } catch (e) {
       console.warn("Fala não suportada ou bloqueada:", e);
+      this.setSpeaking(false);
       if (onEnd) setTimeout(onEnd, 500);
     }
   }

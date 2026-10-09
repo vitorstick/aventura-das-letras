@@ -40,12 +40,13 @@ export default function MascotDino({
       )}
 
       {/* SVG Interativo do Dino */}
-      <div
+      <button
+        type="button"
         onClick={handleTap}
-        className={`cursor-pointer drop-shadow-lg transition-transform active:scale-95 ${
+        aria-label="Tocar no Dino"
+        className={`cursor-pointer drop-shadow-lg transition-transform active:scale-95 bg-transparent border-0 p-0 focus:outline-none ${
           compact ? 'w-16 h-16 sm:w-20 sm:h-20' : 'w-24 h-24 sm:w-28 sm:h-28'
         } ${isCheering ? 'animate-bounce' : ''}`}
-        title="Toca no Dino!"
       >
         <svg viewBox="0 0 120 120" className="w-full h-full">
           <defs>
@@ -127,7 +128,7 @@ export default function MascotDino({
             <path d="M 50 60 Q 58 68 66 60" stroke="#1B5E20" strokeWidth="3" fill="none" strokeLinecap="round" />
           )}
         </svg>
-      </div>
+      </button>
     </div>
   );
 }

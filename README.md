@@ -1,44 +1,39 @@
 # 🦕 Aventura das Letras - O Jogo do Dino
 
-Jogo educativo e interativo concebido para crianças de 6 anos aprenderem as letras do alfabeto em **Português de Portugal (pt-PT)**, incluindo as vogais **I**, **U**, **A** e **E**.
+Jogo educativo e interativo concebido para crianças de 6 anos (1.º ciclo do Ensino Básico) aprenderem as letras e combinações de vogais em **Português de Portugal (pt-PT)**, incluindo **I**, **U**, as combinações **UI** e **IU**, e as letras **A** e **E**.
 
-O jogo corre diretamente no navegador web e é 100% otimizado para jogar em telemóveis e tablets com comandos táteis intuitivos.
+O jogo corre diretamente no navegador web e é 100% otimizado para telemóveis e tablets com comandos táteis intuitivos.
 
 ---
 
 ## ✨ Funcionalidades Principais
 
-- 🦕 **Mascote Dino Interativa:** Um dinossauro bebé amigável que fala em português, comemora as vitórias e incentiva a criança em todos os passos.
-- 🇵🇹 **Português de Portugal:** Pronúncia autêntica (voz pt-PT) e vocabulário familiar em Portugal (*Ilha*, *Igreja*, *Iogurte*, *Iguana*, *Urso*, *Uvas*, *Unha*, *Unicórnio*, *Avião*, *Abelha*, *Árvore*, *Ananás*, *Elefante*, *Estrela*, *Escada*, *Espelho*).
-- 🐾 **Mapa Sequencial de 14 Etapas:**
-  1. **Descobrir o I:** Sons, formas e cartões táteis interativos.
-  2. **Bolhas do I:** Minigame de rebentar bolhas com a letra I.
-  3. **Desenhar o I:** Caligrafia cursiva escolar com pauta e pingo no i.
-  4. **Descobrir o U:** Sons e objetos com o U (*Urso*, *Uvas*, etc.).
-  5. **Bolhas do U:** Minigame de rebentar bolhas com a letra U.
-  6. **Desenhar o U:** Caligrafia cursiva com ondas escolares.
-  7. **Descobrir o A:** Sons e objetos com o A (*Avião*, *Abelha*, etc.).
-  8. **Bolhas do A:** Minigame de agilidade tátil com a letra A.
-  9. **Desenhar o A:** Caligrafia cursiva da voltinha redonda e perninha.
-  10. **Descobrir o E:** Sons e objetos com o E (*Elefante*, *Estrela*, etc.).
-  11. **Bolhas do E:** Minigame de bolhas com a letra E.
-  12. **Desenhar o E:** Caligrafia cursiva com laço de montanha russa.
-  13. **O Grande Desafio:** Jogo de associação das 4 letras com botões coloridos (A, E, I, U).
-  14. **Super Festa do Dino:** Troféu dourado, 14 estrelas e chuva de confetes.
-- 📱 **Otimizado para Telemóvel:** Botões grandes táteis, sem zoom involuntário, suporte de instalação no ecrã de início (PWA).
-- 🔊 **Efeitos Sonoros Sintetizados:** Sons agradáveis em tempo real via Web Audio API (sem downloads pesados de áudio).
-- ⭐ **Reforço Positivo:** A criança nunca "perde" nem é penalizada; o Dino incentiva a tentar de novo até acertar.
+- 🦕 **Mascote Dino Interativa:** Um dinossauro bebé amigável com animação labial sincronizada com a voz (`talk`), que incentiva a criança, ensina e comemora as vitórias.
+- 🇵🇹 **Português de Portugal (Voz pt-PT Raquel Neural):** Áudio gravado de alta qualidade com sotaque autêntico europeu e vocabulário de Portugal (*Ilha*, *Urso*, *Uivo*, *Viu*, *Avião*, *Elefante*, etc.), com fallback dinâmico para a Web Speech API.
+- 🐾 **Caminho da Floresta Sequencial (20 Etapas):**
+  - **Ciclo do I:** Explorador do I (sons e palavras), Bolhas do I (5 alvos), Detetive do I (encontrar no meio de palavras).
+  - **Ciclo do U:** Explorador do U, Bolhas do U, Detetive do U.
+  - **Ciclo da Combinação UI:** Explorador do UI, Bolhas do UI, Detetive do UI.
+  - **Ciclo da Combinação IU:** Explorador do IU, Bolhas do IU, Detetive do IU.
+  - **Ciclo do A:** Explorador do A, Bolhas do A, Detetive do A.
+  - **Ciclo do E:** Explorador do E, Bolhas do E, Detetive do E.
+  - **O Grande Desafio:** Quiz de associação imagem-letra/combinação com perguntas equilibradas e opções baralhadas.
+  - **Super Festa do Dino:** Celebração final com troféu, confetes e balanço de estrelas.
+- 🔒 **Proteção Parental:** Reinicialização do progresso protegida por um desafio matemático simples para pais ("Quanto é 7 + 5?"), impedindo perdas acidentais de progresso.
+- ⭐ **Progresso Seguro e Versionado:** O progresso e as preferências de som são guardados no `localStorage` de forma validada (`dino_progress_v1`).
+- ♿ **Acessibilidade e Usabilidade:** Todos os elementos interativos são botões semânticos acessíveis por teclado e leitor de ecrã, com suporte a redução de movimento (`prefers-reduced-motion`) e zoom permitido para utilizadores de baixa visão.
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **React 18**
-- **Vite**
-- **Tailwind CSS**
+- **React 18** + **TypeScript**
+- **Vite 5**
+- **Tailwind CSS 3** (com extensões táteis)
+- **Vitest** (Testes unitários e de integridade dos dados)
 - **Lucide React** (Ícones táteis)
-- **Canvas Confetti** (Efeitos visuais)
-- **Web Audio API & Web Speech API** (Sons e Voz pt-PT)
+- **Canvas Confetti** (Efeitos visuais comemorativos)
+- **Web Audio API** + Biblioteca de 236 gravações neurais pt-PT
 
 ---
 
@@ -54,19 +49,28 @@ npm install
 npm run dev
 ```
 
-O terminal indicará o endereço local (por exemplo: `http://localhost:5173/`).
-
-### 3. Jogar no Telemóvel:
-Ao executar `npm run dev`, o Vite disponibiliza um endereço de rede local (exemplo: `http://192.168.x.x:5173/`).
-Basta aceder a esse endereço no browser do telemóvel (ligado ao mesmo Wi-Fi) para jogar com toque direto no ecrã!
+### 3. Executar a suite de testes:
+```bash
+npm test
+```
 
 ### 4. Compilar para Produção:
 ```bash
 npm run build
 ```
-Os ficheiros estáticos prontos para publicação serão gerados na pasta `dist/`.
+
+---
+
+## 🎙️ Pipeline de Geração de Áudio (pt-PT Raquel Neural)
+
+Os ficheiros de voz pt-PT são gerados via `edge-tts`:
+```bash
+pip install edge-tts
+python scripts/generate_audio.py
+```
+O script lê os termos de `gameData.ts`, evita reprocessar ficheiros já existentes em `public/audio/`, e exporta gravações MP3 de alta fidelidade com a voz `pt-PT-RaquelNeural`.
 
 ---
 
 ## 📖 Documentação Detalhada
-Para ver todas as decisões pedagógicas, regras dos minigames e como adicionar mais letras, consulta o ficheiro [instructions.md](instructions.md).
+Para ver todas as decisões pedagógicas e arquitetura, consulta o ficheiro [instructions.md](instructions.md).
