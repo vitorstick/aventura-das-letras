@@ -273,10 +273,69 @@ export const GAME_DATA: GameDataSet = {
           ]
         }
       }
+    },
+    O: {
+      char: 'O',
+      soundText: 'Ooo',
+      spokenIntro: 'Que maravilha! Esta é a letra O! Ouve como faz: Óóóó!',
+      nameAudioKey: 'letter_name_o',
+      soundAudioKey: 'letter_sound_o',
+      introAudioKey: 'letter_intro_o',
+      color: '#2E7D32',
+      words: [
+        { id: 'olho', word: 'Olho', emoji: '👁️', audioText: 'Ó de Olho! Olhos abertos para ver tudo!', audioWordKey: 'word_only_olho', audioPhraseKey: 'word_phrase_olho', spelling: ['O', 'L', 'H', 'O'], syllables: ['O', 'lho'] },
+        { id: 'ovelha', word: 'Ovelha', emoji: '🐑', audioText: 'Ó de Ovelha! Uma ovelha fofinha com lã branca!', audioWordKey: 'word_only_ovelha', audioPhraseKey: 'word_phrase_ovelha', spelling: ['O', 'V', 'E', 'L', 'H', 'A'], syllables: ['O', 've', 'lha'] },
+        { id: 'ovo', word: 'Ovo', emoji: '🥚', audioText: 'Ó de Ovo! Um ovo no ninho quentinho!', audioWordKey: 'word_only_ovo', audioPhraseKey: 'word_phrase_ovo', spelling: ['O', 'V', 'O'], syllables: ['O', 'vo'] },
+        { id: 'ourico', word: 'Ouriço', emoji: '🦔', audioText: 'Ó de Ouriço! O ouriço simpático com picos!', audioWordKey: 'word_only_ourico', audioPhraseKey: 'word_phrase_ourico', spelling: ['O', 'U', 'R', 'I', 'Ç', 'O'], syllables: ['Ou', 'ri', 'ço'] }
+      ],
+      // Palavras para encontrar a letra O no meio da palavra
+      middleWords: [
+        { word: 'SOL', display: 'Sol', emoji: '☀️', prompt: 'Onde está a letra O na palavra Sol?', audioWordKey: 'word_only_sol' },
+        { word: 'BOLO', display: 'Bolo', emoji: '🎂', prompt: 'A palavra Bolo tem duas letras O! Encontra as duas letras O!', audioWordKey: 'word_only_bolo' },
+        { word: 'PORCO', display: 'Porco', emoji: '🐷', prompt: 'A palavra Porco tem duas letras O! Consegues encontrar as duas?', audioWordKey: 'word_only_porco' },
+        { word: 'COMBOIO', display: 'Comboio', emoji: '🚂', prompt: 'A palavra Comboio tem três letras O! Toca em todas as letras O!', audioWordKey: 'word_only_comboio' }
+      ],
+      tracing: {
+        lowercase: {
+          char: 'o',
+          label: 'Minúscula (o)',
+          hint: 'Sobe com a perninha, dá a volta redondinha, fecha o círculo e puxa o lacinho por cima!',
+          points: [
+            { x: 0.25, y: 0.70 },
+            { x: 0.36, y: 0.54 },
+            { x: 0.48, y: 0.42 },
+            { x: 0.34, y: 0.50 },
+            { x: 0.28, y: 0.62 },
+            { x: 0.38, y: 0.72 },
+            { x: 0.54, y: 0.64 },
+            { x: 0.50, y: 0.44 },
+            { x: 0.42, y: 0.48 },
+            { x: 0.52, y: 0.44 },
+            { x: 0.68, y: 0.44 }
+          ]
+        },
+        uppercase: {
+          char: 'O',
+          label: 'Maiúscula (O)',
+          hint: 'Começa no topo, desce numa volta bem redonda e termina com um caracol por dentro!',
+          points: [
+            { x: 0.52, y: 0.22 },
+            { x: 0.38, y: 0.34 },
+            { x: 0.30, y: 0.52 },
+            { x: 0.40, y: 0.72 },
+            { x: 0.50, y: 0.74 },
+            { x: 0.65, y: 0.60 },
+            { x: 0.66, y: 0.38 },
+            { x: 0.54, y: 0.24 },
+            { x: 0.44, y: 0.36 },
+            { x: 0.48, y: 0.48 }
+          ]
+        }
+      }
     }
   },
 
-  // Desafio com perguntas variadas cobrindo letras e combinações (I, U, UI, IU, A, E)
+  // Desafio com perguntas variadas cobrindo letras e combinações (I, U, UI, IU, A, E, O)
   quizItems: [
     { word: 'Ui!', emoji: '😱', letter: 'UI', prompt: 'Ui, que susto! Que combinação é esta? ui, iu, U ou I?', options: ['UI', 'IU', 'U', 'I'] },
     { word: 'Uivo', emoji: '🐺', letter: 'UI', prompt: 'Uivo do lobo... começa por que combinação? ui, iu, U ou I?', options: ['UI', 'IU', 'U', 'I'] },
@@ -291,10 +350,13 @@ export const GAME_DATA: GameDataSet = {
     { word: 'Urso', emoji: '🐻', letter: 'U', prompt: 'Urso... começa com que letra? Á, É, I ou U?', options: ['U', 'I', 'A', 'E'] },
     { word: 'Íman', emoji: '🧲', letter: 'I', prompt: 'Íman... começa com que letra? Á, É, I ou U?', options: ['I', 'U', 'A', 'E'] },
     { word: 'Asa', emoji: '🪽', letter: 'A', prompt: 'Asa... começa com que letra? Á, É, I ou U?', options: ['A', 'E', 'I', 'U'] },
-    { word: 'Estrela', emoji: '⭐', letter: 'E', prompt: 'Estrela... começa com que letra? Á, É, I ou U?', options: ['E', 'A', 'I', 'U'] }
+    { word: 'Estrela', emoji: '⭐', letter: 'E', prompt: 'Estrela... começa com que letra? Á, É, I ou U?', options: ['E', 'A', 'I', 'U'] },
+    { word: 'Olho', emoji: '👁️', letter: 'O', prompt: 'Olho... começa com que letra? Ó, Á, É ou U?', options: ['O', 'A', 'E', 'U'] },
+    { word: 'Ovelha', emoji: '🐑', letter: 'O', prompt: 'Ovelha... começa com que letra? Ó, Á, É ou U?', options: ['O', 'A', 'E', 'U'] },
+    { word: 'Ovo', emoji: '🥚', letter: 'O', prompt: 'Ovo... começa com que letra? Ó, Á, É ou U?', options: ['O', 'A', 'E', 'U'] }
   ],
 
-  // 20 Etapas Sequenciais da Aventura do Dino
+  // 23 Etapas Sequenciais da Aventura do Dino
   steps: [
     // --- CICLO DA LETRA I ---
     {
@@ -476,9 +538,39 @@ export const GAME_DATA: GameDataSet = {
       dinoSpeech: 'Consegues descobrir onde está a letra E no meio das palavras?'
     },
 
-    // --- GRANDE DESAFIO & CELEBRAÇÃO ---
+    // --- CICLO DA LETRA O ---
     {
       id: 19,
+      type: 'explorer',
+      letter: 'O',
+      title: 'A Letra O',
+      subtitle: 'Descobre os olhos, a ovelha e mais!',
+      icon: '👁️',
+      dinoSpeech: 'Maravilha! Chegámos à letra O! Ouve como faz: Óóóó! Toca nos cartões!'
+    },
+    {
+      id: 20,
+      type: 'bubble',
+      letter: 'O',
+      title: 'Bolhas do O',
+      subtitle: 'Rebenta 5 bolhas com a letra O!',
+      icon: '🫧',
+      targetCount: 5,
+      dinoSpeech: 'Rebenta todas as bolhas com a letra O! Cuidado com as outras!'
+    },
+    {
+      id: 21,
+      type: 'wordHunt',
+      letter: 'O',
+      title: 'Detetive do O',
+      subtitle: 'Encontra a letra O no meio das palavras!',
+      icon: '🔍',
+      dinoSpeech: 'Atenção, detetive! Toca em todas as letras O nas palavras!'
+    },
+
+    // --- GRANDE DESAFIO & CELEBRAÇÃO ---
+    {
+      id: 22,
       type: 'quiz',
       letter: 'ALL',
       title: 'O Grande Desafio',
@@ -487,12 +579,12 @@ export const GAME_DATA: GameDataSet = {
       dinoSpeech: 'O grande teste das letras e combinações! Olha para o desenho e toca na opção certa!'
     },
     {
-      id: 20,
+      id: 23,
       type: 'celebration',
       title: 'Super Festa do Dino!',
-      subtitle: 'Aprendeste as letras I, U, A, E e as combinações UI e IU!',
+      subtitle: 'Aprendeste as letras I, U, A, E, O e as combinações UI e IU!',
       icon: '🏆',
-      dinoSpeech: 'Parabéns, és um génio! Conquistaste as letras e as combinações UI e IU!'
+      dinoSpeech: 'Parabéns, és um génio! Conquistaste as letras I, U, A, E, O e as combinações UI e IU!'
     }
   ]
 };

@@ -18,6 +18,7 @@ const BUTTON_CONFIG: Record<LetterKey, ButtonConfigItem> = {
   IU: { bg: 'bg-fuchsia-500 hover:bg-fuchsia-600 active:bg-fuchsia-700', label: 'IU' },
   A: { bg: 'bg-amber-500 hover:bg-amber-600 active:bg-amber-700', label: 'A' },
   E: { bg: 'bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700', label: 'E' },
+  O: { bg: 'bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700', label: 'O' },
 };
 
 interface QuizGameProps {

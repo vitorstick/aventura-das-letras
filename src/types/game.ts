@@ -1,4 +1,4 @@
-export type LetterKey = 'I' | 'U' | 'UI' | 'IU' | 'A' | 'E';
+export type LetterKey = 'I' | 'U' | 'UI' | 'IU' | 'A' | 'E' | 'O';
 
 export type StepType =
   | 'explorer'

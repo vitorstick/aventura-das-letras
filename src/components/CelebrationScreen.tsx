@@ -9,7 +9,7 @@ interface CelebrationScreenProps {
   onPlayAgain: () => void;
 }
 
-export default function CelebrationScreen({ stars, maxStars = 19, onPlayAgain }: CelebrationScreenProps): React.JSX.Element {
+export default function CelebrationScreen({ stars, maxStars = 22, onPlayAgain }: CelebrationScreenProps): React.JSX.Element {
   useEffect(() => {
     sounds.playWinFanfare();
     fireGrandCelebration();
@@ -42,7 +42,7 @@ export default function CelebrationScreen({ stars, maxStars = 19, onPlayAgain }:
           </p>
 
           <p className="text-gray-700 font-bold text-sm sm:text-base mt-2">
-            Conheces as letras <strong className="text-sky-600 font-black">I</strong>, <strong className="text-rose-600 font-black">U</strong>, as combinações <strong className="text-teal-600 font-black">UI</strong> e <strong className="text-fuchsia-600 font-black">IU</strong>, e as letras <strong className="text-amber-600 font-black">A</strong> e <strong className="text-indigo-600 font-black">E</strong>!
+            Conheces as letras <strong className="text-sky-600 font-black">I</strong>, <strong className="text-rose-600 font-black">U</strong>, as combinações <strong className="text-teal-600 font-black">UI</strong> e <strong className="text-fuchsia-600 font-black">IU</strong>, e as letras <strong className="text-amber-600 font-black">A</strong>, <strong className="text-indigo-600 font-black">E</strong> e <strong className="text-emerald-600 font-black">O</strong>!
           </p>
         </div>
       </div>

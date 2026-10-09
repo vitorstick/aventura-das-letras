@@ -17,8 +17,9 @@ Atualmente, o jogo tem implementadas e calibradas com áudio pt-PT (**RaquelNeur
 | **IU** | Ditongo | *Viu*, *Riu*, *Subiu*, *Fugiu* | *Viu*, *Riu*, *Subiu*, *Fugiu* | ✅ Implementado |
 | **A** | Vogal | *Árvore*, *Água*, *Asa*, *Avião* | *Gato*, *Barco*, *Casa*, *Banana* | ✅ Implementado |
 | **E** | Vogal | *Égua*, *Eco*, *Estrela*, *Elefante* | *Vela*, *Coelho*, *Dente*, *Estrela* | ✅ Implementado |
+| **O** | Vogal | *Olho*, *Ovelha*, *Ovo*, *Ouriço* | *Sol*, *Bolo*, *Porco*, *Comboio* | ✅ Implementado |
 
-> **Nota:** Em `src/types/game.ts`: `LetterKey = 'I' | 'U' | 'UI' | 'IU' | 'A' | 'E'`.
+> **Nota:** Em `src/types/game.ts`: `LetterKey = 'I' | 'U' | 'UI' | 'IU' | 'A' | 'E' | 'O'`.
 
 ---
 
@@ -28,7 +29,7 @@ Para cobrir a totalidade do plano pedagógico do **1.º Semestre**, organizamos 
 
 ```mermaid
 flowchart LR
-    A["Bloco 0 (Atual)<br>I, U, UI, IU, A, E"] --> B["Bloco 1<br>Vogal O & Ditongos"]
+    A["Bloco 0 (Concluído)<br>I, U, UI, IU, A, E, O"] --> B["Bloco 1 (Em Curso)<br>Ditongos OI, OU, etc."]
     B --> C["Bloco 2<br>Consoantes P, T, L, D"]
     C --> D["Bloco 3<br>Consoantes M, V"]
     D --> E["Bloco 4<br>Consoantes C (/k/), Q, N"]
@@ -40,13 +41,13 @@ flowchart LR
 ### 📦 Bloco 1: Conclusão das Vogais e Ditongos Fundamentais
 Fecha o ciclo das 5 vogais primárias e equipa a criança com todos os ditongos orais e nasais frequentes.
 
-1. **Vogal O**
+1. **Vogal O** ✅ *(Implementado)*
    - **Som:** `/ɔ/` (aberto: Ó) / `/o/` (fechado: Ô).
    - **Palavras Explorador:** *Olho* 👁️, *Ovelha* 🐑, *Ovo* 🥚, *Ouriço* 🦔.
    - **Palavras Detetive:** *Sol*, *Bolo*, *Porco*, *Comboio*.
    - **Traçado cursivo:** Círculo perfeito no sentido anti-horário com lacinho de saída superior.
 
-2. **Ditongos com O: OI, OU**
+2. **Ditongos com O: OI, OU** ⏳ *(A seguir)*
    - **Palavras OI:** *Oi!* 👋, *Oito* 8️⃣, *Noite* 🌙, *Biscoito* 🍪.
    - **Palavras OU:** *Ouro* 🪙, *Tesouro* 💎, *Touro* 🐂, *Cenoura* 🥕.
 

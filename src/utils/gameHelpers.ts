@@ -31,13 +31,13 @@ export function shuffleArray<T>(items: readonly T[]): T[] {
 }
 
 /**
- * Seleciona 7 perguntas para o quiz garantindo representatividade equilibrada
- * de todas as 6 opções chave ('I', 'U', 'UI', 'IU', 'A', 'E') + 1 pergunta aleatória adicional.
+ * Seleciona perguntas para o quiz garantindo representatividade equilibrada
+ * de todas as opções chave ('I', 'U', 'UI', 'IU', 'A', 'E', 'O') + 1 pergunta aleatória adicional.
  */
 export function selectBalancedQuizQuestions<T extends { letter: LetterKey }>(
   allItems: readonly T[],
-  targetKeys: readonly LetterKey[] = ['I', 'U', 'UI', 'IU', 'A', 'E'] as const,
-  totalCount = 7
+  targetKeys: readonly LetterKey[] = ['I', 'U', 'UI', 'IU', 'A', 'E', 'O'] as const,
+  totalCount = 8
 ): T[] {
   const selected: T[] = [];
   const remainingPool = [...allItems];

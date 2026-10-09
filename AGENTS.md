@@ -51,17 +51,17 @@ jogo_letras/
 │   │   ├── minigames/
 │   │   │   ├── BubbleGame.tsx       # Minigame: pop 5 bubbles containing target letter/diphthong
 │   │   │   ├── ExplorerGame.tsx     # Letter presentation, phonics, and interactive word cards
-│   │   │   ├── QuizGame.tsx         # Step 19: Final image-to-letter association quiz
+│   │   │   ├── QuizGame.tsx         # Step 22: Final image-to-letter association quiz
 │   │   │   ├── TraceGame.tsx        # Tactile letter tracing minigame (lowercase & uppercase)
 │   │   │   └── WordHuntGame.tsx     # Detective minigame: find letter/diphthong inside words
-│   │   ├── AdventureMap.tsx         # Forest trail map showing 20 sequential steps and stars
-│   │   ├── CelebrationScreen.tsx    # Step 20: Victory screen with golden trophy, fanfare, confetti
+│   │   ├── AdventureMap.tsx         # Forest trail map showing 23 sequential steps and stars
+│   │   ├── CelebrationScreen.tsx    # Step 23: Victory screen with golden trophy, fanfare, confetti
 │   │   ├── Header.tsx               # Top navigation: sound toggle, parent gate modal, star count
 │   │   ├── MascotDino.tsx           # Animated SVG baby dino mascot (idle, talk with lip-sync, cheer)
 │   │   ├── ParentGateModal.tsx      # Math challenge modal protecting progress reset
 │   │   └── WelcomeScreen.tsx        # Initial landing screen with "Começar Aventura!" button
 │   ├── data/
-│   │   └── gameData.ts              # Single source of truth: letters (I, U, UI, IU, A, E), steps, quiz
+│   │   └── gameData.ts              # Single source of truth: letters (I, U, UI, IU, A, E, O), steps, quiz
 │   ├── hooks/
 │   │   └── useProgress.ts           # Progress state hook backed by localStorage (dino_progress_v1)
 │   ├── tests/
@@ -93,7 +93,7 @@ jogo_letras/
 ## 5. Key Modules and Contracts
 
 ### `src/types/game.ts`
-- `LetterKey`: `'I' | 'U' | 'UI' | 'IU' | 'A' | 'E'` (extensible for new letters).
+- `LetterKey`: `'I' | 'U' | 'UI' | 'IU' | 'A' | 'E' | 'O'` (extensible for new letters).
 - `StepType`: `'explorer' | 'bubble' | 'wordHunt' | 'trace' | 'quiz' | 'celebration'`.
 - `ScreenType`: `'welcome' | 'map' | StepType`.
 - `DinoExpression`: `'idle' | 'cheer' | 'talk'`.
@@ -103,8 +103,8 @@ jogo_letras/
 ### `src/data/gameData.ts`
 - Exports `GAME_DATA`:
   - `letters`: Dictionary mapping each letter to its vocabulary cards (`words`), detective words (`middleWords`), and tactile coordinates (`tracing`).
-  - `steps`: 20 sequential stages (Cycles for I, U, UI, IU, A, E, Quiz, and Celebration).
-  - `quizItems`: Association challenge items for Step 19.
+  - `steps`: 23 sequential stages (Cycles for I, U, UI, IU, A, E, O, Quiz, and Celebration).
+  - `quizItems`: Association challenge items for Step 22.
 
 ### `src/hooks/useProgress.ts`
 - LocalStorage Key: `dino_progress_v1`.

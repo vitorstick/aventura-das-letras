@@ -18,7 +18,7 @@ export default function WelcomeScreen({ onStart }: WelcomeScreenProps): React.JS
         <div className="inline-flex items-center gap-2 bg-white/90 backdrop-blur px-5 py-2 rounded-full border-2 border-emerald-400 shadow-sm mt-1">
           <Sparkles className="w-5 h-5 text-amber-500 animate-spin" style={{ animationDuration: '4s' }} />
           <p className="text-emerald-900 font-bold text-xs sm:text-sm">
-            Aprende as letras <strong className="text-sky-600 font-black">I</strong>, <strong className="text-rose-600 font-black">U</strong>, as combinações <strong className="text-teal-600 font-black">UI</strong> e <strong className="text-fuchsia-600 font-black">IU</strong>, e as letras <strong className="text-amber-600 font-black">A</strong> e <strong className="text-indigo-600 font-black">E</strong> com o Dino!
+            Aprende as letras <strong className="text-sky-600 font-black">I</strong>, <strong className="text-rose-600 font-black">U</strong>, as combinações <strong className="text-teal-600 font-black">UI</strong> e <strong className="text-fuchsia-600 font-black">IU</strong>, e as letras <strong className="text-amber-600 font-black">A</strong>, <strong className="text-indigo-600 font-black">E</strong> e <strong className="text-emerald-600 font-black">O</strong> com o Dino!
           </p>
         </div>
       </div>

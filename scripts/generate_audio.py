@@ -44,6 +44,11 @@ AUDIO_ITEMS = [
     ("letter_intro_e", "Espetacular! Esta é a letra É! Ouve como faz: É!"),
     ("letter_card_e", "Esta é a letra É! Faz o som: É!"),
 
+    ("letter_name_o", "Letra Ó"),
+    ("letter_sound_o", "Ó"),
+    ("letter_intro_o", "Que maravilha! Esta é a letra Ó! Ouve como faz: Ó!"),
+    ("letter_card_o", "Esta é a letra Ó! Faz o som: Ó!"),
+
     # --- PALAVRAS DO EXPLORADOR (NOME CURTO E FRASE COMPLETA) ---
     # Letra I
     ("word_only_ilha", "Ilha"),
@@ -105,6 +110,16 @@ AUDIO_ITEMS = [
     ("word_only_elefante", "Elefante"),
     ("word_phrase_elefante", "É de Elefante! Um grande elefante com orelhas compridas!"),
 
+    # Letra O
+    ("word_only_olho", "Olho"),
+    ("word_phrase_olho", "Ó de Olho! Olhos abertos para ver tudo!"),
+    ("word_only_ovelha", "Ovelha"),
+    ("word_phrase_ovelha", "Ó de Ovelha! Uma ovelha fofinha com lã branca!"),
+    ("word_only_ovo", "Ovo"),
+    ("word_phrase_ovo", "Ó de Ovo! Um ovo no ninho quentinho!"),
+    ("word_only_ourico", "Ouriço"),
+    ("word_phrase_ourico", "Ó de Ouriço! O ouriço simpático com picos!"),
+
     # --- PALAVRAS DO WORD HUNT ("DETETIVE") ---
     ("word_only_peixe", "Peixe"),
     ("word_only_livro", "Livro"),
@@ -122,6 +137,10 @@ AUDIO_ITEMS = [
     ("word_only_vela", "Vela"),
     ("word_only_coelho", "Coelho"),
     ("word_only_dente", "Dente"),
+    ("word_only_sol", "Sol"),
+    ("word_only_bolo", "Bolo"),
+    ("word_only_porco", "Porco"),
+    ("word_only_comboio", "Comboio"),
 
     # --- FRASES COMPLETAS: QUIZ GAME (P1.1 e P1.3 ajustados) ---
     ("quiz_prompt_ui", "Ui, que susto! Que combinação é esta? ui, iu, U ou I?"),
@@ -179,6 +198,18 @@ AUDIO_ITEMS = [
     ("quiz_prompt_estrela", "Estrela... começa com que letra? Á, É, I ou U?"),
     ("quiz_success_estrela", "Certo! Estrela começa com a letra É!"),
     ("quiz_tryagain_estrela", "Quase! Estrela começa com a letra É!"),
+
+    ("quiz_prompt_olho", "Olho... começa com que letra? Ó, Á, É ou U?"),
+    ("quiz_success_olho", "Certo! Olho começa com a letra Ó!"),
+    ("quiz_tryagain_olho", "Quase! Olho começa com a letra Ó!"),
+
+    ("quiz_prompt_ovelha", "Ovelha... começa com que letra? Ó, Á, É ou U?"),
+    ("quiz_success_ovelha", "Certo! Ovelha começa com a letra Ó!"),
+    ("quiz_tryagain_ovelha", "Quase! Ovelha começa com a letra Ó!"),
+
+    ("quiz_prompt_ovo", "Ovo... começa com que letra? Ó, Á, É ou U?"),
+    ("quiz_success_ovo", "Certo! Ovo começa com a letra Ó!"),
+    ("quiz_tryagain_ovo", "Quase! Ovo começa com a letra Ó!"),
 
     # --- FRASES COMPLETAS: WORD HUNT ("DETETIVE DAS LETRAS") ---
     ("hunt_prompt_peixe", "Onde está a letra I na palavra Peixe?"),
@@ -256,6 +287,18 @@ AUDIO_ITEMS = [
     ("hunt_prompt_estrela", "Toca em todas as letras É na palavra Estrela!"),
     ("hunt_success_estrela", "Muito bem! Encontraste as letras É na Estrela!"),
 
+    ("hunt_prompt_sol", "Onde está a letra Ó na palavra Sol?"),
+    ("hunt_success_sol", "Muito bem! Encontraste a letra Ó no Sol!"),
+
+    ("hunt_prompt_bolo", "A palavra Bolo tem duas letras Ó! Encontra as duas letras Ó!"),
+    ("hunt_success_bolo", "Fantástico! Encontraste as duas letras Ó no Bolo!"),
+
+    ("hunt_prompt_porco", "A palavra Porco tem duas letras Ó! Consegues encontrar as duas?"),
+    ("hunt_success_porco", "Muito bem! Encontraste as duas letras Ó no Porco!"),
+
+    ("hunt_prompt_comboio", "A palavra Comboio tem três letras Ó! Toca em todas as letras Ó!"),
+    ("hunt_success_comboio", "Espetacular! Encontraste as três letras Ó no Comboio!"),
+
     # --- FRASES COMPLETAS: BUBBLE GAME ---
     ("bubble_mission_i", "Ajuda o Dino a rebentar todas as bolhas com a letra I!"),
     ("bubble_complete_i", "Muito bem! Apanhaste todas as bolhas da letra I!"),
@@ -275,6 +318,9 @@ AUDIO_ITEMS = [
     ("bubble_mission_e", "Ajuda o Dino a rebentar todas as bolhas com a letra É!"),
     ("bubble_complete_e", "Muito bem! Apanhaste todas as bolhas da letra É!"),
 
+    ("bubble_mission_o", "Ajuda o Dino a rebentar todas as bolhas com a letra Ó!"),
+    ("bubble_complete_o", "Muito bem! Apanhaste todas as bolhas da letra Ó!"),
+
     # --- FRASES COMPLETAS: TRACE GAME ---
     ("trace_hint_i_lower", "Sobe com a perninha, desce e faz a curva... e não te esqueças do pingo no i!"),
     ("trace_hint_i_upper", "Faz a voltinha no cimo, desce a haste e curva na base!"),
@@ -288,6 +334,9 @@ AUDIO_ITEMS = [
 
     ("trace_hint_e_lower", "Sobe com o dedinho, dá a volta em laço e faz a perninha de saída!"),
     ("trace_hint_e_upper", "Faz uma voltinha no cimo, um lacinho ao meio e uma voltinha maior em baixo!"),
+
+    ("trace_hint_o_lower", "Sobe com a perninha, dá a volta redondinha, fecha o círculo e puxa o lacinho por cima!"),
+    ("trace_hint_o_upper", "Começa no topo, desce numa volta bem redonda e termina com um caracol por dentro!"),
     ("trace_success", "Parabéns! Traçaste a letra cursiva perfeitamente!"),
 
     # --- SOLETRAÇÃO FONOLÓGICA DAS LETRAS DO ALFABETO (P1.1 e P1.5) ---

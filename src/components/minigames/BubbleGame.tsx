@@ -71,12 +71,12 @@ export default function BubbleGame({
     // Distratores: letras simples nunca devem incluir combinações que contêm a letra alvo
     let distractors: LetterKey[];
     if (letter === 'UI') {
-      distractors = ['IU', 'U', 'I', 'A', 'E'];
+      distractors = ['IU', 'U', 'I', 'A', 'E', 'O'];
     } else if (letter === 'IU') {
-      distractors = ['UI', 'I', 'U', 'A', 'E'];
+      distractors = ['UI', 'I', 'U', 'A', 'E', 'O'];
     } else {
-      // Para 'I', 'U', 'A', 'E' usar apenas letras simples
-      const singleVowels: LetterKey[] = ['I', 'U', 'A', 'E'];
+      // Para 'I', 'U', 'A', 'E', 'O' usar apenas letras simples
+      const singleVowels: LetterKey[] = ['I', 'U', 'A', 'E', 'O'];
       distractors = singleVowels.filter(l => l !== letter);
     }
 

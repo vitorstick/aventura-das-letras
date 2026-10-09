@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { sanitizeProgress } from '../hooks/useProgress';
 
 describe('sanitizeProgress', () => {
-  const MAX_STEPS = 20;
+  const MAX_STEPS = 23;
 
   it('handles null, undefined, and non-object inputs safely', () => {
     expect(sanitizeProgress(null, MAX_STEPS)).toEqual({

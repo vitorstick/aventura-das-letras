@@ -46,18 +46,20 @@ describe('gameHelpers', () => {
       { word: 'Árvore', emoji: '🌳', letter: 'A', prompt: 'A prompt' },
       { word: 'Água', emoji: '💧', letter: 'A', prompt: 'A prompt 2' },
       { word: 'Égua', emoji: '🐴', letter: 'E', prompt: 'E prompt' },
-      { word: 'Estrela', emoji: '⭐', letter: 'E', prompt: 'E prompt 2' }
+      { word: 'Estrela', emoji: '⭐', letter: 'E', prompt: 'E prompt 2' },
+      { word: 'Olho', emoji: '👁️', letter: 'O', prompt: 'O prompt' },
+      { word: 'Ovo', emoji: '🥚', letter: 'O', prompt: 'O prompt 2' }
     ];
 
-    it('selects exactly 7 questions by default', () => {
+    it('selects exactly 8 questions by default', () => {
       const selected = selectBalancedQuizQuestions(mockQuizItems);
-      expect(selected).toHaveLength(7);
+      expect(selected).toHaveLength(8);
     });
 
     it('contains at least one question for each target letter/combination', () => {
       const selected = selectBalancedQuizQuestions(mockQuizItems);
       const letters = new Set(selected.map(q => q.letter));
-      const required: LetterKey[] = ['I', 'U', 'UI', 'IU', 'A', 'E'];
+      const required: LetterKey[] = ['I', 'U', 'UI', 'IU', 'A', 'E', 'O'];
       for (const req of required) {
         expect(letters.has(req)).toBe(true);
       }

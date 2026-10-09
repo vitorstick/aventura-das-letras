@@ -3,8 +3,8 @@ import { GAME_DATA } from '../data/gameData';
 import { LetterKey } from '../types/game';
 
 describe('GAME_DATA integrity validator', () => {
-  it('has valid step sequence from 1 to 20', () => {
-    expect(GAME_DATA.steps).toHaveLength(20);
+  it('has valid step sequence from 1 to 23', () => {
+    expect(GAME_DATA.steps).toHaveLength(23);
     GAME_DATA.steps.forEach((step, idx) => {
       expect(step.id).toBe(idx + 1);
       expect(step.title).toBeTruthy();
@@ -14,7 +14,7 @@ describe('GAME_DATA integrity validator', () => {
   });
 
   it('checks that all steps referencing a letter point to valid letter data', () => {
-    const validLetters: (LetterKey | 'ALL')[] = ['I', 'U', 'UI', 'IU', 'A', 'E', 'ALL'];
+    const validLetters: (LetterKey | 'ALL')[] = ['I', 'U', 'UI', 'IU', 'A', 'E', 'O', 'ALL'];
     for (const step of GAME_DATA.steps) {
       if (step.letter) {
         expect(validLetters).toContain(step.letter);
