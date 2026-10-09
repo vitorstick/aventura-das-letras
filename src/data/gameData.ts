@@ -1,5 +1,7 @@
 // Vocabulário e Configuração Educativa em Português de Portugal (pt-PT)
-export const GAME_DATA = {
+import { GameDataSet } from '../types/game';
+
+export const GAME_DATA: GameDataSet = {
   letters: {
     I: {
       char: 'I',

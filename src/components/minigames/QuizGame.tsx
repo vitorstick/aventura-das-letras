@@ -2,19 +2,32 @@ import React, { useState, useEffect } from 'react';
 import { GAME_DATA } from '../../data/gameData';
 import { sounds } from '../../utils/soundEngine';
 import { fireStars, fireConfetti } from '../../utils/confetti';
+import { LetterKey, QuizItem } from '../../types/game';
 
-const BUTTON_CONFIG = {
+interface ButtonConfigItem {
+  bg: string;
+  label: LetterKey;
+}
+
+const BUTTON_CONFIG: Record<LetterKey, ButtonConfigItem> = {
   A: { bg: 'bg-amber-500 hover:bg-amber-600 active:bg-amber-700', label: 'A' },
   E: { bg: 'bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700', label: 'E' },
   I: { bg: 'bg-sky-500 hover:bg-sky-600 active:bg-sky-700', label: 'I' },
   U: { bg: 'bg-rose-500 hover:bg-rose-600 active:bg-rose-700', label: 'U' },
 };
 
-export default function QuizGame({ onComplete, onSetSpeech }) {
-  const [questions, setQuestions] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [canAnswer, setCanAnswer] = useState(true);
-  const [wrongWiggle, setWrongWiggle] = useState(null);
+const QUIZ_OPTIONS: LetterKey[] = ['A', 'E', 'I', 'U'];
+
+interface QuizGameProps {
+  onComplete: () => void;
+  onSetSpeech: (text: string) => void;
+}
+
+export default function QuizGame({ onComplete, onSetSpeech }: QuizGameProps): React.JSX.Element | null {
+  const [questions, setQuestions] = useState<QuizItem[]>([]);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [canAnswer, setCanAnswer] = useState<boolean>(true);
+  const [wrongWiggle, setWrongWiggle] = useState<LetterKey | null>(null);
 
   useEffect(() => {
     // Baralhar perguntas
@@ -29,13 +42,13 @@ export default function QuizGame({ onComplete, onSetSpeech }) {
       onSetSpeech(`${q.word}... Começa com que letra?`);
       sounds.speak(q.prompt);
     }
-  }, [currentIndex, questions]);
+  }, [currentIndex, questions, onSetSpeech]);
 
   if (questions.length === 0) return null;
 
   const currentQ = questions[currentIndex];
 
-  const handleChoice = (choice, e) => {
+  const handleChoice = (choice: LetterKey, e: React.MouseEvent<HTMLButtonElement>) => {
     if (!canAnswer) return;
 
     if (choice === currentQ.letter) {
@@ -86,7 +99,7 @@ export default function QuizGame({ onComplete, onSetSpeech }) {
 
       {/* Grelha 2x2 com os Botões das Letras (A, E, I, U) */}
       <div className="grid grid-cols-2 gap-3 w-full max-w-[280px]">
-        {['A', 'E', 'I', 'U'].map((letra) => {
+        {QUIZ_OPTIONS.map((letra) => {
           const config = BUTTON_CONFIG[letra];
           const isWiggling = wrongWiggle === letra;
 

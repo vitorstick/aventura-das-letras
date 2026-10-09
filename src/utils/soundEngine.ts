@@ -1,14 +1,21 @@
 // Motor de Áudio e Voz em Português de Portugal (pt-PT)
+declare global {
+  interface Window {
+    webkitAudioContext?: typeof AudioContext;
+  }
+}
+
 class SoundEngine {
+  private ctx: AudioContext | null = null;
+  public soundEnabled: boolean = true;
+  public speechEnabled: boolean = true;
+  private ptVoice: SpeechSynthesisVoice | null = null;
+
   constructor() {
-    this.ctx = null;
-    this.soundEnabled = true;
-    this.speechEnabled = true;
-    this.ptVoice = null;
     this.initVoices();
   }
 
-  unlockAudio() {
+  unlockAudio(): void {
     if (!this.ctx) {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (AudioCtx) {
@@ -21,17 +28,17 @@ class SoundEngine {
     this.initVoices();
   }
 
-  initVoices() {
+  initVoices(): void {
     if ('speechSynthesis' in window) {
       const load = () => {
         const voices = window.speechSynthesis.getVoices();
-        
+
         // Procurar estritamente vozes de Português de Portugal (pt-PT)
         // EXCLUIR rigorosamente qualquer voz do Brasil (pt-BR, brasil, brazil)
-        const isStrictlyPtPt = (v) => {
+        const isStrictlyPtPt = (v: SpeechSynthesisVoice): boolean => {
           const lang = (v.lang || '').toLowerCase().replace('_', '-');
           const name = (v.name || '').toLowerCase();
-          
+
           const isBrazilian = lang.includes('br') || name.includes('brasil') || name.includes('brazil');
           if (isBrazilian) return false;
 
@@ -48,7 +55,7 @@ class SoundEngine {
         const ptVoices = voices.filter(isStrictlyPtPt);
 
         // Priorizar vozes Naturais / Neurais / Online de alta fidelidade
-        const getVoiceScore = (v) => {
+        const getVoiceScore = (v: SpeechSynthesisVoice): number => {
           const name = (v.name || '').toLowerCase();
           let score = 0;
           if (name.includes('natural') || name.includes('neural')) score += 100;
@@ -76,17 +83,17 @@ class SoundEngine {
     }
   }
 
-  hasPtPtVoice() {
+  hasPtPtVoice(): boolean {
     return this.ptVoice !== null;
   }
 
-  toggleSound() {
+  toggleSound(): boolean {
     this.soundEnabled = !this.soundEnabled;
     this.speechEnabled = this.soundEnabled;
     return this.soundEnabled;
   }
 
-  speak(text, onEnd = null) {
+  speak(text: string, onEnd: (() => void) | null = null): void {
     if (!this.speechEnabled || !('speechSynthesis' in window)) {
       if (onEnd) setTimeout(onEnd, 800);
       return;
@@ -118,7 +125,7 @@ class SoundEngine {
     }
   }
 
-  playPop() {
+  playPop(): void {
     if (!this.soundEnabled) return;
     this.unlockAudio();
     if (!this.ctx) return;
@@ -142,7 +149,7 @@ class SoundEngine {
     osc.stop(t + 0.12);
   }
 
-  playStar() {
+  playStar(): void {
     if (!this.soundEnabled) return;
     this.unlockAudio();
     if (!this.ctx) return;
@@ -150,6 +157,7 @@ class SoundEngine {
     const t = this.ctx.currentTime;
     const notes = [659.25, 880, 1318.5]; // E5, A5, E6
     notes.forEach((freq, idx) => {
+      if (!this.ctx) return;
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
       const startTime = t + idx * 0.07;
@@ -169,7 +177,7 @@ class SoundEngine {
     });
   }
 
-  playSuccess() {
+  playSuccess(): void {
     if (!this.soundEnabled) return;
     this.unlockAudio();
     if (!this.ctx) return;
@@ -177,6 +185,7 @@ class SoundEngine {
     const t = this.ctx.currentTime;
     const chord = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
     chord.forEach((freq, idx) => {
+      if (!this.ctx) return;
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
       const noteTime = t + idx * 0.09;
@@ -196,7 +205,7 @@ class SoundEngine {
     });
   }
 
-  playDinoHappy() {
+  playDinoHappy(): void {
     if (!this.soundEnabled) return;
     this.unlockAudio();
     if (!this.ctx) return;
@@ -221,7 +230,7 @@ class SoundEngine {
     osc.stop(t + 0.3);
   }
 
-  playTryAgain() {
+  playTryAgain(): void {
     if (!this.soundEnabled) return;
     this.unlockAudio();
     if (!this.ctx) return;
@@ -244,7 +253,7 @@ class SoundEngine {
     osc.stop(t + 0.28);
   }
 
-  playWinFanfare() {
+  playWinFanfare(): void {
     if (!this.soundEnabled) return;
     this.unlockAudio();
     if (!this.ctx) return;
@@ -258,6 +267,7 @@ class SoundEngine {
     ];
 
     melody.forEach(item => {
+      if (!this.ctx) return;
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
       const start = t + item.offset;

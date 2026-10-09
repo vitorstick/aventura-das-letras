@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Header from './components/Header';
 import MascotDino from './components/MascotDino';
 import WelcomeScreen from './components/WelcomeScreen';
@@ -13,19 +13,20 @@ import QuizGame from './components/minigames/QuizGame';
 import { GAME_DATA } from './data/gameData';
 import { sounds } from './utils/soundEngine';
 import { fireConfetti } from './utils/confetti';
+import { StepType, DinoExpression, LetterKey } from './types/game';
 
-export default function App() {
-  const [currentScreen, setCurrentScreen] = useState('welcome');
-  const [activeStepIndex, setActiveStepIndex] = useState(0);
-  const [unlockedStep, setUnlockedStep] = useState(() => {
+export default function App(): React.JSX.Element {
+  const [currentScreen, setCurrentScreen] = useState<StepType>('welcome');
+  const [activeStepIndex, setActiveStepIndex] = useState<number>(0);
+  const [unlockedStep, setUnlockedStep] = useState<number>(() => {
     return parseInt(localStorage.getItem('dino_unlocked_step') || '0', 10);
   });
-  const [stars, setStars] = useState(() => {
+  const [stars, setStars] = useState<number>(() => {
     return parseInt(localStorage.getItem('dino_stars') || '0', 10);
   });
-  const [dinoSpeech, setDinoSpeech] = useState("Olá! Vamos aprender as letras? Carrega em Começar! 🦕");
-  const [dinoExpression, setDinoExpression] = useState('idle');
-  const [isSoundOn, setIsSoundOn] = useState(true);
+  const [dinoSpeech, setDinoSpeech] = useState<string>("Olá! Vamos aprender as letras? Carrega em Começar! 🦕");
+  const [dinoExpression, setDinoExpression] = useState<DinoExpression>('idle');
+  const [isSoundOn, setIsSoundOn] = useState<boolean>(true);
 
   // Desbloquear áudio no início
   const handleStart = () => {
@@ -37,7 +38,7 @@ export default function App() {
     sounds.speak("Segue as pegadas do Dino no mapa para começar a aventura!");
   };
 
-  const handleSelectStep = (index) => {
+  const handleSelectStep = (index: number) => {
     setActiveStepIndex(index);
     const step = GAME_DATA.steps[index];
 
@@ -51,12 +52,12 @@ export default function App() {
   const handleStepComplete = () => {
     const newStars = stars + 1;
     setStars(newStars);
-    localStorage.setItem('dino_stars', newStars);
+    localStorage.setItem('dino_stars', newStars.toString());
 
     if (activeStepIndex === unlockedStep) {
       const nextUnlocked = Math.min(activeStepIndex + 1, GAME_DATA.steps.length - 1);
       setUnlockedStep(nextUnlocked);
-      localStorage.setItem('dino_unlocked_step', nextUnlocked);
+      localStorage.setItem('dino_unlocked_step', nextUnlocked.toString());
     }
 
     setDinoExpression('cheer');
@@ -97,6 +98,9 @@ export default function App() {
   };
 
   const currentStepData = GAME_DATA.steps[activeStepIndex];
+  const currentLetter = (currentStepData?.letter && currentStepData.letter !== 'ALL')
+    ? (currentStepData.letter as LetterKey)
+    : 'I';
 
   return (
     <div className="w-full h-full h-[100dvh] max-w-lg mx-auto flex flex-col overflow-hidden relative">
@@ -140,7 +144,7 @@ export default function App() {
 
         {currentScreen === 'explorer' && currentStepData && (
           <ExplorerGame
-            letter={currentStepData.letter}
+            letter={currentLetter}
             onComplete={handleStepComplete}
             onSetSpeech={setDinoSpeech}
           />
@@ -148,7 +152,7 @@ export default function App() {
 
         {currentScreen === 'bubble' && currentStepData && (
           <BubbleGame
-            letter={currentStepData.letter}
+            letter={currentLetter}
             targetCount={currentStepData.targetCount || 5}
             onComplete={handleStepComplete}
             onSetSpeech={setDinoSpeech}
@@ -157,7 +161,7 @@ export default function App() {
 
         {currentScreen === 'wordHunt' && currentStepData && (
           <WordHuntGame
-            letter={currentStepData.letter}
+            letter={currentLetter}
             onComplete={handleStepComplete}
             onSetSpeech={setDinoSpeech}
           />
@@ -165,7 +169,7 @@ export default function App() {
 
         {currentScreen === 'trace' && currentStepData && (
           <TraceGame
-            letter={currentStepData.letter}
+            letter={currentLetter}
             onComplete={handleStepComplete}
             onSetSpeech={setDinoSpeech}
           />

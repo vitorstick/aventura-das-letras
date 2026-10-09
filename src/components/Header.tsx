@@ -1,8 +1,22 @@
 import React from 'react';
 import { Volume2, VolumeX, Map, Star } from 'lucide-react';
-import { sounds } from '../utils/soundEngine';
+import { StepType } from '../types/game';
 
-export default function Header({ currentScreen, stars, onGoToMap, isSoundOn, onToggleSound }) {
+interface HeaderProps {
+  currentScreen: StepType;
+  stars: number;
+  onGoToMap: () => void;
+  isSoundOn: boolean;
+  onToggleSound: () => void;
+}
+
+export default function Header({
+  currentScreen,
+  stars,
+  onGoToMap,
+  isSoundOn,
+  onToggleSound
+}: HeaderProps): React.JSX.Element {
   const showMapButton = currentScreen !== 'welcome' && currentScreen !== 'map';
 
   return (

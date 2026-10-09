@@ -1,17 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, ArrowRight, Volume2 } from 'lucide-react';
+import { ArrowRight, Volume2 } from 'lucide-react';
 import { GAME_DATA } from '../../data/gameData';
 import { sounds } from '../../utils/soundEngine';
 import { fireStars, fireConfetti } from '../../utils/confetti';
+import { LetterKey, WordItem } from '../../types/game';
 
-export default function ExplorerGame({ letter, onComplete, onSetSpeech }) {
+interface ExplorerGameProps {
+  letter: LetterKey;
+  onComplete: () => void;
+  onSetSpeech: (text: string) => void;
+}
+
+export default function ExplorerGame({
+  letter,
+  onComplete,
+  onSetSpeech
+}: ExplorerGameProps): React.JSX.Element {
   const letterData = GAME_DATA.letters[letter];
-  const [explored, setExplored] = useState(new Set());
+  const [explored, setExplored] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     onSetSpeech(`Esta é a letra ${letter}! Toca nos cartões para ouvir!`);
     sounds.speak(letterData.spokenIntro);
-  }, [letter]);
+  }, [letter, letterData.spokenIntro, onSetSpeech]);
 
   const handleLetterTap = () => {
     sounds.playStar();
@@ -20,7 +31,7 @@ export default function ExplorerGame({ letter, onComplete, onSetSpeech }) {
     sounds.speak(`Letra ${letter}! Ouve como faz: ${letterData.soundText}!`);
   };
 
-  const handleCardTap = (index, item) => {
+  const handleCardTap = (index: number, item: WordItem) => {
     sounds.playStar();
     fireStars(0.5, 0.55);
 

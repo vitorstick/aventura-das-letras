@@ -3,15 +3,26 @@ import { Star, Lock, Play, RotateCcw, ChevronDown } from 'lucide-react';
 import { GAME_DATA } from '../data/gameData';
 import { sounds } from '../utils/soundEngine';
 
-export default function AdventureMap({ unlockedStep, onSelectStep, onResetProgress }) {
-  const currentStepRef = useRef(null);
+interface AdventureMapProps {
+  unlockedStep: number;
+  onSelectStep: (index: number) => void;
+  onResetProgress: () => void;
+}
+
+export default function AdventureMap({
+  unlockedStep,
+  onSelectStep,
+  onResetProgress
+}: AdventureMapProps): React.JSX.Element {
+  const currentStepRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     // Rola suavemente até à etapa atual se estiver mais abaixo
     if (currentStepRef.current) {
-      setTimeout(() => {
-        currentStepRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const timer = window.setTimeout(() => {
+        currentStepRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 300);
+      return () => clearTimeout(timer);
     }
   }, [unlockedStep]);
 

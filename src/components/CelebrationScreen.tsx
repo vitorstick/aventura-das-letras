@@ -3,7 +3,12 @@ import { Trophy, Star, RotateCcw } from 'lucide-react';
 import { sounds } from '../utils/soundEngine';
 import { fireGrandCelebration } from '../utils/confetti';
 
-export default function CelebrationScreen({ stars, onPlayAgain }) {
+interface CelebrationScreenProps {
+  stars: number;
+  onPlayAgain: () => void;
+}
+
+export default function CelebrationScreen({ stars, onPlayAgain }: CelebrationScreenProps): React.JSX.Element {
   useEffect(() => {
     sounds.playWinFanfare();
     fireGrandCelebration();

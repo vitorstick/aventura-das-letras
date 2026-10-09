@@ -1,7 +1,20 @@
 import React from 'react';
 import { sounds } from '../utils/soundEngine';
+import { DinoExpression } from '../types/game';
 
-export default function MascotDino({ expression = 'idle', speechText, onDinoTap, compact = false }) {
+interface MascotDinoProps {
+  expression?: DinoExpression;
+  speechText?: string;
+  onDinoTap?: () => void;
+  compact?: boolean;
+}
+
+export default function MascotDino({
+  expression = 'idle',
+  speechText,
+  onDinoTap,
+  compact = false
+}: MascotDinoProps): React.JSX.Element {
   const isCheering = expression === 'cheer';
   const isTalking = expression === 'talk';
 

@@ -2,21 +2,43 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Star } from 'lucide-react';
 import { sounds } from '../../utils/soundEngine';
 import { fireStars, fireConfetti } from '../../utils/confetti';
+import { LetterKey } from '../../types/game';
 
-export default function BubbleGame({ letter, targetCount = 5, onComplete, onSetSpeech }) {
-  const [score, setScore] = useState(0);
-  const [bubbles, setBubbles] = useState([]);
-  const nextId = useRef(1);
+interface BubbleItem {
+  id: number;
+  char: string;
+  isTarget: boolean;
+  leftPercent: number;
+  duration: number;
+  popped: boolean;
+}
+
+interface BubbleGameProps {
+  letter: LetterKey;
+  targetCount?: number;
+  onComplete: () => void;
+  onSetSpeech: (text: string) => void;
+}
+
+export default function BubbleGame({
+  letter,
+  targetCount = 5,
+  onComplete,
+  onSetSpeech
+}: BubbleGameProps): React.JSX.Element {
+  const [score, setScore] = useState<number>(0);
+  const [bubbles, setBubbles] = useState<BubbleItem[]>([]);
+  const nextId = useRef<number>(1);
 
   useEffect(() => {
     onSetSpeech(`Rebenta ${targetCount} bolhas com a letra ${letter}!`);
     sounds.speak(`Rebenta todas as bolhas que tenham a letra ${letter}!`);
-  }, [letter, targetCount]);
+  }, [letter, targetCount, onSetSpeech]);
 
   // Intervalo de geração de bolhas
   useEffect(() => {
     const spawnBubble = () => {
-      const distractors = ['A', 'E', 'I', 'U', 'O'].filter(l => l !== letter);
+      const distractors = (['A', 'E', 'I', 'U', 'O'] as const).filter(l => l !== letter);
       const isTarget = Math.random() < 0.65;
       const char = isTarget ? letter : distractors[Math.floor(Math.random() * distractors.length)];
       const id = nextId.current++;
@@ -39,11 +61,11 @@ export default function BubbleGame({ letter, targetCount = 5, onComplete, onSetS
     };
   }, [letter]);
 
-  const removeBubble = (id) => {
+  const removeBubble = (id: number) => {
     setBubbles(prev => prev.filter(b => b.id !== id));
   };
 
-  const handleBubbleHit = (b, e) => {
+  const handleBubbleHit = (b: BubbleItem, e: React.PointerEvent<HTMLDivElement>) => {
     e.stopPropagation();
     e.preventDefault();
     if (b.popped) return;
@@ -106,7 +128,7 @@ export default function BubbleGame({ letter, targetCount = 5, onComplete, onSetS
             onAnimationEnd={() => removeBubble(b.id)}
             style={{
               left: `${b.leftPercent}%`,
-              '--float-duration': `${b.duration}s`
+              ['--float-duration' as string]: `${b.duration}s`
             }}
             className={`animate-bubble-rise absolute w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center cursor-pointer select-none touch-manipulation transition-transform ${
               b.popped ? 'scale-150 opacity-0 duration-200' : 'active:scale-110'

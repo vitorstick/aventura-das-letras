@@ -1,81 +1,52 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Sparkles, RotateCcw } from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { RotateCcw } from 'lucide-react';
 import { GAME_DATA } from '../../data/gameData';
 import { sounds } from '../../utils/soundEngine';
 import { fireStars, fireConfetti } from '../../utils/confetti';
+import { LetterKey } from '../../types/game';
 
-export default function TraceGame({ letter, onComplete, onSetSpeech }) {
-  const canvasRef = useRef(null);
+interface RuntimePoint {
+  x: number;
+  y: number;
+  reached: boolean;
+}
+
+interface Point2D {
+  x: number;
+  y: number;
+}
+
+interface TraceGameProps {
+  letter: LetterKey;
+  onComplete: () => void;
+  onSetSpeech: (text: string) => void;
+}
+
+export default function TraceGame({
+  letter,
+  onComplete,
+  onSetSpeech
+}: TraceGameProps): React.JSX.Element {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const letterData = GAME_DATA.letters[letter];
-  const [cursiveType, setCursiveType] = useState('lowercase'); // 'lowercase' por defeito (ensino primário)
-  const [progress, setProgress] = useState(0);
-  const [isCompleted, setIsCompleted] = useState(false);
-  const [needsDot, setNeedsDot] = useState(false); // Para o pingo no i
-  const [dotCompleted, setDotCompleted] = useState(false);
+  const [cursiveType, setCursiveType] = useState<'lowercase' | 'uppercase'>('lowercase');
+  const [progress, setProgress] = useState<number>(0);
+  const [isCompleted, setIsCompleted] = useState<boolean>(false);
+  const [needsDot, setNeedsDot] = useState<boolean>(false); // Para o pingo no i
+  const [dotCompleted, setDotCompleted] = useState<boolean>(false);
 
-  const pointsRef = useRef([]);
-  const currentCheckIdx = useRef(0);
-  const isDrawing = useRef(false);
-  const drawnPath = useRef([]);
+  const pointsRef = useRef<RuntimePoint[]>([]);
+  const currentCheckIdx = useRef<number>(0);
+  const isDrawing = useRef<boolean>(false);
+  const drawnPath = useRef<Point2D[]>([]);
 
   const CANVAS_WIDTH = 300;
   const CANVAS_HEIGHT = 340;
 
   const currentCursiveData = letterData.tracing[cursiveType];
 
-  useEffect(() => {
-    resetLevel();
-  }, [letter, cursiveType]);
-
-  const resetLevel = () => {
-    const data = letterData.tracing[cursiveType];
-    onSetSpeech(`Vamos treinar a letra ${data.char} cursiva!`);
-    sounds.speak(data.hint);
-
-    // Mapear pontos para o tamanho real do canvas
-    pointsRef.current = data.points.map(pt => ({
-      x: pt.x * CANVAS_WIDTH,
-      y: pt.y * CANVAS_HEIGHT,
-      reached: false
-    }));
-
-    currentCheckIdx.current = 0;
-    drawnPath.current = [];
-    setProgress(0);
-    setIsCompleted(false);
-    setNeedsDot(false);
-    setDotCompleted(false);
-
-    drawCanvas();
-  };
-
-  const drawCanvas = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-
-    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-    // 1. Desenhar Pauta de Caderno Escolar Português
-    drawSchoolNotebookRuling(ctx);
-
-    // 2. Desenhar a Letra Cursiva Guia (traço suave pontilhado)
-    drawCursiveGuide(ctx);
-
-    // 3. Desenhar o Pingo no i se aplicável
-    if (cursiveType === 'lowercase' && currentCursiveData.dot) {
-      drawDotGuide(ctx);
-    }
-
-    // 4. Desenhar os Pontos de Orientação / Checkpoints
-    drawCheckpoints(ctx);
-
-    // 5. Desenhar o Traço Feito pela Criança com Efeito Dourado
-    drawUserStroke(ctx);
-  };
-
   // Linhas de Pauta de Caligrafia Escolar
-  const drawSchoolNotebookRuling = (ctx) => {
+  const drawSchoolNotebookRuling = useCallback((ctx: CanvasRenderingContext2D) => {
     ctx.save();
     // Fundo bege suave de papel de caderno
     ctx.fillStyle = '#FCFDF7';
@@ -111,10 +82,10 @@ export default function TraceGame({ letter, onComplete, onSetSpeech }) {
     });
 
     ctx.restore();
-  };
+  }, []);
 
   // Traço Cursivo Suave com Curvas
-  const drawCursiveGuide = (ctx) => {
+  const drawCursiveGuide = useCallback((ctx: CanvasRenderingContext2D) => {
     const pts = pointsRef.current;
     if (pts.length < 2) return;
 
@@ -137,10 +108,12 @@ export default function TraceGame({ letter, onComplete, onSetSpeech }) {
     ctx.lineTo(last.x, last.y);
     ctx.stroke();
     ctx.restore();
-  };
+  }, []);
 
   // Pingo no i
-  const drawDotGuide = (ctx) => {
+  const drawDotGuide = useCallback((ctx: CanvasRenderingContext2D) => {
+    if (!currentCursiveData.dot) return;
+
     const dotPos = {
       x: currentCursiveData.dot.x * CANVAS_WIDTH,
       y: currentCursiveData.dot.y * CANVAS_HEIGHT
@@ -173,10 +146,10 @@ export default function TraceGame({ letter, onComplete, onSetSpeech }) {
       ctx.stroke();
     }
     ctx.restore();
-  };
+  }, [currentCursiveData.dot, dotCompleted, needsDot]);
 
   // Checkpoints visuais
-  const drawCheckpoints = (ctx) => {
+  const drawCheckpoints = useCallback((ctx: CanvasRenderingContext2D) => {
     pointsRef.current.forEach((pt, i) => {
       const isCurrent = i === currentCheckIdx.current && !needsDot;
       const isReached = pt.reached;
@@ -206,10 +179,10 @@ export default function TraceGame({ letter, onComplete, onSetSpeech }) {
       }
       ctx.restore();
     });
-  };
+  }, [needsDot]);
 
   // Traço desenhado pela criança
-  const drawUserStroke = (ctx) => {
+  const drawUserStroke = useCallback((ctx: CanvasRenderingContext2D) => {
     if (drawnPath.current.length > 1) {
       ctx.save();
       ctx.lineWidth = 20;
@@ -239,26 +212,95 @@ export default function TraceGame({ letter, onComplete, onSetSpeech }) {
       ctx.stroke();
       ctx.restore();
     }
-  };
+  }, []);
 
-  const getPos = (e) => {
+  const drawCanvas = useCallback(() => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+    // 1. Desenhar Pauta de Caderno Escolar Português
+    drawSchoolNotebookRuling(ctx);
+
+    // 2. Desenhar a Letra Cursiva Guia (traço suave pontilhado)
+    drawCursiveGuide(ctx);
+
+    // 3. Desenhar o Pingo no i se aplicável
+    if (cursiveType === 'lowercase' && currentCursiveData.dot) {
+      drawDotGuide(ctx);
+    }
+
+    // 4. Desenhar os Pontos de Orientação / Checkpoints
+    drawCheckpoints(ctx);
+
+    // 5. Desenhar o Traço Feito pela Criança com Efeito Dourado
+    drawUserStroke(ctx);
+  }, [
+    drawSchoolNotebookRuling,
+    drawCursiveGuide,
+    cursiveType,
+    currentCursiveData.dot,
+    drawDotGuide,
+    drawCheckpoints,
+    drawUserStroke
+  ]);
+
+  const resetLevel = useCallback(() => {
+    const data = letterData.tracing[cursiveType];
+    onSetSpeech(`Vamos treinar a letra ${data.char} cursiva!`);
+    sounds.speak(data.hint);
+
+    // Mapear pontos para o tamanho real do canvas
+    pointsRef.current = data.points.map(pt => ({
+      x: pt.x * CANVAS_WIDTH,
+      y: pt.y * CANVAS_HEIGHT,
+      reached: false
+    }));
+
+    currentCheckIdx.current = 0;
+    drawnPath.current = [];
+    setProgress(0);
+    setIsCompleted(false);
+    setNeedsDot(false);
+    setDotCompleted(false);
+
+    drawCanvas();
+  }, [letterData.tracing, cursiveType, onSetSpeech, drawCanvas]);
+
+  useEffect(() => {
+    resetLevel();
+  }, [resetLevel]);
+
+  const finishTracing = useCallback(() => {
+    setIsCompleted(true);
+    sounds.playSuccess();
+    fireConfetti();
+    onSetSpeech(`Fantástico! Escreveste a letra ${currentCursiveData.char} cursiva! 🎉`);
+    sounds.speak(`Parabéns! Traçaste a letra cursiva perfeitamente!`);
+    setTimeout(() => {
+      onComplete();
+    }, 1600);
+  }, [currentCursiveData.char, onComplete, onSetSpeech]);
+
+  const getPos = (e: React.PointerEvent<HTMLCanvasElement>): Point2D => {
+    const canvas = canvasRef.current;
+    if (!canvas) return { x: 0, y: 0 };
     const rect = canvas.getBoundingClientRect();
     const scaleX = CANVAS_WIDTH / rect.width;
     const scaleY = CANVAS_HEIGHT / rect.height;
 
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
     return {
-      x: (clientX - rect.left) * scaleX,
-      y: (clientY - rect.top) * scaleY
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY
     };
   };
 
-  const checkCollision = (pos) => {
+  const checkCollision = (pos: Point2D) => {
     // Se está na fase do pingo no i
-    if (needsDot && !dotCompleted) {
+    if (needsDot && !dotCompleted && currentCursiveData.dot) {
       const dotPos = {
         x: currentCursiveData.dot.x * CANVAS_WIDTH,
         y: currentCursiveData.dot.y * CANVAS_HEIGHT
@@ -300,18 +342,7 @@ export default function TraceGame({ letter, onComplete, onSetSpeech }) {
     }
   };
 
-  const finishTracing = () => {
-    setIsCompleted(true);
-    sounds.playSuccess();
-    fireConfetti();
-    onSetSpeech(`Fantástico! Escreveste a letra ${currentCursiveData.char} cursiva! 🎉`);
-    sounds.speak(`Parabéns! Traçaste a letra cursiva perfeitamente!`);
-    setTimeout(() => {
-      onComplete();
-    }, 1600);
-  };
-
-  const handlePointerDown = (e) => {
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (isCompleted) return;
     isDrawing.current = true;
     const pos = getPos(e);
@@ -320,7 +351,7 @@ export default function TraceGame({ letter, onComplete, onSetSpeech }) {
     drawCanvas();
   };
 
-  const handlePointerMove = (e) => {
+  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (!isDrawing.current || isCompleted) return;
     const pos = getPos(e);
     drawnPath.current.push(pos);

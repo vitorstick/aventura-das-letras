@@ -1,7 +1,11 @@
 import React from 'react';
 import { Sparkles, Play } from 'lucide-react';
 
-export default function WelcomeScreen({ onStart }) {
+interface WelcomeScreenProps {
+  onStart: () => void;
+}
+
+export default function WelcomeScreen({ onStart }: WelcomeScreenProps): React.JSX.Element {
   return (
     <div className="flex-1 w-full flex flex-col items-center justify-between py-6 px-4 text-center">
       <div />

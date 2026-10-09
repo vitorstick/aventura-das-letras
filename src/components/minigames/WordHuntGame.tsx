@@ -1,20 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { Volume2, Star, Check, Sparkles, ArrowRight } from 'lucide-react';
+import { Volume2, Star, Check, ArrowRight } from 'lucide-react';
 import { GAME_DATA } from '../../data/gameData';
 import { sounds } from '../../utils/soundEngine';
 import { fireStars, fireConfetti } from '../../utils/confetti';
+import { LetterKey, MiddleWordItem } from '../../types/game';
 
-export default function WordHuntGame({ letter, onComplete, onSetSpeech }) {
+interface WordHuntGameProps {
+  letter: LetterKey;
+  onComplete: () => void;
+  onSetSpeech: (text: string) => void;
+}
+
+export default function WordHuntGame({
+  letter,
+  onComplete,
+  onSetSpeech
+}: WordHuntGameProps): React.JSX.Element {
   const letterData = GAME_DATA.letters[letter];
-  const wordsList = letterData?.middleWords || [];
+  const wordsList: MiddleWordItem[] = letterData?.middleWords || [];
 
-  const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [foundIndices, setFoundIndices] = useState(new Set());
-  const [wigglingIndex, setWigglingIndex] = useState(null);
-  const [isWordCompleted, setIsWordCompleted] = useState(false);
-  const [isRoundCompleted, setIsRoundCompleted] = useState(false);
+  const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
+  const [foundIndices, setFoundIndices] = useState<Set<number>>(new Set());
+  const [wigglingIndex, setWigglingIndex] = useState<number | null>(null);
+  const [isWordCompleted, setIsWordCompleted] = useState<boolean>(false);
+  const [isRoundCompleted, setIsRoundCompleted] = useState<boolean>(false);
 
-  const currentWordData = wordsList[currentWordIndex] || {
+  const currentWordData: MiddleWordItem = wordsList[currentWordIndex] || {
     word: letter,
     display: letter,
     emoji: '⭐',
@@ -24,7 +35,7 @@ export default function WordHuntGame({ letter, onComplete, onSetSpeech }) {
   const wordLetters = currentWordData.word.split('');
   const targetIndices = wordLetters
     .map((char, idx) => (char.toUpperCase() === letter.toUpperCase() ? idx : null))
-    .filter((idx) => idx !== null);
+    .filter((idx): idx is number => idx !== null);
 
   const totalTargetsInWord = targetIndices.length;
   const remainingTargetsInWord = totalTargetsInWord - foundIndices.size;
@@ -40,7 +51,7 @@ export default function WordHuntGame({ letter, onComplete, onSetSpeech }) {
       onSetSpeech(introText);
       sounds.speak(introText);
     }
-  }, [currentWordIndex, letter]);
+  }, [currentWordIndex, letter, currentWordData.prompt, onSetSpeech]);
 
   const handleHearPrompt = () => {
     sounds.playPop();
@@ -48,7 +59,7 @@ export default function WordHuntGame({ letter, onComplete, onSetSpeech }) {
     sounds.speak(currentWordData.prompt);
   };
 
-  const handleTileClick = (char, index, e) => {
+  const handleTileClick = (char: string, index: number, e: React.MouseEvent<HTMLButtonElement>) => {
     if (isWordCompleted || isRoundCompleted) return;
 
     // Se já foi encontrada nesta palavra, ignora
@@ -65,7 +76,7 @@ export default function WordHuntGame({ letter, onComplete, onSetSpeech }) {
       setFoundIndices(nextFound);
 
       sounds.playStar();
-      if (e?.currentTarget) {
+      if (e.currentTarget) {
         const rect = e.currentTarget.getBoundingClientRect();
         const x = (rect.left + rect.width / 2) / window.innerWidth;
         const y = (rect.top + rect.height / 2) / window.innerHeight;
@@ -211,7 +222,7 @@ export default function WordHuntGame({ letter, onComplete, onSetSpeech }) {
                   <span>{char}</span>
                   {isFound && (
                     <span className="absolute -top-1.5 -right-1.5 bg-amber-400 text-white rounded-full p-0.5 shadow-sm">
-                      <Star className="w-3 h-3 fill-white" />
+                      <Star className="w-3.5 h-3.5 fill-white" />
                     </span>
                   )}
                 </button>
