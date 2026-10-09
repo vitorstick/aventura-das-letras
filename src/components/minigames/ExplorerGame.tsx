@@ -40,11 +40,7 @@ export default function ExplorerGame({
     fireStars(0.5, 0.35);
     const textLabel = isCombo ? `Combinação ${letter}` : `Letra ${letter}`;
     onSetSpeech(`${textLabel}! Faz o som: ${letterData.soundText}!`);
-    sounds.playLetterName(letter, () => {
-      setTimeout(() => {
-        sounds.playLetterSound(letter);
-      }, 250);
-    });
+    sounds.playLetterCard(letter);
   };
 
   const handleCardTap = (index: number, item: WordItem) => {

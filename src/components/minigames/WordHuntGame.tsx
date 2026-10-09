@@ -72,14 +72,14 @@ export default function WordHuntGame({
     if (currentWordData) {
       const introText = currentWordData.prompt;
       onSetSpeech(introText);
-      sounds.speak(introText);
+      sounds.playHuntPrompt(currentWordData.audioWordKey || currentWordData.word, introText);
     }
   }, [currentWordIndex, letter, currentWordData.prompt, onSetSpeech]);
 
   const handleHearPrompt = () => {
     sounds.playPop();
     onSetSpeech(currentWordData.prompt);
-    sounds.speak(currentWordData.prompt);
+    sounds.playHuntPrompt(currentWordData.audioWordKey || currentWordData.word, currentWordData.prompt);
   };
 
   const handleTileClick = (token: string, index: number, e: React.MouseEvent<HTMLButtonElement>) => {
@@ -114,9 +114,7 @@ export default function WordHuntGame({
 
         const successSpeech = `Muito bem! Encontraste ${targetType} ${letter} na palavra ${currentWordData.display}!`;
         onSetSpeech(successSpeech);
-        sounds.playFeedback('certo', () => {
-          sounds.playWord(currentWordData.audioWordKey || currentWordData.word);
-        });
+        sounds.playHuntSuccess(currentWordData.audioWordKey || currentWordData.word, successSpeech);
 
         setTimeout(() => {
           if (currentWordIndex + 1 >= wordsList.length) {

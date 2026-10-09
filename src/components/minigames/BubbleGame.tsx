@@ -35,7 +35,7 @@ export default function BubbleGame({
 
   useEffect(() => {
     onSetSpeech(`Rebenta ${targetCount} bolhas com ${itemLabel}!`);
-    sounds.speak(`Rebenta todas as bolhas que tenham ${itemLabel}!`);
+    sounds.playBubbleMission(letter, `Rebenta todas as bolhas que tenham ${itemLabel}!`);
   }, [letter, targetCount, onSetSpeech, itemLabel]);
 
   // Intervalo de geração de bolhas
@@ -96,7 +96,7 @@ export default function BubbleGame({
         sounds.playSuccess();
         fireConfetti();
         onSetSpeech(`Conseguiste rebentar todas as bolhas com ${letter}! 🎉`);
-        sounds.playFeedback('bravo');
+        sounds.playBubbleComplete(letter, `Muito bem! Apanhaste todas as bolhas da letra ${letter}!`);
         setTimeout(() => {
           onComplete();
         }, 1500);

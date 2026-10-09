@@ -41,7 +41,7 @@ export default function QuizGame({ onComplete, onSetSpeech }: QuizGameProps): Re
       const q = questions[currentIndex];
       const isCombo = q.letter.length > 1;
       onSetSpeech(`${q.word}... Qual é a ${isCombo ? 'combinação' : 'letra'}?`);
-      sounds.speak(q.prompt);
+      sounds.playQuizPrompt(q.word, q.prompt);
     }
   }, [currentIndex, questions, onSetSpeech]);
 
@@ -62,9 +62,7 @@ export default function QuizGame({ onComplete, onSetSpeech }: QuizGameProps): Re
       fireStars(rect.left / window.innerWidth, rect.top / window.innerHeight);
 
       onSetSpeech(`Muito bem! ${currentQ.letter} em ${currentQ.word}!`);
-      sounds.playFeedback('certo', () => {
-        sounds.playWord(currentQ.word);
-      });
+      sounds.playQuizSuccess(currentQ.word, `Certo! ${currentQ.word}!`);
 
       setTimeout(() => {
         if (currentIndex + 1 >= questions.length) {
@@ -84,9 +82,7 @@ export default function QuizGame({ onComplete, onSetSpeech }: QuizGameProps): Re
       const isCombo = currentQ.letter.length > 1;
       const itemDesc = isCombo ? `a combinação ${currentQ.letter}` : `a letra ${currentQ.letter}`;
       onSetSpeech(`Ouve bem: ${currentQ.word}! Tem ${itemDesc}!`);
-      sounds.playFeedback('quase', () => {
-        sounds.playLetterName(currentQ.letter);
-      });
+      sounds.playQuizTryAgain(currentQ.word, `Quase! ${currentQ.word} tem ${itemDesc}!`);
     }
   };
 

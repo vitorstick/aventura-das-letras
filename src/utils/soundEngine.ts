@@ -242,6 +242,60 @@ class SoundEngine {
     this.playAudioFile(key, undefined, onEnd);
   }
 
+  playLetterCard(letter: LetterKey, onEnd?: (() => void) | null): void {
+    const key = `letter_card_${letter.toLowerCase()}`;
+    this.playAudioFile(key, `Esta é a letra ${letter}!`, onEnd);
+  }
+
+  playQuizPrompt(wordKey: string, fallbackText?: string, onEnd?: (() => void) | null): void {
+    const cleanKey = wordKey.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/g, '');
+    const key = `quiz_prompt_${cleanKey}`;
+    this.playAudioFile(key, fallbackText, onEnd);
+  }
+
+  playQuizSuccess(wordKey: string, fallbackText?: string, onEnd?: (() => void) | null): void {
+    const cleanKey = wordKey.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/g, '');
+    const key = `quiz_success_${cleanKey}`;
+    this.playAudioFile(key, fallbackText, onEnd);
+  }
+
+  playQuizTryAgain(wordKey: string, fallbackText?: string, onEnd?: (() => void) | null): void {
+    const cleanKey = wordKey.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/g, '');
+    const key = `quiz_tryagain_${cleanKey}`;
+    this.playAudioFile(key, fallbackText, onEnd);
+  }
+
+  playHuntPrompt(wordKey: string, fallbackText?: string, onEnd?: (() => void) | null): void {
+    const cleanKey = wordKey.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/g, '');
+    const key = `hunt_prompt_${cleanKey}`;
+    this.playAudioFile(key, fallbackText, onEnd);
+  }
+
+  playHuntSuccess(wordKey: string, fallbackText?: string, onEnd?: (() => void) | null): void {
+    const cleanKey = wordKey.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/g, '');
+    const key = `hunt_success_${cleanKey}`;
+    this.playAudioFile(key, fallbackText, onEnd);
+  }
+
+  playBubbleMission(letter: LetterKey, fallbackText?: string, onEnd?: (() => void) | null): void {
+    const key = `bubble_mission_${letter.toLowerCase()}`;
+    this.playAudioFile(key, fallbackText, onEnd);
+  }
+
+  playBubbleComplete(letter: LetterKey, fallbackText?: string, onEnd?: (() => void) | null): void {
+    const key = `bubble_complete_${letter.toLowerCase()}`;
+    this.playAudioFile(key, fallbackText, onEnd);
+  }
+
+  playTraceHint(letter: LetterKey, variant: 'lower' | 'upper' | 'dot', fallbackText?: string, onEnd?: (() => void) | null): void {
+    const key = `trace_hint_${letter.toLowerCase()}_${variant}`;
+    this.playAudioFile(key, fallbackText, onEnd);
+  }
+
+  playTraceSuccess(fallbackText?: string, onEnd?: (() => void) | null): void {
+    this.playAudioFile('trace_success', fallbackText, onEnd);
+  }
+
   speak(text: string, onEnd: (() => void) | null = null): void {
     if (!this.speechEnabled || !('speechSynthesis' in window)) {
       if (onEnd) setTimeout(onEnd, 800);

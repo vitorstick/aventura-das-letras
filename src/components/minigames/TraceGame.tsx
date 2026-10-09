@@ -255,7 +255,7 @@ export default function TraceGame({
     if (!letterData.tracing) return;
     const data = letterData.tracing[cursiveType];
     onSetSpeech(`Vamos treinar ${itemLabel} ${data.char} cursiva!`);
-    sounds.speak(data.hint);
+    sounds.playTraceHint(letter, cursiveType === 'lowercase' ? 'lower' : 'upper', data.hint);
 
     // Mapear pontos para o tamanho real do canvas
     pointsRef.current = data.points.map(pt => ({
@@ -272,7 +272,7 @@ export default function TraceGame({
     setDotCompleted(false);
 
     drawCanvas();
-  }, [letterData.tracing, cursiveType, onSetSpeech, drawCanvas, itemLabel]);
+  }, [letterData.tracing, cursiveType, onSetSpeech, drawCanvas, itemLabel, letter]);
 
   useEffect(() => {
     resetLevel();
@@ -284,7 +284,7 @@ export default function TraceGame({
     fireConfetti();
     const charName = currentCursiveData?.char || letter;
     onSetSpeech(`Fantástico! Escreveste ${itemLabel} ${charName} cursiva! 🎉`);
-    sounds.speak(`Parabéns! Traçaste com caligrafia cursiva perfeitamente!`);
+    sounds.playTraceSuccess("Parabéns! Traçaste a letra cursiva perfeitamente!");
     setTimeout(() => {
       onComplete();
     }, 1600);
@@ -339,7 +339,7 @@ export default function TraceGame({
           // Ativa o pingo no i
           setNeedsDot(true);
           onSetSpeech("Boa! Agora põe o pingo no i! ✨");
-          sounds.speak("Muito bem! Agora toca no ponto para pôr o pingo no i!");
+          sounds.playTraceHint(letter, 'dot', "Muito bem! Agora toca no ponto para pôr o pingo no i!");
         } else {
           finishTracing();
         }
