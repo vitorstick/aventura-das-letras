@@ -61,10 +61,10 @@ export default function QuizGame({ onComplete, onSetSpeech }: QuizGameProps): Re
       const rect = e.currentTarget.getBoundingClientRect();
       fireStars(rect.left / window.innerWidth, rect.top / window.innerHeight);
 
-      const isCombo = currentQ.letter.length > 1;
-      const itemDesc = isCombo ? `A combinação ${currentQ.letter}` : `A letra ${currentQ.letter}`;
       onSetSpeech(`Muito bem! ${currentQ.letter} em ${currentQ.word}!`);
-      sounds.speak(`Certo! ${itemDesc} em ${currentQ.word}!`);
+      sounds.playFeedback('certo', () => {
+        sounds.playWord(currentQ.word);
+      });
 
       setTimeout(() => {
         if (currentIndex + 1 >= questions.length) {
@@ -84,7 +84,9 @@ export default function QuizGame({ onComplete, onSetSpeech }: QuizGameProps): Re
       const isCombo = currentQ.letter.length > 1;
       const itemDesc = isCombo ? `a combinação ${currentQ.letter}` : `a letra ${currentQ.letter}`;
       onSetSpeech(`Ouve bem: ${currentQ.word}! Tem ${itemDesc}!`);
-      sounds.speak(`Quase! ${currentQ.word} tem ${itemDesc}!`);
+      sounds.playFeedback('quase', () => {
+        sounds.playLetterName(currentQ.letter);
+      });
     }
   };
 
@@ -96,7 +98,11 @@ export default function QuizGame({ onComplete, onSetSpeech }: QuizGameProps): Re
       </div>
 
       {/* Cartão Central do Objeto */}
-      <div className="kid-btn-shadow bg-white border-4 border-purple-300 rounded-3xl p-4 sm:p-5 flex flex-col items-center justify-center my-2 w-full max-w-[260px] animate-bounce-soft">
+      <div
+        onClick={() => sounds.playWord(currentQ.word)}
+        className="kid-btn-shadow bg-white border-4 border-purple-300 rounded-3xl p-4 sm:p-5 flex flex-col items-center justify-center my-2 w-full max-w-[260px] animate-bounce-soft cursor-pointer active:scale-95 transition-transform"
+        title="Toca para ouvir a palavra!"
+      >
         <span className="text-5xl sm:text-6xl mb-1">{currentQ.emoji}</span>
         <span className="text-2xl sm:text-3xl font-black text-purple-900 tracking-wide">
           {currentQ.word}

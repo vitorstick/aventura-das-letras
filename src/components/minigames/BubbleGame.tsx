@@ -96,7 +96,7 @@ export default function BubbleGame({
         sounds.playSuccess();
         fireConfetti();
         onSetSpeech(`Conseguiste rebentar todas as bolhas com ${letter}! 🎉`);
-        sounds.speak(`Muito bem! Apanhaste todas as bolhas com ${itemLabel}!`);
+        sounds.playFeedback('bravo');
         setTimeout(() => {
           onComplete();
         }, 1500);
@@ -107,7 +107,7 @@ export default function BubbleGame({
       sounds.playTryAgain();
       const hitLabel = b.char.length > 1 ? `a combinação ${b.char}` : `a letra ${b.char}`;
       onSetSpeech(`Essa é ${hitLabel}! Procura ${itemLabel}!`);
-      sounds.speak(`Essa é ${hitLabel}! Toca em ${itemLabel}!`);
+      sounds.playLetterName(b.char as LetterKey);
     }
   };
 

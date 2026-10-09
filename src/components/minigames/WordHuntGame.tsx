@@ -114,7 +114,9 @@ export default function WordHuntGame({
 
         const successSpeech = `Muito bem! Encontraste ${targetType} ${letter} na palavra ${currentWordData.display}!`;
         onSetSpeech(successSpeech);
-        sounds.speak(successSpeech);
+        sounds.playFeedback('certo', () => {
+          sounds.playWord(currentWordData.audioWordKey || currentWordData.word);
+        });
 
         setTimeout(() => {
           if (currentWordIndex + 1 >= wordsList.length) {
@@ -193,12 +195,19 @@ export default function WordHuntGame({
           </div>
 
           {/* Nome da palavra com botão de áudio */}
-          <div className="flex items-center gap-2 mb-4">
+          <div
+            onClick={() => sounds.playWord(currentWordData.audioWordKey || currentWordData.word)}
+            className="flex items-center gap-2 mb-4 cursor-pointer active:scale-95 transition-transform"
+            title="Toca para ouvir a palavra!"
+          >
             <span className="text-2xl sm:text-3xl font-black text-purple-950 tracking-wide">
               {currentWordData.display}
             </span>
             <button
-              onClick={handleHearPrompt}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleHearPrompt();
+              }}
               className="p-2 bg-purple-100 hover:bg-purple-200 active:scale-90 text-purple-700 rounded-full transition-transform shadow-sm"
               title="Ouvir a pergunta"
               aria-label="Ouvir a pergunta"

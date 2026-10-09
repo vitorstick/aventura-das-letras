@@ -35,7 +35,7 @@ export default function CelebrationScreen({ stars, onPlayAgain }: CelebrationScr
           </div>
 
           <p className="text-gray-700 font-bold text-sm sm:text-base mt-2">
-            Conheces e desenhas as letras <strong className="text-sky-600 font-black">I</strong>, <strong className="text-rose-600 font-black">U</strong>, as combinações <strong className="text-teal-600 font-black">UI</strong> e <strong className="text-fuchsia-600 font-black">IU</strong>, e as letras <strong className="text-amber-600 font-black">A</strong> e <strong className="text-indigo-600 font-black">E</strong>!
+            Conheces as letras <strong className="text-sky-600 font-black">I</strong>, <strong className="text-rose-600 font-black">U</strong>, as combinações <strong className="text-teal-600 font-black">UI</strong> e <strong className="text-fuchsia-600 font-black">IU</strong>, e as letras <strong className="text-amber-600 font-black">A</strong> e <strong className="text-indigo-600 font-black">E</strong>!
           </p>
         </div>
       </div>

@@ -31,9 +31,14 @@ export interface TracingVariants {
 }
 
 export interface WordItem {
+  id?: string;
   word: string;
   emoji: string;
   audioText: string;
+  audioWordKey?: string;
+  audioPhraseKey?: string;
+  spelling?: string[];
+  syllables?: string[];
 }
 
 export interface MiddleWordItem {
@@ -41,6 +46,7 @@ export interface MiddleWordItem {
   display: string;
   emoji: string;
   prompt: string;
+  audioWordKey?: string;
 }
 
 export interface LetterData {
@@ -48,6 +54,9 @@ export interface LetterData {
   soundText: string;
   spokenIntro: string;
   color: string;
+  nameAudioKey?: string;
+  soundAudioKey?: string;
+  introAudioKey?: string;
   words: WordItem[];
   middleWords: MiddleWordItem[];
   tracing?: TracingVariants;

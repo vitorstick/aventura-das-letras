@@ -19,7 +19,8 @@ export default function App(): React.JSX.Element {
   const [currentScreen, setCurrentScreen] = useState<StepType>('welcome');
   const [activeStepIndex, setActiveStepIndex] = useState<number>(0);
   const [unlockedStep, setUnlockedStep] = useState<number>(() => {
-    return parseInt(localStorage.getItem('dino_unlocked_step') || '0', 10);
+    const saved = parseInt(localStorage.getItem('dino_unlocked_step') || '0', 10);
+    return Math.min(Math.max(0, saved), Math.max(0, GAME_DATA.steps.length - 1));
   });
   const [stars, setStars] = useState<number>(() => {
     return parseInt(localStorage.getItem('dino_stars') || '0', 10);
