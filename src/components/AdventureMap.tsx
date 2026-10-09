@@ -1,21 +1,25 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Star, Lock, Play, RotateCcw, ChevronDown } from 'lucide-react';
+import { Star, Lock, Play, RotateCcw, ChevronDown, Home } from 'lucide-react';
 import { GAME_DATA } from '../data/gameData';
 import { sounds } from '../utils/soundEngine';
 import ParentGateModal from './ParentGateModal';
 
 interface AdventureMapProps {
   unlockedStep: number;
+  completedSteps?: number[];
   onSelectStep: (index: number) => void;
   onResetProgress: () => void;
   onSetSpeech?: (text: string) => void;
+  onGoToWelcome?: () => void;
 }
 
 export default function AdventureMap({
   unlockedStep,
+  completedSteps = [],
   onSelectStep,
   onResetProgress,
-  onSetSpeech
+  onSetSpeech,
+  onGoToWelcome
 }: AdventureMapProps): React.JSX.Element {
   const currentStepRef = useRef<HTMLButtonElement | null>(null);
   const [isParentGateOpen, setIsParentGateOpen] = useState<boolean>(false);
@@ -41,9 +45,9 @@ export default function AdventureMap({
 
       <div className="w-full flex flex-col items-center gap-3 shrink-0">
         {GAME_DATA.steps.map((step, idx) => {
-          const isCompleted = idx < unlockedStep;
+          const isCompleted = completedSteps.includes(idx) || idx < unlockedStep;
           const isCurrent = idx === unlockedStep;
-          const isLocked = idx > unlockedStep;
+          const isLocked = !isCompleted && idx > unlockedStep;
 
           let cardStyle = "bg-white/70 border-gray-300 opacity-60";
           if (isCompleted) {
@@ -118,10 +122,21 @@ export default function AdventureMap({
         <span>Todas as {GAME_DATA.steps.length} etapas estão aqui! Desliza para explorar</span>
       </div>
 
+      {onGoToWelcome && (
+        <button
+          type="button"
+          onClick={onGoToWelcome}
+          className="mt-6 flex items-center gap-1.5 text-emerald-700 hover:text-emerald-800 text-xs font-bold bg-white/80 px-4 py-2 rounded-full border border-emerald-300 shadow-sm transition-transform active:scale-95"
+        >
+          <Home className="w-3.5 h-3.5 text-emerald-600" />
+          Voltar ao Ecrã Inicial 🏠
+        </button>
+      )}
+
       <button
         type="button"
         onClick={() => setIsParentGateOpen(true)}
-        className="mt-6 flex items-center gap-1.5 text-gray-500 hover:text-gray-700 text-xs font-bold underline pb-4"
+        className="mt-3 flex items-center gap-1.5 text-gray-500 hover:text-gray-700 text-xs font-bold underline pb-4"
       >
         <RotateCcw className="w-3.5 h-3.5" />
         Recomeçar Aventura do Início

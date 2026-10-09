@@ -1,11 +1,12 @@
 import React from 'react';
-import { Volume2, VolumeX, Map, Star } from 'lucide-react';
+import { Volume2, VolumeX, Map, Star, Home } from 'lucide-react';
 import { ScreenType } from '../types/game';
 
 interface HeaderProps {
   currentScreen: ScreenType;
   stars: number;
   onGoToMap: () => void;
+  onGoToWelcome?: () => void;
   isSoundOn: boolean;
   onToggleSound: () => void;
 }
@@ -14,14 +15,16 @@ export default function Header({
   currentScreen,
   stars,
   onGoToMap,
+  onGoToWelcome,
   isSoundOn,
   onToggleSound
 }: HeaderProps): React.JSX.Element {
   const showMapButton = currentScreen !== 'welcome' && currentScreen !== 'map';
+  const showHomeButton = currentScreen === 'map' && Boolean(onGoToWelcome);
 
   return (
     <header className="w-full flex items-center justify-between px-4 py-2 z-30 shrink-0">
-      {/* Botão de Voltar ao Mapa */}
+      {/* Botão de Voltar ao Mapa ou ao Início */}
       <div className="w-12 h-12 flex items-center justify-center">
         {showMapButton && (
           <button
@@ -32,6 +35,17 @@ export default function Header({
             title="Voltar ao Mapa da Floresta"
           >
             <Map className="w-6 h-6" />
+          </button>
+        )}
+        {showHomeButton && onGoToWelcome && (
+          <button
+            type="button"
+            onClick={onGoToWelcome}
+            className="w-11 h-11 bg-white rounded-full border-2 border-emerald-300 shadow-md flex items-center justify-center text-emerald-700 active:scale-90 transition-transform"
+            aria-label="Voltar ao Ecrã Inicial"
+            title="Voltar ao Ecrã Inicial"
+          >
+            <Home className="w-6 h-6" />
           </button>
         )}
       </div>

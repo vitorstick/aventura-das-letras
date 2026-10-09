@@ -24,6 +24,7 @@ export default function App(): React.JSX.Element {
 
   const {
     unlockedStep,
+    completedSteps,
     stars,
     isSoundOn,
     completeStep,
@@ -70,6 +71,12 @@ export default function App(): React.JSX.Element {
     }
   };
 
+  const handleDirectSelectStep = (index: number) => {
+    sounds.unlockAudio();
+    sounds.playPop();
+    handleSelectStep(index);
+  };
+
   const handleStepComplete = () => {
     completeStep(activeStepIndex);
 
@@ -95,6 +102,14 @@ export default function App(): React.JSX.Element {
     }
   };
 
+  const handleGoToWelcome = () => {
+    sounds.playPop();
+    setCurrentScreen('welcome');
+    const welcomeSpeech = "Olá! Vamos aprender as letras? Carrega em Começar ou escolhe uma letra! 🦕";
+    setDinoSpeech(welcomeSpeech);
+    sounds.speak(welcomeSpeech);
+  };
+
   const currentStepData = GAME_DATA.steps[activeStepIndex];
   const currentLetter = (currentStepData?.letter && currentStepData.letter !== 'ALL')
     ? (currentStepData.letter as LetterKey)
@@ -109,6 +124,7 @@ export default function App(): React.JSX.Element {
         currentScreen={currentScreen}
         stars={stars}
         onGoToMap={handleGoToMap}
+        onGoToWelcome={handleGoToWelcome}
         isSoundOn={isSoundOn}
         onToggleSound={toggleSound}
       />
@@ -132,15 +148,21 @@ export default function App(): React.JSX.Element {
         currentScreen === 'map' ? 'justify-start' : 'justify-center'
       }`}>
         {currentScreen === 'welcome' && (
-          <WelcomeScreen onStart={handleStart} />
+          <WelcomeScreen
+            onStart={handleStart}
+            onSelectStep={handleDirectSelectStep}
+            completedSteps={completedSteps}
+          />
         )}
 
         {currentScreen === 'map' && (
           <AdventureMap
             unlockedStep={unlockedStep}
+            completedSteps={completedSteps}
             onSelectStep={handleSelectStep}
             onResetProgress={resetProgress}
             onSetSpeech={setDinoSpeech}
+            onGoToWelcome={handleGoToWelcome}
           />
         )}
 
